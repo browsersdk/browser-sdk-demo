@@ -1,0 +1,154 @@
+# IDE and Editor files
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# OS generated files
+.DS_Store
+*/.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Build outputs
+dist/
+dist-ssr/
+build/
+bin/
+
+# Dependency directories
+node_modules/
+vendor/
+pnpm-lock.yaml
+yarn.lock
+package-lock.json
+
+# Log files
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+.pnpm-error.log*
+.lerna-debug.log*
+report.html
+tests/**/coverage/
+
+# Environment files
+*.env
+*.env.local
+*.env.development.local
+*.env.test.local
+*.env.production.local
+
+# Temporary files
+temp/
+tmp/
+*.tmp
+*.temp
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+*.dat
+
+# Compiled files
+*.exe
+*.dll
+*.so
+*.dylib
+*.out
+
+# Go specific
+go.sum
+go.mod (uncomment if you want to track it)
+*.test
+
+# Configuration files (uncomment sensitive ones)
+# resources/config.local.yaml
+# resources/config.dev.yaml
+# resources/config.prod.yaml
+
+# Upload directories
+static/uploadfile/
+uploads/
+
+# Dump files
+*.dump
+*.sql.dump
+xdump_config
+
+# Audio files
+*.wav
+*.mp3
+*.pcm
+
+# TypeScript build info
+tsconfig.tsbuildinfo
+
+# ESLint cache
+.eslintcache
+
+# Local configuration
+*.local
+
+# Coverage directories
+coverage/
+.nyc_output/
+
+# IDE specific
+*.iml
+*.iws
+*.ipr
+.settings/
+.project
+.classpath
+
+# Vim
+*.swp
+*.swo
+*~
+
+# Emacs
+*~
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+*.elc
+auto-save-list
+tramp
+.\#*
+
+# VS Code
+.vscode/settings.json
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.code-workspace
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# JetBrains
+*.idea/
+*.iws
+*.iml
+*.ipr
+
+# Vagrant
+.vagrant/
+
+# Docker
+docker-compose.override.yml
+
+# Certificates
+*.pem
+*.key
+*.crt
+*.cert

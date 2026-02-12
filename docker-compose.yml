@@ -1,0 +1,50 @@
+version: '3.8'
+
+services:
+  browser-sdk-demo:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: browser-sdk-demo
+    ports:
+      - "80:80"      # 前端和API统一入口
+      - "7888:7888"  # 后端API直连端口（可选）
+    environment:
+      - TZ=Asia/Shanghai
+    volumes:
+      # 可选：挂载配置文件进行调试
+      # - ./sdk-server/resources/config.docker.yaml:/app/server/resources/config.docker.yaml
+      # 可选：挂载日志目录
+      # - ./logs:/app/server/logs
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+  # 可选：单独的数据库服务
+  # mysql:
+  #   image: mysql:8.0
+  #   container_name: browser-sdk-mysql
+  #   environment:
+  #     MYSQL_ROOT_PASSWORD: root123
+  #     MYSQL_DATABASE: browser_sdk
+  #     MYSQL_USER: browser
+  #     MYSQL_PASSWORD: browser123
+  #   ports:
+  #     - "3306:3306"
+  #   volumes:
+  #     - mysql_data:/var/lib/mysql
+  #   restart: unless-stopped
+
+  # redis:
+  #   image: redis:7-alpine
+  #   container_name: browser-sdk-redis
+  #   ports:
+  #     - "6379:6379"
+  #   restart: unless-stopped
+
+volumes:
+  # mysql_data:

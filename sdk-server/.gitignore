@@ -1,0 +1,71 @@
+# Go binaries
+*.exe
+*.dll
+*.so
+*.dylib
+*.out
+
+# Go build artifacts
+bin/
+build/
+
+# Go vendor directory
+vendor/
+
+# Go test binary
+*_test
+
+# Go coverage output
+coverage.out
+coverage.html
+
+# Go mod download cache
+go.sum
+
+# IDE and editor files
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Temporary files
+temp/
+tmp/
+*.tmp
+
+# Database files
+*.db
+*.sqlite
+*.dat
+
+# Configuration files (uncomment if needed)
+# config.local.yaml
+# config.dev.yaml
+
+# Upload directories
+static/uploadfile/
+uploads/
+
+# Dump files
+*.dump
+*.sql.dump
+xdump_config
+
+# Audio files
+*.wav
+*.mp3
+*.pcm
+
+# Certificates
+*.pem
+*.key
+*.crt
+*.cert

@@ -1,0 +1,65 @@
+# Docker环境配置文件
+server:
+  addr: "0.0.0.0:7888"
+  readTimeout: 60
+  writeTimeout: 60
+  idleTimeout: 120
+
+logger:
+  level: "info"
+  format: "json"
+  filename: "/app/server/logs/server.log"
+
+database:
+  driver: "mysql"
+  host: "localhost"
+  port: 3306
+  database: "browser_sdk"
+  username: "browser"
+  password: "browser123"
+  charset: "utf8mb4"
+  parseTime: true
+  loc: "Local"
+
+redis:
+  addr: "localhost:6379"
+  password: ""
+  db: 0
+
+jwt:
+  secret: "browser-sdk-demo-secret-key-change-in-production"
+  expire: 86400  # 24小时
+
+cors:
+  allowOrigins:
+    - "*"
+  allowMethods:
+    - "GET"
+    - "POST"
+    - "PUT"
+    - "DELETE"
+    - "OPTIONS"
+  allowHeaders:
+    - "*"
+  exposeHeaders:
+    - "Content-Length"
+    - "Access-Control-Allow-Origin"
+  allowCredentials: true
+  maxAge: 86400
+
+# 可选：如果使用外部数据库，取消注释并修改配置
+# database:
+#   driver: "mysql"
+#   host: "mysql"  # docker-compose中的服务名
+#   port: 3306
+#   database: "browser_sdk"
+#   username: "browser"
+#   password: "browser123"
+#   charset: "utf8mb4"
+#   parseTime: true
+#   loc: "Local"
+
+# redis:
+#   addr: "redis:6379"  # docker-compose中的服务名
+#   password: ""
+#   db: 0
