@@ -7,7 +7,10 @@ import (
 	"dilu/modules/sys/service"
 	"dilu/modules/sys/service/dto"
 
+	appS "dilu/modules/app/service"
+
 	"github.com/baowk/dilu-core/core/base"
+	"github.com/browsersdk/brosdk-server-go"
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/copier"
 )
@@ -20,7 +23,7 @@ var ApiBrowser = BrowserApi{}
 
 // QueryPage 获取Browser列表
 // @Summary Page接口
-// @Tags sys-Browser
+// @Tags app-browser
 // @Accept application/json
 // @Product application/json
 // @Param data body dto.BrowserGetPageReq true "body"
@@ -57,7 +60,7 @@ func (e *BrowserApi) QueryPage(c *gin.Context) {
 
 // Get 获取Browser
 // @Summary 获取Browser
-// @Tags sys-Browser
+// @Tags app-browser
 // @Accept application/json
 // @Product application/json
 // @Param data body base.ReqId true "body"
@@ -80,59 +83,54 @@ func (e *BrowserApi) Get(c *gin.Context) {
 
 // Create 创建Browser
 // @Summary 创建Browser
-// @Tags sys-Browser
+// @Tags app-browser
 // @Accept application/json
 // @Product application/json
-// @Param data body dto.BrowserDto true "body"
-// @Success 200 {object} base.Resp{data=models.Browser} "{"code": 200, "data": [...]}"
+// @Param data body brosdk.EnvInfo true "body"
+// @Success 200 {object} base.Resp{data=string} "{"code": 200, "data": [...]}"
 // @Router /api/app/browser/create [post]
 // @Security Bearer
 func (e *BrowserApi) Create(c *gin.Context) {
-	var req dto.BrowserDto
+	var req brosdk.EnvInfo
 	if err := c.ShouldBind(&req); err != nil {
 		e.Error(c, err)
 		return
 	}
-	var data models.Browser
-	copier.Copy(&data, req)
 
-	data.UserId = utils.GetAppUid(c)
-	data.EnvId = utils.GenUint()
-	data.Status = 1
-	if err := service.SerBrowser.Create(&data); err != nil {
+	uid := utils.GetAppUid(c)
+	if err := appS.SerAppBrowser.Create(uid, &req); err != nil {
 		e.Error(c, err)
 		return
 	}
-	e.Ok(c, data)
+	e.Ok(c)
 }
 
 // Update 更新Browser
 // @Summary 更新Browser
-// @Tags sys-Browser
+// @Tags app-browser
 // @Accept application/json
 // @Product application/json
-// @Param data body dto.BrowserDto true "body"
-// @Success 200 {object} base.Resp{data=models.Browser} "{"code": 200, "data": [...]}"
+// @Param data body brosdk.EnvInfo true "body"
+// @Success 200 {object} base.Resp{data=string} "{"code": 200, "data": [...]}"
 // @Router /api/app/browser/update [post]
 // @Security Bearer
 func (e *BrowserApi) Update(c *gin.Context) {
-	var req dto.BrowserDto
+	var req brosdk.EnvInfo
 	if err := c.ShouldBind(&req); err != nil {
 		e.Error(c, err)
 		return
 	}
-	var data models.Browser
-	copier.Copy(&data, req)
-	if err := service.SerBrowser.UpdateById(&data); err != nil {
+	uid := utils.GetAppUid(c)
+	if err := appS.SerAppBrowser.Update(uid, &req); err != nil {
 		e.Error(c, err)
 		return
 	}
-	e.Ok(c, data)
+	e.Ok(c)
 }
 
 // Del 删除Browser
 // @Summary 删除Browser
-// @Tags sys-Browser
+// @Tags app-browser
 // @Accept application/json
 // @Product application/json
 // @Param data body base.ReqIds true "body"

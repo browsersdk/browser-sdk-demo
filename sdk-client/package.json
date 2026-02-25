@@ -7,9 +7,10 @@
   "main": "electron/main.js",
   "type": "commonjs",
   "scripts": {
-    "dev": "cross-env NODE_ENV=development electron .",
+    "dev": "node scripts/dev-improved.js",
     "dev:web": "vite",
     "dev:electron": "cross-env NODE_ENV=development electron .",
+    "dev:separate": "concurrently \"npm run dev:web\" \"npm run dev:electron\"",
     "build": "vite build",
     "build:electron": "npm run build && electron-builder",
     "preview": "vite preview",

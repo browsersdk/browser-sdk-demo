@@ -64,70 +64,113 @@
               <p>LOADING ENVIRONMENTS...</p>
             </div>
             
-            <div v-else class="environments-grid">
-              <div 
-                v-for="browser in browserStore.browsers" 
-                :key="browser.id"
-                :class="getEnvironmentCardClass(browser.status)"
-              >
-                <div class="card-header">
-                  <div class="header-content">
-                    <h3>{{ browser.name.toUpperCase() }}</h3>
-                  </div>
-                  <div class="card-actions">
-                    <button 
-                      v-if="browser.status === 1" 
-                      class="action-btn start" 
-                      @click="startBrowser(browser.id)"
-                      :disabled="isActionLoading"
+            <div v-else>
+              <!-- 环境表格 -->
+              <div class="environments-table-container">
+                <table class="environments-table">
+                  <thead>
+                    <tr>
+                      <th>环境名称</th>
+                      <th>环境ID</th>
+                      <th>状态</th>
+                      <th>创建时间</th>
+                      <th>操作</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr 
+                      v-for="(browser, index) in browserStore.browsers" 
+                      :key="browser?.id || index"
+                      :class="getEnvironmentRowClass(browser?.status)"
                     >
-                      START
-                    </button>
-                    <button 
-                      v-else-if="browser.status === 3" 
-                      class="action-btn stop" 
-                      @click="stopBrowser(browser.id)"
-                      :disabled="isActionLoading"
-                    >
-                      STOP
-                    </button>
-                    <button class="action-btn edit" @click="editEnvironment(browser)">
-                      EDIT
-                    </button>
-                    <button class="action-btn delete" @click="deleteEnvironment(browser.id)">
-                      DELETE
-                    </button>
-                  </div>
-                </div>
-                <div class="card-body">
-                  <div class="info-grid">
-                    <div class="info-item">
-                      <span class="label">CONFIGURATION:</span>
-                      <span class="value">{{ browser.data || 'No configuration' }}</span>
-                    </div>
-                    <div class="info-item">
-                      <span class="label">ENV ID:</span>
-                      <span class="value">{{ browser.envId }}</span>
-                    </div>
-                    <div class="info-item">
-                      <span class="label">CREATED:</span>
-                      <span class="value">{{ formatDate(browser.createdAt) }}</span>
-                    </div>
-                    <div class="info-item">
-                      <span class="label">UPDATED:</span>
-                      <span class="value">{{ formatDate(browser.updatedAt) }}</span>
-                    </div>
-                  </div>
+                      <td>{{ browser?.name || '' }}</td>
+                      <td>{{ browser?.envId || '' }}</td>
+                      <td>
+                        <span :class="getStatusBadgeClass(browser?.status)">
+                          {{ getStatusText(browser?.status) }}
+                        </span>
+                      </td>
+                      <td>{{ formatDateTime(browser?.createdAt) }}</td>
+                      <td>
+                        <div class="table-actions">
+                          <button 
+                            class="action-btn start small" 
+                            @click="controlEnvironment(browser?.id, 3)"
+                            :disabled="!browser || browser.status === 3"
+                          >
+                            启动
+                          </button>
+                          <button 
+                            class="action-btn stop small" 
+                            @click="controlEnvironment(browser?.id, 1)"
+                            :disabled="!browser || browser.status === 1"
+                          >
+                            停止
+                          </button>
+                          <button 
+                            class="action-btn edit small" 
+                            @click="editEnvironment(browser)"
+                            :disabled="!browser"
+                          >
+                            编辑
+                          </button>
+                          <button 
+                            class="action-btn delete small" 
+                            @click="deleteEnvironment(browser?.id)"
+                            :disabled="!browser"
+                          >
+                            删除
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+                
+                <!-- 空状态 -->
+                <div v-if="browserStore.browsers.length === 0" class="empty-state">
+                  <div class="empty-icon">⚙️</div>
+                  <p>暂无环境配置</p>
+                  <button class="primary-btn" @click="showCreateModal = true">
+                    创建首个环境
+                  </button>
                 </div>
               </div>
               
-              <!-- 空状态 -->
-              <div v-if="browserStore.browsers.length === 0 && !browserStore.loading" class="empty-state">
-                <div class="empty-icon">⚙️</div>
-                <p>NO ENVIRONMENTS CONFIGURED</p>
-                <button class="primary-btn" @click="showCreateModal = true">
-                  CREATE FIRST ENVIRONMENT
-                </button>
+              <!-- 分页组件 -->
+              <div v-if="browserStore.browsers.length > 0" class="pagination-container">
+                <div class="pagination-info">
+                  显示第 {{ (browserStore.currentPage - 1) * browserStore.pageSize + 1 }} - {{ Math.min(browserStore.currentPage * browserStore.pageSize, browserStore.total) }} 条，
+                  共 {{ browserStore.total }} 条记录
+                </div>
+                <div class="pagination-controls">
+                  <button 
+                    class="pagination-btn"
+                    :disabled="browserStore.currentPage <= 1"
+                    @click="changePage(browserStore.currentPage - 1)"
+                  >
+                    上一页
+                  </button>
+                  
+                  <div class="pagination-pages">
+                    <button
+                      v-for="page in getPageNumbers()"
+                      :key="page"
+                      :class="['pagination-page', { active: page === browserStore.currentPage }]"
+                      @click="changePage(page)"
+                    >
+                      {{ page }}
+                    </button>
+                  </div>
+                  
+                  <button 
+                    class="pagination-btn"
+                    :disabled="browserStore.currentPage >= Math.ceil(browserStore.total / browserStore.pageSize)"
+                    @click="changePage(browserStore.currentPage + 1)"
+                  >
+                    下一页
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -170,42 +213,309 @@
 
     <!-- 创建/编辑环境模态框 -->
     <div v-if="showCreateModal" class="modal-overlay" @click="closeModal">
-      <div class="modal-content" @click.stop>
+      <div class="modal-content large" @click.stop>
         <div class="modal-header">
-          <h3>{{ editingEnvironment ? 'EDIT ENVIRONMENT' : 'CREATE NEW ENVIRONMENT' }}</h3>
+          <h3>{{ editingEnvironment ? '编辑环境' : '创建新环境' }}</h3>
           <button class="close-btn" @click="closeModal">×</button>
         </div>
         
         <form @submit.prevent="saveEnvironment" class="modal-form">
-          <div class="form-group">
-            <label for="envName">ENVIRONMENT NAME</label>
-            <input
-              id="envName"
-              v-model="environmentForm.name"
-              type="text"
-              placeholder="ENTER ENVIRONMENT NAME"
-              required
-              class="tech-input"
-            />
+          <!-- 基本信息 -->
+          <div class="form-section">
+            <h4>基本信息</h4>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="envName">环境名称 *</label>
+                <input
+                  id="envName"
+                  v-model="environmentForm.name"
+                  type="text"
+                  placeholder="请输入环境名称"
+                  required
+                  class="tech-input"
+                />
+              </div>
+              <div class="form-group">
+                <label for="envId">环境ID</label>
+                <input
+                  id="envId"
+                  v-model.number="environmentForm.envId"
+                  type="number"
+                  placeholder="自动生成"
+                  class="tech-input"
+                  :disabled="!!editingEnvironment"
+                />
+                <small v-if="!editingEnvironment" class="help-text">留空则自动生成</small>
+              </div>
+            </div>
           </div>
-          
-          <div class="form-group">
-            <label for="envData">CONFIGURATION DATA</label>
-            <textarea
-              id="envData"
-              v-model="environmentForm.data"
-              placeholder="ENTER ENVIRONMENT CONFIGURATION DATA"
-              rows="6"
-              class="tech-input"
-            ></textarea>
+
+          <!-- 浏览器配置 -->
+          <div class="form-section">
+            <h4>浏览器配置</h4>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="userAgent">User Agent</label>
+                <input
+                  id="userAgent"
+                  v-model="environmentForm.userAgent"
+                  type="text"
+                  placeholder="Mozilla/5.0..."
+                  class="tech-input"
+                />
+              </div>
+              <div class="form-group">
+                <label for="system">操作系统</label>
+                <select id="system" v-model="environmentForm.system" class="tech-input">
+                  <option value="">请选择系统</option>
+                  <option value="Windows">Windows</option>
+                  <option value="macOS">macOS</option>
+                  <option value="Linux">Linux</option>
+                  <option value="Android">Android</option>
+                  <option value="iOS">iOS</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="kernel">内核</label>
+                <input
+                  id="kernel"
+                  v-model="environmentForm.kernel"
+                  type="text"
+                  placeholder="Chrome/Gecko/Webkit"
+                  class="tech-input"
+                />
+              </div>
+              <div class="form-group">
+                <label for="kernelVersion">内核版本</label>
+                <input
+                  id="kernelVersion"
+                  v-model="environmentForm.kernelVersion"
+                  type="text"
+                  placeholder="98.0.4758.102"
+                  class="tech-input"
+                />
+              </div>
+            </div>
           </div>
-          
+
+          <!-- 硬件配置 -->
+          <div class="form-section">
+            <h4>硬件配置</h4>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="cpu">CPU核心数</label>
+                <input
+                  id="cpu"
+                  v-model.number="environmentForm.cpu"
+                  type="number"
+                  placeholder="4"
+                  class="tech-input"
+                />
+              </div>
+              <div class="form-group">
+                <label for="mem">内存(GB)</label>
+                <input
+                  id="mem"
+                  v-model.number="environmentForm.mem"
+                  type="number"
+                  placeholder="8"
+                  class="tech-input"
+                />
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="deviceName">设备名称</label>
+                <input
+                  id="deviceName"
+                  v-model="environmentForm.deviceName"
+                  type="text"
+                  placeholder="My Computer"
+                  class="tech-input"
+                />
+              </div>
+              <div class="form-group">
+                <label for="mac">MAC地址</label>
+                <input
+                  id="mac"
+                  v-model="environmentForm.mac"
+                  type="text"
+                  placeholder="00:00:00:00:00:00"
+                  class="tech-input"
+                />
+              </div>
+            </div>
+          </div>
+
+          <!-- 网络配置 -->
+          <div class="form-section">
+            <h4>网络配置</h4>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="publicIp">公网IP</label>
+                <input
+                  id="publicIp"
+                  v-model="environmentForm.publicIp"
+                  type="text"
+                  placeholder="192.168.1.1"
+                  class="tech-input"
+                />
+              </div>
+              <div class="form-group">
+                <label for="proxy">代理设置</label>
+                <input
+                  id="proxy"
+                  v-model="environmentForm.proxy"
+                  type="text"
+                  placeholder="http://proxy:8080"
+                  class="tech-input"
+                />
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="zone">时区</label>
+                <select id="zone" v-model="environmentForm.zone" class="tech-input">
+                  <option value="">请选择时区</option>
+                  <option value="UTC+8">UTC+8 (中国标准时间)</option>
+                  <option value="UTC+0">UTC+0 (格林威治时间)</option>
+                  <option value="UTC-5">UTC-5 (美国东部时间)</option>
+                  <option value="UTC+1">UTC+1 (中欧时间)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="ipChannel">IP通道</label>
+                <input
+                  id="ipChannel"
+                  v-model="environmentForm.ipChannel"
+                  type="text"
+                  placeholder="default"
+                  class="tech-input"
+                />
+              </div>
+            </div>
+          </div>
+
+          <!-- 功能开关 -->
+          <div class="form-section">
+            <h4>功能开关</h4>
+            <div class="form-row">
+              <div class="form-group checkbox-group">
+                <label>
+                  <input 
+                    type="checkbox" 
+                    v-model="environmentForm.hardware"
+                    true-value="1"
+                    false-value="0"
+                  />
+                  硬件加速
+                </label>
+              </div>
+              <div class="form-group checkbox-group">
+                <label>
+                  <input 
+                    type="checkbox" 
+                    v-model="environmentForm.webGl"
+                    true-value="1"
+                    false-value="0"
+                  />
+                  WebGL支持
+                </label>
+              </div>
+              <div class="form-group checkbox-group">
+                <label>
+                  <input 
+                    type="checkbox" 
+                    v-model="environmentForm.canvas"
+                    true-value="1"
+                    false-value="0"
+                  />
+                  Canvas支持
+                </label>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group checkbox-group">
+                <label>
+                  <input 
+                    type="checkbox" 
+                    v-model="environmentForm.audioContext"
+                    true-value="1"
+                    false-value="0"
+                  />
+                  音频上下文
+                </label>
+              </div>
+              <div class="form-group checkbox-group">
+                <label>
+                  <input 
+                    type="checkbox" 
+                    v-model="environmentForm.mediaDevice"
+                    true-value="1"
+                    false-value="0"
+                  />
+                  媒体设备
+                </label>
+              </div>
+              <div class="form-group checkbox-group">
+                <label>
+                  <input 
+                    type="checkbox" 
+                    v-model="environmentForm.bluetooth"
+                    true-value="1"
+                    false-value="0"
+                  />
+                  蓝牙支持
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <!-- 其他配置 -->
+          <div class="form-section">
+            <h4>其他配置</h4>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="customerId">客户ID</label>
+                <input
+                  id="customerId"
+                  v-model="environmentForm.customerId"
+                  type="text"
+                  placeholder="customer_123"
+                  class="tech-input"
+                />
+              </div>
+              <div class="form-group">
+                <label for="serial">序列号</label>
+                <input
+                  id="serial"
+                  v-model="environmentForm.serial"
+                  type="text"
+                  placeholder="SN123456789"
+                  class="tech-input"
+                />
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="remark">备注</label>
+              <textarea
+                id="remark"
+                v-model="environmentForm.remark"
+                placeholder="请输入备注信息"
+                rows="3"
+                class="tech-input"
+              ></textarea>
+            </div>
+          </div>
+
           <div class="modal-actions">
             <button type="button" class="secondary-btn" @click="closeModal">
-              CANCEL
+              取消
             </button>
             <button type="submit" class="primary-btn" :disabled="isSaving">
-              {{ isSaving ? 'PROCESSING...' : (editingEnvironment ? 'UPDATE' : 'CREATE') }}
+              {{ isSaving ? '处理中...' : (editingEnvironment ? '更新' : '创建') }}
             </button>
           </div>
         </form>
@@ -220,10 +530,59 @@ import { useUserStore } from '@/stores/user';
 import { useBrowserStore } from '@/stores/browser';
 import { useRouter } from 'vue-router';
 
+interface Geographic {
+  accuracy: string;
+  enable: number;
+  latitude: string;
+  longitude: string;
+  useip: number;
+}
+
 interface Browser {
+  audioContext: number;
+  bluetooth: number;
+  canvas: number;
+  cpu: number;
+  customerId: string;
+  deviceName: string;
+  doNotTrack: number;
+  dpi: string;
+  enableCookie: number;
+  enableScanPort: number;
+  enablenotice: number;
+  enableopen: number;
+  enablepic: number;
+  enablesound: number;
+  enablevideo: number;
+  envId: number;
+  envName: string;
+  fontList: string[];
+  geographic: Geographic;
+  hardware: number;
+  ignoreCookieErr: number;
+  ipChannel: string;
+  kernel: string;
+  kernelVersion: string;
+  language: string[];
+  mac: string;
+  mediaDevice: number;
+  mem: number;
+  picsize: string;
+  proxy: string;
+  publicIp: string;
+  remark: string;
+  scanPort: number[];
+  serial: string;
+  speechVoices: number;
+  system: string;
+  uaVersion: string;
+  userAgent: string;
+  webGl: number;
+  webRTC: number;
+  webRTCIP: string;
+  zone: string;
   id: number;
   name: string;
-  envId: number;
   userId: number;
   data: string;
   createdAt: string;
@@ -233,7 +592,33 @@ interface Browser {
 
 interface EnvironmentForm {
   name: string;
-  data: string;
+  envId?: number;
+  // 浏览器配置
+  userAgent?: string;
+  system?: string;
+  kernel?: string;
+  kernelVersion?: string;
+  // 硬件配置
+  cpu?: number;
+  mem?: number;
+  deviceName?: string;
+  mac?: string;
+  // 网络配置
+  publicIp?: string;
+  proxy?: string;
+  zone?: string;
+  ipChannel?: string;
+  // 功能开关
+  hardware?: string;
+  webGl?: string;
+  canvas?: string;
+  audioContext?: string;
+  mediaDevice?: string;
+  bluetooth?: string;
+  // 其他配置
+  customerId?: string;
+  serial?: string;
+  remark?: string;
 }
 
 const userStore = useUserStore();
@@ -291,7 +676,33 @@ const tabs = [
 
 const environmentForm = ref<EnvironmentForm>({
   name: '',
-  data: ''
+  envId: undefined,
+  // 浏览器配置
+  userAgent: '',
+  system: '',
+  kernel: '',
+  kernelVersion: '',
+  // 硬件配置
+  cpu: 4,
+  mem: 8,
+  deviceName: '',
+  mac: '',
+  // 网络配置
+  publicIp: '',
+  proxy: '',
+  zone: '',
+  ipChannel: '',
+  // 功能开关
+  hardware: '0',
+  webGl: '0',
+  canvas: '0',
+  audioContext: '0',
+  mediaDevice: '0',
+  bluetooth: '0',
+  // 其他配置
+  customerId: '',
+  serial: '',
+  remark: ''
 });
 
 // 根据status值获取环境卡片的CSS类
@@ -307,55 +718,57 @@ const getEnvironmentCardClass = (status: number): string => {
   }
 };
 
-// 启动浏览器
-const startBrowser = async (id: number) => {
-  if (isActionLoading.value) return;
-  
-  isActionLoading.value = true;
-  try {
-    // 这里需要调用启动浏览器的API
-    // 暂时模拟API调用
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    // 更新浏览器状态
-    const browser = browserStore.browsers.find(b => b.id === id);
-    if (browser) {
-      browser.status = 3;  // 设置为启动状态
-    }
-    
-    console.log(`Browser ${id} started successfully`);
-  } catch (error) {
-    console.error('Failed to start browser:', error);
-    alert('启动浏览器失败，请重试');
-  } finally {
-    isActionLoading.value = false;
+// 根据status值获取环境行的CSS类
+const getEnvironmentRowClass = (status: number): string => {
+  switch (status) {
+    case 1:
+      return 'environment-row-stopped';
+    case 3:
+      return 'environment-row-active';
+    default:
+      return 'environment-row-unknown';
   }
 };
 
-// 停止浏览器
-const stopBrowser = async (id: number) => {
-  if (isActionLoading.value) return;
-  
-  isActionLoading.value = true;
+const formatDate = (dateString: string) => {
+  return new Date(dateString).toLocaleString('zh-CN');
+};
+
+// 安全获取浏览器属性的辅助函数
+const safeGetBrowserProp = <T>(browser: Browser | undefined, prop: keyof Browser): T | undefined => {
+  if (!browser) return undefined;
+  return browser[prop] as T;
+};
+
+const changePage = async (page: number) => {
   try {
-    // 这里需要调用停止浏览器的API
-    // 暂时模拟API调用
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    // 更新浏览器状态
-    const browser = browserStore.browsers.find(b => b.id === id);
-    if (browser) {
-      browser.status = 1;  // 设置为停止状态
-    }
-    
-    console.log(`Browser ${id} stopped successfully`);
+    await browserStore.loadBrowsers(page);
   } catch (error) {
-    console.error('Failed to stop browser:', error);
-    alert('停止浏览器失败，请重试');
-  } finally {
-    isActionLoading.value = false;
+    console.error('Failed to change page:', error);
   }
 };
+
+const getPageNumbers = (): number[] => {
+  const totalPages = Math.ceil(browserStore.total / browserStore.pageSize);
+  const currentPage = browserStore.currentPage;
+  const pages: number[] = [];
+  
+  // 显示最多5个页码
+  let start = Math.max(1, currentPage - 2);
+  let end = Math.min(totalPages, start + 4);
+  
+  // 调整起始页码
+  if (end - start < 4) {
+    start = Math.max(1, end - 4);
+  }
+  
+  for (let i = start; i <= end; i++) {
+    pages.push(i);
+  }
+  
+  return pages;
+};
+
 
 const switchTab = (tabKey: string) => {
   activeTab.value = tabKey;
@@ -363,27 +776,109 @@ const switchTab = (tabKey: string) => {
 
 const handleLogout = () => {
   userStore.logout();
+}
+
+onMounted(async () => {
   router.push('/login');
-};
+});
 
 const showModal = () => {
   showCreateModal.value = true;
   editingEnvironment.value = null;
-  environmentForm.value = { name: '', data: '' };
+  resetForm();
 };
 
 const closeModal = () => {
   showCreateModal.value = false;
   editingEnvironment.value = null;
-  environmentForm.value = { name: '', data: '' };
+  resetForm();
   isSaving.value = false;
 };
 
-const editEnvironment = (browser: Browser) => {
+const resetForm = () => {
+  environmentForm.value = {
+    name: '',
+    envId: undefined,
+    userAgent: '',
+    system: '',
+    kernel: '',
+    kernelVersion: '',
+    cpu: 4,
+    mem: 8,
+    deviceName: '',
+    mac: '',
+    publicIp: '',
+    proxy: '',
+    zone: '',
+    ipChannel: '',
+    hardware: '0',
+    webGl: '0',
+    canvas: '0',
+    audioContext: '0',
+    mediaDevice: '0',
+    bluetooth: '0',
+    customerId: '',
+    serial: '',
+    remark: ''
+  };
+};
+
+const controlEnvironment = async (id: number | undefined, status: number) => {
+  if (!id) {
+    console.warn('Invalid browser id for control operation');
+    return;
+  }
+  
+  try {
+    // 使用现有的updateBrowser方法来更新状态
+    const browser = await browserStore.getBrowser(id);
+    if (browser) {
+      await browserStore.updateBrowser({
+        id: browser.id,
+        name: browser.name,
+        envId: browser.envId,
+        userId: browser.userId,
+        data: browser.data,
+        status: status
+      });
+    }
+  } catch (error) {
+    console.error('Failed to control environment:', error);
+    alert('操作失败，请重试');
+  }
+};
+
+const editEnvironment = (browser: Browser | undefined) => {
+  if (!browser) {
+    console.warn('Cannot edit undefined browser');
+    return;
+  }
+  
   editingEnvironment.value = browser;
   environmentForm.value = {
     name: browser.name,
-    data: browser.data
+    envId: browser.envId,
+    userAgent: browser.userAgent || '',
+    system: browser.system || '',
+    kernel: browser.kernel || '',
+    kernelVersion: browser.kernelVersion || '',
+    cpu: browser.cpu || 4,
+    mem: browser.mem || 8,
+    deviceName: browser.deviceName || '',
+    mac: browser.mac || '',
+    publicIp: browser.publicIp || '',
+    proxy: browser.proxy || '',
+    zone: browser.zone || '',
+    ipChannel: browser.ipChannel || '',
+    hardware: browser.hardware?.toString() || '0',
+    webGl: browser.webGl?.toString() || '0',
+    canvas: browser.canvas?.toString() || '0',
+    audioContext: browser.audioContext?.toString() || '0',
+    mediaDevice: browser.mediaDevice?.toString() || '0',
+    bluetooth: browser.bluetooth?.toString() || '0',
+    customerId: browser.customerId || '',
+    serial: browser.serial || '',
+    remark: browser.remark || ''
   };
   showCreateModal.value = true;
 };
@@ -394,20 +889,73 @@ const saveEnvironment = async () => {
   isSaving.value = true;
   
   try {
+    const browserData = {
+      audioContext: parseInt(environmentForm.value.audioContext || '0'),
+      bluetooth: parseInt(environmentForm.value.bluetooth || '0'),
+      canvas: parseInt(environmentForm.value.canvas || '0'),
+      cpu: environmentForm.value.cpu || 4,
+      customerId: environmentForm.value.customerId || '',
+      deviceName: environmentForm.value.deviceName || '',
+      doNotTrack: 0,
+      dpi: '1920x1080',
+      enableCookie: 1,
+      enableScanPort: 0,
+      enablenotice: 1,
+      enableopen: 1,
+      enablepic: 1,
+      enablesound: 1,
+      enablevideo: 1,
+      envId: environmentForm.value.envId || 0,
+      envName: environmentForm.value.name,
+      fontList: ['Arial', 'Helvetica', 'Times New Roman'],
+      geographic: {
+        accuracy: 'high',
+        enable: 1,
+        latitude: '39.9042',
+        longitude: '116.4074',
+        useip: 1
+      },
+      hardware: parseInt(environmentForm.value.hardware || '0'),
+      ignoreCookieErr: 0,
+      ipChannel: environmentForm.value.ipChannel || '',
+      kernel: environmentForm.value.kernel || '',
+      kernelVersion: environmentForm.value.kernelVersion || '',
+      language: ['zh-CN', 'en-US'],
+      mac: environmentForm.value.mac || '',
+      mediaDevice: parseInt(environmentForm.value.mediaDevice || '0'),
+      mem: environmentForm.value.mem || 8,
+      picsize: '1920x1080',
+      proxy: environmentForm.value.proxy || '',
+      publicIp: environmentForm.value.publicIp || '',
+      remark: environmentForm.value.remark || '',
+      scanPort: [],
+      serial: environmentForm.value.serial || '',
+      speechVoices: 1,
+      system: environmentForm.value.system || '',
+      uaVersion: '1.0.0',
+      userAgent: environmentForm.value.userAgent || '',
+      webGl: parseInt(environmentForm.value.webGl || '0'),
+      webRTC: 1,
+      webRTCIP: '127.0.0.1',
+      zone: environmentForm.value.zone || ''
+    };
+
     if (editingEnvironment.value) {
       // 更新现有环境
       await browserStore.updateBrowser({
         id: editingEnvironment.value.id,
         name: environmentForm.value.name,
+        envId: environmentForm.value.envId,
         userId: userStore.user?.id || 0,
-        data: environmentForm.value.data
+        data: JSON.stringify(browserData)
       });
     } else {
       // 创建新环境
       await browserStore.createBrowser({
         name: environmentForm.value.name,
+        envId: environmentForm.value.envId,
         userId: userStore.user?.id || 0,
-        data: environmentForm.value.data
+        data: JSON.stringify(browserData)
       });
     }
     
@@ -420,7 +968,12 @@ const saveEnvironment = async () => {
   }
 };
 
-const deleteEnvironment = async (id: number) => {
+const deleteEnvironment = async (id: number | undefined) => {
+  if (!id) {
+    console.warn('Cannot delete environment with invalid id');
+    return;
+  }
+  
   if (confirm('确定要删除这个环境吗？此操作不可撤销。')) {
     try {
       await browserStore.deleteBrowser(id);
@@ -431,8 +984,42 @@ const deleteEnvironment = async (id: number) => {
   }
 };
 
-const formatDate = (dateString: string) => {
-  return new Date(dateString).toLocaleString('zh-CN');
+const formatDateTime = (dateString: string | undefined) => {
+  if (!dateString) return '';
+  return new Date(dateString).toLocaleString('zh-CN', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit'
+  });
+};
+
+const getStatusBadgeClass = (status: number | undefined): string => {
+  if (status === undefined) return 'status-badge unknown';
+  
+  switch (status) {
+    case 1:
+      return 'status-badge stopped';
+    case 3:
+      return 'status-badge running';
+    default:
+      return 'status-badge unknown';
+  }
+};
+
+const getStatusText = (status: number | undefined): string => {
+  if (status === undefined) return '未知';
+  
+  switch (status) {
+    case 1:
+      return '停止';
+    case 3:
+      return '运行';
+    default:
+      return '未知';
+  }
 };
 
 onMounted(async () => {
@@ -1509,6 +2096,268 @@ body {
 }
 
 /* 超小屏幕优化 */
+
+/* 表格样式 */
+.environments-table-container {
+  background: rgba(15, 15, 25, 0.7);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(0, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  margin-bottom: 25px;
+}
+
+.environments-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: transparent;
+}
+
+.environments-table th {
+  background: rgba(5, 5, 15, 0.8);
+  color: #00ffff;
+  font-weight: 600;
+  text-align: left;
+  padding: 15px 20px;
+  border-bottom: 1px solid rgba(0, 255, 255, 0.2);
+  font-size: 14px;
+  letter-spacing: 1px;
+}
+
+.environments-table td {
+  padding: 15px 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 13px;
+}
+
+.environments-table tr:last-child td {
+  border-bottom: none;
+}
+
+.environments-table tr:hover {
+  background: rgba(0, 255, 255, 0.05);
+}
+
+/* 环境行状态样式 */
+.environment-row-active {
+  background: rgba(0, 255, 0, 0.05);
+}
+
+.environment-row-active:hover {
+  background: rgba(0, 255, 0, 0.1);
+}
+
+.environment-row-stopped {
+  background: rgba(255, 0, 0, 0.05);
+}
+
+.environment-row-stopped:hover {
+  background: rgba(255, 0, 0, 0.1);
+}
+
+.environment-row-unknown {
+  background: rgba(255, 255, 0, 0.05);
+}
+
+.environment-row-unknown:hover {
+  background: rgba(255, 255, 0, 0.1);
+}
+
+/* 表格操作按钮 */
+.table-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.action-btn.small {
+  padding: 4px 10px;
+  font-size: 10px;
+  min-width: 50px;
+  height: 24px;
+}
+
+/* 分页样式 */
+.pagination-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  background: rgba(15, 15, 25, 0.5);
+  border-radius: 12px;
+  border: 1px solid rgba(0, 255, 255, 0.1);
+  margin-top: 20px;
+}
+
+.pagination-info {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 13px;
+}
+
+.pagination-controls {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.pagination-btn {
+  background: rgba(0, 255, 255, 0.1);
+  color: #00ffff;
+  border: 1px solid rgba(0, 255, 255, 0.3);
+  padding: 8px 15px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 12px;
+  font-family: 'Courier New', monospace;
+  transition: all 0.2s ease;
+}
+
+.pagination-btn:hover:not(:disabled) {
+  background: rgba(0, 255, 255, 0.2);
+  box-shadow: 0 0 10px rgba(0, 255, 255, 0.4);
+}
+
+.pagination-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.pagination-pages {
+  display: flex;
+  gap: 5px;
+}
+
+.pagination-page {
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  font-family: 'Courier New', monospace;
+  transition: all 0.2s ease;
+}
+
+.pagination-page:hover {
+  background: rgba(0, 255, 255, 0.1);
+  color: #00ffff;
+  border-color: rgba(0, 255, 255, 0.3);
+}
+
+.pagination-page.active {
+  background: rgba(0, 255, 255, 0.2);
+  color: #00ffff;
+  border-color: #00ffff;
+  box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+}
+
+/* 模态框样式扩展 */
+.modal-content.large {
+  width: 800px;
+  max-width: 95vw;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.form-section {
+  margin-bottom: 25px;
+  padding: 20px;
+  background: rgba(5, 5, 15, 0.3);
+  border-radius: 8px;
+  border: 1px solid rgba(0, 255, 255, 0.1);
+}
+
+.form-section h4 {
+  color: #00ffff;
+  margin: 0 0 20px 0;
+  font-size: 16px;
+  letter-spacing: 1px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(0, 255, 255, 0.2);
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-bottom: 15px;
+}
+
+.form-row:last-child {
+  margin-bottom: 0;
+}
+
+.checkbox-group {
+  display: flex;
+  align-items: center;
+}
+
+.checkbox-group label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 13px;
+}
+
+.checkbox-group input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: #00ffff;
+}
+
+.help-text {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 11px;
+  margin-top: 5px;
+  display: block;
+}
+
+.tech-input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .environments-table-container {
+    overflow-x: auto;
+  }
+  
+  .environments-table {
+    min-width: 800px;
+  }
+  
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+  
+  .modal-content.large {
+    width: 95vw;
+    padding: 20px;
+  }
+  
+  .pagination-container {
+    flex-direction: column;
+    gap: 15px;
+    text-align: center;
+  }
+  
+  .table-actions {
+    justify-content: flex-start;
+  }
+  
+  .action-btn.small {
+    min-width: 45px;
+    padding: 3px 8px;
+  }
+}
+
 @media screen and (max-width: 400px) {
   .main-header {
     padding: 10px 12px;
