@@ -17,6 +17,7 @@ func registerUserRouter(v1 *gin.RouterGroup) {
 	r := v1.Group("app/user")
 	{
 		r.GET("info", apis.ApiAppUser.GetUserInfo)
+		r.GET("getSdkUserSig", apis.ApiAppUser.GetSdkUserSig)
 		r.POST("/upload", apis.ApiAppUser.Upload)
 	}
 }

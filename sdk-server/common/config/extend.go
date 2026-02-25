@@ -21,6 +21,7 @@ type Extend struct {
 	FSCfg         fsCfg.FileStoreCfg `mapstructure:"file-store" json:"file-store" yaml:"file-store"`
 	Sms           smsCfg.SmsConfig   `mapstructure:"sms" json:"sms" yaml:"sms"`
 	OneClick      string             `mapstructure:"one-click" json:"one-click" yaml:"one-click"` // 一键登录的配置
+	BroSdk        BroSdk             `mapstructure:"bro-sdk" json:"bro-sdk" yaml:"bro-sdk"`
 }
 
 type ChatService struct {
@@ -41,24 +42,7 @@ type Feishu struct {
 	RedirectUri       string `mapstructure:"redirect-uri" json:"redirect-uri" yaml:"redirect-uri"`
 }
 
-// type DingCfg struct {
-// 	AgentId   string `mapstructure:"agent-id" json:"agent-id" yaml:"agent-id"`
-// 	AppKey    string `mapstructure:"app-key" json:"app-key" yaml:"app-key"`
-// 	AppSecret string `mapstructure:"app-secret" json:"app-secret" yaml:"app-secret"`
-// 	CropId    string `mapstructure:"crop-id" json:"crop-id" yaml:"crop-id"`
-// }
-
-// type WechatMp struct {
-// 	AppId          string `mapstructure:"app-id" json:"app-id" yaml:"app-id"`
-// 	AppSecret      string `mapstructure:"app-secret" json:"app-secret" yaml:"app-secret"`
-// 	WxToken        string `mapstructure:"wx-token" json:"wx-token" yaml:"wx-token"`
-// 	EncodingAESKey string `mapstructure:"encoding-aes-key" json:"encoding-aes-key" yaml:"encoding-aes-key"`
-// }
-
-// type Ai struct {
-// 	Ali Ali `mapstructure:"ali" json:"ali" yaml:"ali"`
-// }
-
-// type Ali struct {
-// 	SK string `mapstructure:"sk" json:"sk" yaml:"sk"`
-// }
+type BroSdk struct {
+	Endpoint string `mapstructure:"endpoint" json:"endpoint" yaml:"endpoint"`
+	ApiKey   string `mapstructure:"api-key" json:"api-key" yaml:"api-key"`
+}

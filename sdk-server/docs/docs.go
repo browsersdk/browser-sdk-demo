@@ -663,6 +663,43 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/app/user/getSdkUserSig": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "获取用户sdk usersig",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "app-user"
+                ],
+                "summary": "获取用户sdk usersig",
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"data\": [...]}",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/base.Resp"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/brosdk.UserSigData"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
         "/api/app/user/info": {
             "get": {
                 "security": [
@@ -10341,6 +10378,17 @@ const docTemplate = `{
                 }
             }
         },
+        "brosdk.UserSigData": {
+            "type": "object",
+            "properties": {
+                "expireTime": {
+                    "type": "integer"
+                },
+                "userSig": {
+                    "type": "string"
+                }
+            }
+        },
         "dto.AdminDeptDto": {
             "type": "object",
             "properties": {
@@ -10600,6 +10648,10 @@ const docTemplate = `{
                 "name": {
                     "description": "名称",
                     "type": "string"
+                },
+                "status": {
+                    "description": "状态 1 停止 3 启动",
+                    "type": "integer"
                 },
                 "userId": {
                     "description": "用户ID",
@@ -12896,6 +12948,10 @@ const docTemplate = `{
                 "name": {
                     "description": "名称",
                     "type": "string"
+                },
+                "status": {
+                    "description": "状态 1 停止 3启动",
+                    "type": "integer"
                 },
                 "updatedAt": {
                     "description": "最后更新时间",

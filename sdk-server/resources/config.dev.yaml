@@ -56,6 +56,9 @@ gen:
   enable: true #开启生成
   front-path: ../sdk-admin/src #前端生成路径 默认：../dilu-admin/src
 extend:             # 扩展项（此处没有提供具体说明）
+  bro-sdk:
+    endpoint: http://192.168.0.188:9988
+    api-key: Ls/e7BzPbtHfcmfR3V+kYJpWHsPffdXKWhEYJdABTmYp+CV/FA1G7EHzk6coamX5
   aes-key: 12345678asdfghjk
   rd-config:
     enable: false

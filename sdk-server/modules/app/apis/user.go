@@ -4,11 +4,12 @@ import (
 	"dilu/common/codes"
 	"dilu/common/consts"
 	"dilu/common/utils"
+	"dilu/modules/app/service"
 	"dilu/modules/sys/models"
-	"dilu/modules/sys/service"
 	sService "dilu/modules/sys/service"
 
 	"github.com/baowk/dilu-core/core/base"
+	"github.com/browsersdk/brosdk-server-go"
 	"github.com/gin-gonic/gin"
 )
 
@@ -36,11 +37,36 @@ func (e *AppUser) GetUserInfo(c *gin.Context) {
 	}
 	var user models.SysUser
 
-	if err := service.SerSysUser.Get(uid, &user); err != nil {
+	if err := sService.SerSysUser.Get(uid, &user); err != nil {
 		e.Code(c, codes.ErrBind)
 		return
 	}
 
+	e.Ok(c, user)
+}
+
+// 获取用户sdk usersig
+// @Summary 获取用户sdk usersig
+// @Description 获取用户sdk usersig
+// @Tags app-user
+// @Accept application/json
+// @Product application/json
+// @Success 200 {object} base.Resp{data=brosdk.UserSigData} "{"code": 200, "data": [...]}"
+// @Router /api/app/user/getSdkUserSig [get]
+// @Security Bearer
+func (e *AppUser) GetSdkUserSig(c *gin.Context) {
+
+	uid := utils.GetAppUid(c)
+	if uid == 0 {
+		e.Code(c, codes.InvalidToken_401)
+		return
+	}
+	var user brosdk.UserSigData
+
+	if err := service.SerAppBrowser.GetUserSig(uid, &user); err != nil {
+		e.Code(c, codes.ErrBind)
+		return
+	}
 	e.Ok(c, user)
 }
 

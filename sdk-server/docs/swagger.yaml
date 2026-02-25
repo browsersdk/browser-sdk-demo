@@ -41,6 +41,13 @@ definitions:
         description: '`json:"请求id"`'
         type: string
     type: object
+  brosdk.UserSigData:
+    properties:
+      expireTime:
+        type: integer
+      userSig:
+        type: string
+    type: object
   dto.AdminDeptDto:
     properties:
       deptPath:
@@ -230,6 +237,9 @@ definitions:
       name:
         description: 名称
         type: string
+      status:
+        description: 状态 1 停止 3 启动
+        type: integer
       userId:
         description: 用户ID
         type: integer
@@ -1884,6 +1894,9 @@ definitions:
       name:
         description: 名称
         type: string
+      status:
+        description: 状态 1 停止 3启动
+        type: integer
       updatedAt:
         description: 最后更新时间
         type: string
@@ -3187,6 +3200,26 @@ paths:
       summary: 发送邮箱或者短信验证码
       tags:
       - app-sso
+  /api/app/user/getSdkUserSig:
+    get:
+      consumes:
+      - application/json
+      description: 获取用户sdk usersig
+      responses:
+        "200":
+          description: '{"code": 200, "data": [...]}'
+          schema:
+            allOf:
+            - $ref: '#/definitions/base.Resp'
+            - properties:
+                data:
+                  $ref: '#/definitions/brosdk.UserSigData'
+              type: object
+      security:
+      - Bearer: []
+      summary: 获取用户sdk usersig
+      tags:
+      - app-user
   /api/app/user/info:
     get:
       consumes:

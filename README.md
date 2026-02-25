@@ -136,6 +136,34 @@ browser-sdk-demo/
 - 本地数据存储
 - 跨平台支持
 
+## ⚙️ 配置说明
+
+### bro-sdk 配置
+
+项目中的 `bro-sdk` 配置用于连接浏览器 SDK 服务：
+
+```yaml
+bro-sdk:
+  endpoint: http://192.168.0.188:9988 # 请替换为实际值 
+  api-key: Ls/e7BzPbtHfcmfR3V+kYJpWHsPffdXKWhEYJdABTmYp+CV/FA1G7EHzk6coamX5 # 请替换为实际值
+```
+
+**配置项说明：**
+- `endpoint`: 浏览器 SDK 服务的访问地址
+- `api-key`: 用于身份验证的 API 密钥
+
+**注意事项：**
+- 请根据实际部署环境修改 `endpoint` 地址
+- `api-key` 为敏感信息，请妥善保管
+- 在生产环境中建议使用 HTTPS 协议
+
+### 其他重要配置
+
+- **数据库配置**: 支持 SQLite 和 MySQL
+- **缓存配置**: 支持内存和 Redis 缓存
+- **日志配置**: 可配置日志级别和输出格式
+- **JWT配置**: 用于用户认证的 Token 配置
+
 ## 🛠️ 开发指南
 
 ### 代码规范

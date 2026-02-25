@@ -10,9 +10,10 @@ require (
 	github.com/aliyun/alibaba-cloud-sdk-go v1.63.107
 	github.com/aliyun/aliyun-oss-go-sdk v3.0.1+incompatible
 	github.com/aliyun/credentials-go v1.4.6
-	github.com/baowk/dilu-core v1.0.25
+	github.com/baowk/dilu-core v1.0.27
 	github.com/baowk/dilu-plugin v1.0.0
 	github.com/baowk/dilu-rd v1.0.0
+	github.com/browsersdk/brosdk-server-go v0.0.0-20260225014337-28d5961a6d55
 	github.com/bwmarrin/snowflake v0.3.0
 	github.com/fsnotify/fsnotify v1.8.0
 	github.com/gin-gonic/gin v1.11.0

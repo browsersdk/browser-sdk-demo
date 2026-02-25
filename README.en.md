@@ -136,6 +136,34 @@ browser-sdk-demo/
 - Local data storage
 - Cross-platform support
 
+## ⚙️ Configuration Guide
+
+### bro-sdk Configuration
+
+The `bro-sdk` configuration is used to connect to the browser SDK service:
+
+```yaml
+bro-sdk:
+  endpoint: http://192.168.0.188:9988 # Browser SDK service access address
+  api-key: Ls/e7BzPbtHfcmfR3V+kYJpWHsPffdXKWhEYJdABTmYp+CV/FA1G7EHzk6coamX5 # Sensitive information
+```
+
+**Configuration Items:**
+- `endpoint`: Access address of the browser SDK service
+- `api-key`: API key for authentication
+
+**Notes:**
+- Please modify the `endpoint` address according to your actual deployment environment
+- `api-key` is sensitive information, please keep it secure
+- HTTPS protocol is recommended in production environments
+
+### Other Important Configurations
+
+- **Database Configuration**: Supports SQLite and MySQL
+- **Cache Configuration**: Supports memory and Redis cache
+- **Log Configuration**: Configurable log level and output format
+- **JWT Configuration**: Token configuration for user authentication
+
 ## 🛠️ Development Guide
 
 ### Code Standards
