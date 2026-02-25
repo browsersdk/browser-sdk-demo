@@ -102,7 +102,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "sys-Browser"
+                    "app-browser"
                 ],
                 "summary": "创建Browser",
                 "parameters": [
@@ -112,7 +112,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/dto.BrowserDto"
+                            "$ref": "#/definitions/brosdk.EnvInfo"
                         }
                     }
                 ],
@@ -128,7 +128,7 @@ const docTemplate = `{
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/models.Browser"
+                                            "type": "string"
                                         }
                                     }
                                 }
@@ -149,7 +149,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "sys-Browser"
+                    "app-browser"
                 ],
                 "summary": "删除Browser",
                 "parameters": [
@@ -196,7 +196,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "sys-Browser"
+                    "app-browser"
                 ],
                 "summary": "获取Browser",
                 "parameters": [
@@ -243,7 +243,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "sys-Browser"
+                    "app-browser"
                 ],
                 "summary": "Page接口",
                 "parameters": [
@@ -305,7 +305,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "sys-Browser"
+                    "app-browser"
                 ],
                 "summary": "更新Browser",
                 "parameters": [
@@ -315,7 +315,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/dto.BrowserDto"
+                            "$ref": "#/definitions/brosdk.EnvInfo"
                         }
                     }
                 ],
@@ -331,7 +331,7 @@ const docTemplate = `{
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/models.Browser"
+                                            "type": "string"
                                         }
                                     }
                                 }
@@ -10375,6 +10375,206 @@ const docTemplate = `{
                 "reqId": {
                     "description": "` + "`" + `json:\"请求id\"` + "`" + `",
                     "type": "string"
+                }
+            }
+        },
+        "brosdk.EnvInfo": {
+            "type": "object",
+            "properties": {
+                "audioContext": {
+                    "description": "AudioContext 1隐身 2真实",
+                    "type": "integer"
+                },
+                "bluetooth": {
+                    "description": "蓝牙 1开启 2关闭(默认)",
+                    "type": "integer"
+                },
+                "canvas": {
+                    "description": "浏览器canvas指纹开关 1隐身 2倾向随机 3倾向一致性",
+                    "type": "integer"
+                },
+                "cpu": {
+                    "description": "CPU核心数量 不传会自动生成",
+                    "type": "integer"
+                },
+                "customerId": {
+                    "type": "string"
+                },
+                "deviceName": {
+                    "description": "计算机名 不传会自动生成",
+                    "type": "string"
+                },
+                "doNotTrack": {
+                    "description": "请勿跟踪”浏览器设置   1不启用 2启用 3默认（默认）",
+                    "type": "integer"
+                },
+                "dpi": {
+                    "description": "平面分辨率 空自动生成",
+                    "type": "string"
+                },
+                "enableCookie": {
+                    "description": "Cookie 1按环境，2按用户",
+                    "type": "integer"
+                },
+                "enableScanPort": {
+                    "description": "端口扫描防护 1开启(默认) 2关闭",
+                    "type": "integer"
+                },
+                "enablenotice": {
+                    "description": "网页通知 1开启，2关闭",
+                    "type": "integer"
+                },
+                "enableopen": {
+                    "description": "多开设置 1开启，2关闭",
+                    "type": "integer"
+                },
+                "enablepic": {
+                    "description": "禁止加载图片 1开启，2关闭",
+                    "type": "integer"
+                },
+                "enablesound": {
+                    "description": "禁止播放声音 1开启，2关闭\",",
+                    "type": "integer"
+                },
+                "enablevideo": {
+                    "description": "禁止加载视频 1开启，2关闭\"",
+                    "type": "integer"
+                },
+                "envId": {
+                    "type": "integer"
+                },
+                "envName": {
+                    "type": "string"
+                },
+                "fontList": {
+                    "description": "字体列表 不传系统自动生成",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "geographic": {
+                    "description": "地理位置 （默认使用IP定位 动态代理IP不支持次选项为禁止）",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/brosdk.Geographic"
+                        }
+                    ]
+                },
+                "hardware": {
+                    "description": "硬件加速 1开启（默认） 2关闭",
+                    "type": "integer"
+                },
+                "ignoreCookieErr": {
+                    "description": "忽略Cookie格式错误, 1是 2否",
+                    "type": "integer"
+                },
+                "ipChannel": {
+                    "type": "string"
+                },
+                "kernel": {
+                    "type": "string"
+                },
+                "kernelVersion": {
+                    "type": "string"
+                },
+                "language": {
+                    "description": "浏览器的语言 不传会根据代理IP地址自动生成 详细看支持的语言详细列表(如果是使用动态IP自动生成为中文)",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "mac": {
+                    "description": "MAC地址 不传会自动生成",
+                    "type": "string"
+                },
+                "mediaDevice": {
+                    "description": "媒体设备开关，1：关闭（每个浏览器使用当前电脑默认的媒体设备id，真实）2：启用（使用相匹配的值代替您真实的媒体设备ID，噪声）（默认）",
+                    "type": "integer"
+                },
+                "mem": {
+                    "description": "内存参数 不传会自动生成",
+                    "type": "number"
+                },
+                "picsize": {
+                    "description": "图片大小",
+                    "type": "string"
+                },
+                "proxy": {
+                    "description": "代理配置，格式为：socks5://user:pwd@ipaddr:6666",
+                    "type": "string"
+                },
+                "publicIp": {
+                    "type": "string"
+                },
+                "remark": {
+                    "type": "string"
+                },
+                "scanPort": {
+                    "description": "白名单 0~65535 关闭状态不写 当EnableScanPort是1时这里为空会自动生成本地端口",
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "serial": {
+                    "type": "string"
+                },
+                "speechVoices": {
+                    "description": "SpeechVoices指纹，1：每个浏览器使用当前电脑默认的SpeechVoices,真实 2：添加相应的噪音，同一电脑上为每个浏览器生成不同的SpeechVoices（默认）",
+                    "type": "integer"
+                },
+                "system": {
+                    "type": "string"
+                },
+                "uaVersion": {
+                    "type": "string"
+                },
+                "userAgent": {
+                    "description": "UserAgent 不写根据系统和浏览器版本自动生成",
+                    "type": "string"
+                },
+                "webGl": {
+                    "description": "浏览器webgl元数据指纹开关 1隐身 2真实（默认）",
+                    "type": "integer"
+                },
+                "webRTC": {
+                    "description": "WebRTC 3隐私 2替换 1真实 4禁用",
+                    "type": "integer"
+                },
+                "webRTCIP": {
+                    "description": "Chrome即时通信组件，支持：proxy 替换 ，使用代理IP覆盖真实IP，代理场景使用 local 真实 ，网站会获取真实IP disabled 禁用(默认)，网站会拿不到IP",
+                    "type": "string"
+                },
+                "zone": {
+                    "description": "时区 不传会根据代理IP地址自动生成 详细查看时区支持的列表(如果是使用动态IP自动生成为北京时间)",
+                    "type": "string"
+                }
+            }
+        },
+        "brosdk.Geographic": {
+            "type": "object",
+            "properties": {
+                "accuracy": {
+                    "description": "精度（米）\"",
+                    "type": "string"
+                },
+                "enable": {
+                    "description": "启用1(默认) 询问2 禁止3",
+                    "type": "integer"
+                },
+                "latitude": {
+                    "description": "纬度",
+                    "type": "string"
+                },
+                "longitude": {
+                    "description": "经度 当 enable等于1或者2 且UseIP等于0时使用",
+                    "type": "string"
+                },
+                "useip": {
+                    "description": "1使用ip定位(默认),2使用自定义",
+                    "type": "integer"
                 }
             }
         },

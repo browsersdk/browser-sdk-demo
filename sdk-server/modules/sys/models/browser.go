@@ -22,7 +22,3 @@ type Browser struct {
 func (Browser) TableName() string {
 	return "browser"
 }
-
-func NewBrowser() *Browser {
-	return &Browser{}
-}
