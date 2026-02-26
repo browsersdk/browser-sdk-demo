@@ -1,7 +1,7 @@
 # Browser SDK Demo
 
-[![License](https://img.shields.io/github/license/your-org/browser-sdk-demo)](LICENSE)
-[![Go Version](https://img.shields.io/github/go-mod/go-version/your-org/browser-sdk-demo)](go.mod)
+[![License](https://img.shields.io/github/license/browsersdk/browser-sdk-demo)](LICENSE)
+[![Go Version](https://img.shields.io/github/go-mod/go-version/browsersdk/browser-sdk-demo)](go.mod)
 [![Node.js](https://img.shields.io/badge/node-%3E%3D20.19.0-brightgreen)](https://nodejs.org/)
 [![Vue](https://img.shields.io/badge/vue-3.5.27-brightgreen)](https://vuejs.org/)
 
@@ -51,7 +51,7 @@ browser-sdk-demo/
 
 ```bash
 # Clone the project
-git clone https://github.com/your-org/browser-sdk-demo.git
+git clone https://github.com/browsersdk/browser-sdk-demo.git
 cd browser-sdk-demo
 
 # Install frontend dependencies
@@ -248,10 +248,9 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 📞 Contact
 
-- Project Homepage: [https://github.com/your-org/browser-sdk-demo](https://github.com/your-org/browser-sdk-demo)
-- Issues: [https://github.com/your-org/browser-sdk-demo/issues](https://github.com/your-org/browser-sdk-demo/issues)
-- Email: your-email@example.com
+- Project Homepage: [https://github.com/browsersdk/browser-sdk-demo](https://github.com/browsersdk/browser-sdk-demo)
+- Issues: [https://github.com/browsersdk/browser-sdk-demo/issues](https://github.com/browsersdk/browser-sdk-demo/issues)
 
 ---
 
-<p align="center">Made with ❤️ by Your Team</p>
+<p align="center">Made with ❤️ by browsersdk</p>
