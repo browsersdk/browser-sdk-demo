@@ -1,7 +1,25 @@
-const { app, BrowserWindow, ipcMain } = require('electron');
+const { app, BrowserWindow, ipcMain, session } = require('electron');
 const path = require('path');
 
 let mainWindow;
+
+async function installVueDevtools() {
+  if (process.env.NODE_ENV !== 'development') return
+
+  try {
+    // 项目内插件存放路径（示例：项目根目录下的 extensions/vue-devtools）
+    const vueDevtoolsPath = path.join(
+      process.cwd(), // 项目根目录
+      'extensions', // 插件存放目录
+      'vue-devtools' // Vue Devtools 插件目录
+    )
+
+    // 加载项目内的 Vue Devtools 插件
+    const extension = await session.defaultSession.loadExtension(vueDevtoolsPath)
+  } catch (err) {
+  }
+}
+
 
 function createWindow() {
   console.log('Creating main window...');
@@ -46,7 +64,7 @@ function createWindow() {
   // 监听窗口大小变化
   mainWindow.on('resize', () => {
     const [width, height] = mainWindow.getSize();
-    console.log(`Window resized to ${width}x${height}`);
+    // console.log(`Window resized to ${width}x${height}`);
     
     // 通知渲染进程窗口大小变化
     mainWindow.webContents.send('window-resize', { width, height });
@@ -97,8 +115,9 @@ function createWindow() {
   });
 }
 
-app.whenReady().then(() => {
+app.whenReady().then(async () => {
   console.log('App is ready, creating window...');
+  await installVueDevtools() // 安装 Vue Devtools
   createWindow();
 
   app.on('activate', () => {

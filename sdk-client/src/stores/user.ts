@@ -1,24 +1,13 @@
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
-import { ApiService } from '@/services/api';
+import { ApiService } from '@/services';
+import type { UserInfo } from '@/services';
 import { TokenManager } from '@/utils/tokenManager';
-
-interface User {
-  id: number;
-  username: string;
-  phone: string;
-  email: string;
-  nickname: string;
-  name: string;
-  status: number;
-  createdAt: string;
-  updatedAt: string;
-}
 
 export const useUserStore = defineStore('user', () => {
   const router = useRouter();
-  const user = ref<User | null>(null);
+  const user = ref<UserInfo | null>(null);
   const isAuthenticated = ref(false);
   const isLoading = ref(false);
 
