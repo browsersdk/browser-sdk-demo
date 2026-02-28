@@ -1,75 +1,7 @@
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
-import { ApiService } from '@/services/api';
-
-interface Geographic {
-  accuracy: string;
-  enable: number;
-  latitude: string;
-  longitude: string;
-  useip: number;
-}
-
-interface Browser {
-  audioContext: number;
-  bluetooth: number;
-  canvas: number;
-  cpu: number;
-  customerId: string;
-  deviceName: string;
-  doNotTrack: number;
-  dpi: string;
-  enableCookie: number;
-  enableScanPort: number;
-  enablenotice: number;
-  enableopen: number;
-  enablepic: number;
-  enablesound: number;
-  enablevideo: number;
-  envId: number;
-  envName: string;
-  fontList: string[];
-  geographic: Geographic;
-  hardware: number;
-  ignoreCookieErr: number;
-  ipChannel: string;
-  kernel: string;
-  kernelVersion: string;
-  language: string[];
-  mac: string;
-  mediaDevice: number;
-  mem: number;
-  picsize: string;
-  proxy: string;
-  publicIp: string;
-  remark: string;
-  scanPort: number[];
-  serial: string;
-  speechVoices: number;
-  system: string;
-  uaVersion: string;
-  userAgent: string;
-  webGl: number;
-  webRTC: number;
-  webRTCIP: string;
-  zone: string;
-  id: number;
-  name: string;
-  userId: number;
-  data: string;
-  createdAt: string;
-  updatedAt: string;
-  status: number;  // 1: 停止, 3: 启动
-}
-
-interface BrowserDto {
-  id?: number;
-  name: string;
-  envId?: number;
-  userId: number;
-  data?: string;
-  status?: number;  // 1: 停止, 3: 启动
-}
+import { ApiService } from '@/services';
+import type { Browser, BrowserDto } from '@/services';
 
 export const useBrowserStore = defineStore('browser', () => {
   const browsers = ref<Browser[]>([]);

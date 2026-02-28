@@ -525,101 +525,44 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted, computed } from 'vue';
+import { ref, onMounted, onUnmounted } from 'vue';
 import { useUserStore } from '@/stores/user';
 import { useBrowserStore } from '@/stores/browser';
 import { useRouter } from 'vue-router';
+import type { Browser } from '@/services';
 
-interface Geographic {
-  accuracy: string;
-  enable: number;
-  latitude: string;
-  longitude: string;
-  useip: number;
-}
+type EnvironmentForm = Partial<Browser>;
 
-interface Browser {
-  audioContext: number;
-  bluetooth: number;
-  canvas: number;
-  cpu: number;
-  customerId: string;
-  deviceName: string;
-  doNotTrack: number;
-  dpi: string;
-  enableCookie: number;
-  enableScanPort: number;
-  enablenotice: number;
-  enableopen: number;
-  enablepic: number;
-  enablesound: number;
-  enablevideo: number;
-  envId: number;
-  envName: string;
-  fontList: string[];
-  geographic: Geographic;
-  hardware: number;
-  ignoreCookieErr: number;
-  ipChannel: string;
-  kernel: string;
-  kernelVersion: string;
-  language: string[];
-  mac: string;
-  mediaDevice: number;
-  mem: number;
-  picsize: string;
-  proxy: string;
-  publicIp: string;
-  remark: string;
-  scanPort: number[];
-  serial: string;
-  speechVoices: number;
-  system: string;
-  uaVersion: string;
-  userAgent: string;
-  webGl: number;
-  webRTC: number;
-  webRTCIP: string;
-  zone: string;
-  id: number;
-  name: string;
-  userId: number;
-  data: string;
-  createdAt: string;
-  updatedAt: string;
-  status: number;  // 1: 停止, 3: 启动
-}
-
-interface EnvironmentForm {
-  name: string;
-  envId?: number;
-  // 浏览器配置
-  userAgent?: string;
-  system?: string;
-  kernel?: string;
-  kernelVersion?: string;
-  // 硬件配置
-  cpu?: number;
-  mem?: number;
-  deviceName?: string;
-  mac?: string;
-  // 网络配置
-  publicIp?: string;
-  proxy?: string;
-  zone?: string;
-  ipChannel?: string;
-  // 功能开关
-  hardware?: string;
-  webGl?: string;
-  canvas?: string;
-  audioContext?: string;
-  mediaDevice?: string;
-  bluetooth?: string;
-  // 其他配置
-  customerId?: string;
-  serial?: string;
-  remark?: string;
-}
+// interface EnvironmentForm {
+//   name: string;
+//   envId?: number;
+//   // 浏览器配置
+//   userAgent?: string;
+//   system?: string;
+//   kernel?: string;
+//   kernelVersion?: string;
+//   // 硬件配置
+//   cpu?: number;
+//   mem?: number;
+//   deviceName?: string;
+//   mac?: string;
+//   // 网络配置
+//   publicIp?: string;
+//   proxy?: string;
+//   zone?: string;
+//   ipChannel?: string;
+//   // 功能开关
+//   hardware?: string;
+//   webGl?: string;
+//   canvas?: string;
+//   audioContext?: string;
+//   mediaDevice?: string;
+//   bluetooth?: string;
+//   // 其他配置
+//   customerId?: string;
+//   serial?: string;
+//   remark?: string;
+// }
 
 const userStore = useUserStore();
 const browserStore = useBrowserStore();
@@ -629,16 +572,16 @@ const activeTab = ref('environments');
 const showCreateModal = ref(false);
 const editingEnvironment = ref<Browser | null>(null);
 const isSaving = ref(false);
-const isActionLoading = ref(false);  // 添加动作加载状态
+// const isActionLoading = ref(false);  // 添加动作加载状态
 
 // 窗口高度相关
 const windowHeight = ref(window.innerHeight);
 const headerHeight = ref(80); // 头部高度估算
 
 // 计算主内容区域可用高度
-const mainContentHeight = computed(() => {
-  return `${windowHeight.value - headerHeight.value}px`;
-});
+// const mainContentHeight = computed(() => {
+//   return `${windowHeight.value - headerHeight.value}px`;
+// });
 
 // 监听窗口大小变化
 const handleResize = () => {
@@ -693,12 +636,12 @@ const environmentForm = ref<EnvironmentForm>({
   zone: '',
   ipChannel: '',
   // 功能开关
-  hardware: '0',
-  webGl: '0',
-  canvas: '0',
-  audioContext: '0',
-  mediaDevice: '0',
-  bluetooth: '0',
+  hardware: 0,
+  webGl: 0,
+  canvas: 0,
+  audioContext: 0,
+  mediaDevice: 0,
+  bluetooth: 0,
   // 其他配置
   customerId: '',
   serial: '',
@@ -706,17 +649,17 @@ const environmentForm = ref<EnvironmentForm>({
 });
 
 // 根据status值获取环境卡片的CSS类
-const getEnvironmentCardClass = (status: number): string => {
-  const baseClass = 'environment-card';
-  switch (status) {
-    case 1:  // 停止状态
-      return `${baseClass} environment-stopped`;
-    case 3:  // 启动状态
-      return `${baseClass} environment-active`;
-    default:
-      return `${baseClass} environment-unknown`;
-  }
-};
+// const getEnvironmentCardClass = (status: number): string => {
+//   const baseClass = 'environment-card';
+//   switch (status) {
+//     case 1:  // 停止状态
+//       return `${baseClass} environment-stopped`;
+//     case 3:  // 启动状态
+//       return `${baseClass} environment-active`;
+//     default:
+//       return `${baseClass} environment-unknown`;
+//   }
+// };
 
 // 根据status值获取环境行的CSS类
 const getEnvironmentRowClass = (status: number): string => {
@@ -730,15 +673,15 @@ const getEnvironmentRowClass = (status: number): string => {
   }
 };
 
-const formatDate = (dateString: string) => {
-  return new Date(dateString).toLocaleString('zh-CN');
-};
+// const formatDate = (dateString: string) => {
+//   return new Date(dateString).toLocaleString('zh-CN');
+// };
 
 // 安全获取浏览器属性的辅助函数
-const safeGetBrowserProp = <T>(browser: Browser | undefined, prop: keyof Browser): T | undefined => {
-  if (!browser) return undefined;
-  return browser[prop] as T;
-};
+// const safeGetBrowserProp = <T>(browser: Browser | undefined, prop: keyof Browser): T | undefined => {
+//   if (!browser) return undefined;
+//   return browser[prop] as T;
+// };
 
 const changePage = async (page: number) => {
   try {
@@ -755,7 +698,7 @@ const getPageNumbers = (): number[] => {
   
   // 显示最多5个页码
   let start = Math.max(1, currentPage - 2);
-  let end = Math.min(totalPages, start + 4);
+  const end = Math.min(totalPages, start + 4);
   
   // 调整起始页码
   if (end - start < 4) {
@@ -782,11 +725,11 @@ onMounted(async () => {
   router.push('/login');
 });
 
-const showModal = () => {
-  showCreateModal.value = true;
-  editingEnvironment.value = null;
-  resetForm();
-};
+// const showModal = () => {
+//   showCreateModal.value = true;
+//   editingEnvironment.value = null;
+//   resetForm();
+// };
 
 const closeModal = () => {
   showCreateModal.value = false;
@@ -811,12 +754,12 @@ const resetForm = () => {
     proxy: '',
     zone: '',
     ipChannel: '',
-    hardware: '0',
-    webGl: '0',
-    canvas: '0',
-    audioContext: '0',
-    mediaDevice: '0',
-    bluetooth: '0',
+    hardware: 0,
+    webGl: 0,
+    canvas: 0,
+    audioContext: 0,
+    mediaDevice: 0,
+    bluetooth: 0,
     customerId: '',
     serial: '',
     remark: ''
@@ -870,12 +813,12 @@ const editEnvironment = (browser: Browser | undefined) => {
     proxy: browser.proxy || '',
     zone: browser.zone || '',
     ipChannel: browser.ipChannel || '',
-    hardware: browser.hardware?.toString() || '0',
-    webGl: browser.webGl?.toString() || '0',
-    canvas: browser.canvas?.toString() || '0',
-    audioContext: browser.audioContext?.toString() || '0',
-    mediaDevice: browser.mediaDevice?.toString() || '0',
-    bluetooth: browser.bluetooth?.toString() || '0',
+    hardware: browser.hardware || 0,
+    webGl: browser.webGl || 0,
+    canvas: browser.canvas || 0,
+    audioContext: browser.audioContext || 0,
+    mediaDevice: browser.mediaDevice || 0,
+    bluetooth: browser.bluetooth || 0,
     customerId: browser.customerId || '',
     serial: browser.serial || '',
     remark: browser.remark || ''
@@ -884,15 +827,15 @@ const editEnvironment = (browser: Browser | undefined) => {
 };
 
 const saveEnvironment = async () => {
-  if (!environmentForm.value.name.trim()) return;
+  if (!environmentForm.value.name!.trim()) return;
   
   isSaving.value = true;
   
   try {
     const browserData = {
-      audioContext: parseInt(environmentForm.value.audioContext || '0'),
-      bluetooth: parseInt(environmentForm.value.bluetooth || '0'),
-      canvas: parseInt(environmentForm.value.canvas || '0'),
+      audioContext: environmentForm.value.audioContext || 0,
+      bluetooth: environmentForm.value.bluetooth || 0,
+      canvas: environmentForm.value.canvas || 0,
       cpu: environmentForm.value.cpu || 4,
       customerId: environmentForm.value.customerId || '',
       deviceName: environmentForm.value.deviceName || '',
@@ -915,14 +858,14 @@ const saveEnvironment = async () => {
         longitude: '116.4074',
         useip: 1
       },
-      hardware: parseInt(environmentForm.value.hardware || '0'),
+      hardware: environmentForm.value.hardware || 0,
       ignoreCookieErr: 0,
       ipChannel: environmentForm.value.ipChannel || '',
       kernel: environmentForm.value.kernel || '',
       kernelVersion: environmentForm.value.kernelVersion || '',
       language: ['zh-CN', 'en-US'],
       mac: environmentForm.value.mac || '',
-      mediaDevice: parseInt(environmentForm.value.mediaDevice || '0'),
+      mediaDevice: environmentForm.value.mediaDevice || 0,
       mem: environmentForm.value.mem || 8,
       picsize: '1920x1080',
       proxy: environmentForm.value.proxy || '',
@@ -934,7 +877,7 @@ const saveEnvironment = async () => {
       system: environmentForm.value.system || '',
       uaVersion: '1.0.0',
       userAgent: environmentForm.value.userAgent || '',
-      webGl: parseInt(environmentForm.value.webGl || '0'),
+      webGl: environmentForm.value.webGl || 0,
       webRTC: 1,
       webRTCIP: '127.0.0.1',
       zone: environmentForm.value.zone || ''
@@ -944,7 +887,7 @@ const saveEnvironment = async () => {
       // 更新现有环境
       await browserStore.updateBrowser({
         id: editingEnvironment.value.id,
-        name: environmentForm.value.name,
+        name: environmentForm.value.name!,
         envId: environmentForm.value.envId,
         userId: userStore.user?.id || 0,
         data: JSON.stringify(browserData)
@@ -952,7 +895,7 @@ const saveEnvironment = async () => {
     } else {
       // 创建新环境
       await browserStore.createBrowser({
-        name: environmentForm.value.name,
+        name: environmentForm.value.name!,
         envId: environmentForm.value.envId,
         userId: userStore.user?.id || 0,
         data: JSON.stringify(browserData)
