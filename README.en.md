@@ -1,7 +1,7 @@
 # Browser SDK Demo
 
 [![License](https://img.shields.io/github/license/browsersdk/browser-sdk-demo)](LICENSE)
-[![Go Version](https://img.shields.io/github/go-mod/go-version/browsersdk/browser-sdk-demo)](go.mod)
+[![Go Version](https://img.shields.io/github/go-mod/go-version/browsersdk/browser-sdk-demo/sdk-server)](go.mod)
 [![Node.js](https://img.shields.io/badge/node-%3E%3D20.19.0-brightgreen)](https://nodejs.org/)
 [![Vue](https://img.shields.io/badge/vue-3.5.27-brightgreen)](https://vuejs.org/)
 
