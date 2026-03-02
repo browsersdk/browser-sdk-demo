@@ -48,6 +48,7 @@ func (s *BrowserService) GetUserSig(uid int, data *brosdk.UserSigData) error {
 	}
 	req := brosdk.GetUserSigRequest{
 		CustomerId: fmt.Sprintf("%d", uid),
+		Duration:   86400,
 	}
 
 	resp, err := sdk.GetUserSig(context.Background(), &req)
