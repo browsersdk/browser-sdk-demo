@@ -99,11 +99,12 @@ func (e *BrowserApi) Create(c *gin.Context) {
 	}
 
 	uid := utils.GetAppUid(c)
-	if err := appS.SerAppBrowser.Create(uid, &req); err != nil {
+	data, err := appS.SerAppBrowser.Create(uid, &req)
+	if err != nil {
 		e.Error(c, err)
 		return
 	}
-	e.Ok(c)
+	e.Ok(c, data)
 }
 
 // Update 更新Browser
@@ -111,12 +112,12 @@ func (e *BrowserApi) Create(c *gin.Context) {
 // @Tags app-browser
 // @Accept application/json
 // @Product application/json
-// @Param data body brosdk.EnvInfo true "body"
+// @Param data body dto.BrowserDto true "body"
 // @Success 200 {object} base.Resp{data=string} "{"code": 200, "data": [...]}"
 // @Router /api/app/browser/update [post]
 // @Security Bearer
 func (e *BrowserApi) Update(c *gin.Context) {
-	var req brosdk.EnvInfo
+	var req dto.BrowserDto
 	if err := c.ShouldBind(&req); err != nil {
 		e.Error(c, err)
 		return

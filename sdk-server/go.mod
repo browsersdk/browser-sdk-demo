@@ -40,6 +40,7 @@ require (
 	golang.org/x/oauth2 v0.25.0
 	golang.org/x/text v0.27.0
 	google.golang.org/grpc v1.67.3
+	gorm.io/datatypes v1.2.7
 	gorm.io/gorm v1.31.0
 )
 

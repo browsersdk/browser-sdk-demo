@@ -5,6 +5,7 @@ import (
 	"dilu/common/config"
 	"dilu/modules/sys/models"
 	"dilu/modules/sys/service"
+	"dilu/modules/sys/service/dto"
 	"encoding/json"
 	"fmt"
 
@@ -58,12 +59,12 @@ func (s *BrowserService) GetUserSig(uid int, data *brosdk.UserSigData) error {
 	return nil
 }
 
-func (s *BrowserService) Create(uid int, req *brosdk.EnvInfo) error {
+func (s *BrowserService) Create(uid int, req *brosdk.EnvInfo) (data *models.Browser, err error) {
 	if req.EnvName == "" {
 		req.EnvName = fmt.Sprintf("用户%d的浏览器环境", uid)
 	}
 
-	var data models.Browser
+	data = &models.Browser{}
 	copier.Copy(&data, req)
 
 	data.UserId = uid
@@ -80,39 +81,39 @@ func (s *BrowserService) Create(uid int, req *brosdk.EnvInfo) error {
 		req.Finger.System = "Windows 11"
 	}
 
-	if err := service.SerBrowser.Create(&data); err != nil {
-		return err
+	if err = service.SerBrowser.Create(&data); err != nil {
+		return
 	}
 
 	sdk, err := s.getBroSdk()
 	if err != nil {
-		return err
+		return
 	}
 
 	req.CustomerId = fmt.Sprintf("%d", uid)
 
 	resp, err := sdk.EnvCreate(context.Background(), req)
 	if err != nil {
-		return err
+		return
 	}
 
 	edata, err := json.Marshal(resp)
 	if err != nil {
-		return err
+		return
 	}
 	data.EnvId = resp.EnvId
 	data.Data = string(edata)
 	data.Status = 3
-	if err := service.SerBrowser.UpdateById(&data); err != nil {
-		return err
+	if err = service.SerBrowser.UpdateById(&data); err != nil {
+		return
 	}
 
-	return nil
+	return
 }
 
-func (s *BrowserService) Update(uid int, req *brosdk.EnvInfo) error {
+func (s *BrowserService) Update(uid int, req *dto.BrowserDto) error {
 	var browser models.Browser
-	if err := service.SerBrowser.Get(req.EnvId, &browser); err != nil {
+	if err := service.SerBrowser.DB().Where("id = ?", req.Id).Find(&browser).Error; err != nil {
 		return err
 	}
 	if req.EnvName != "" {
@@ -131,7 +132,8 @@ func (s *BrowserService) Update(uid int, req *brosdk.EnvInfo) error {
 	if err != nil {
 		return err
 	}
-	env, err := sdk.EnvUpdate(context.Background(), req)
+	data := req.Data.Data()
+	env, err := sdk.EnvUpdate(context.Background(), &data)
 	if err != nil {
 		return err
 	}

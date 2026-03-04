@@ -315,7 +315,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/brosdk.EnvInfo"
+                            "$ref": "#/definitions/dto.BrowserDto"
                         }
                     }
                 ],
@@ -10694,6 +10694,9 @@ const docTemplate = `{
                 }
             }
         },
+        "datatypes.JSONType-brosdk_EnvInfo": {
+            "type": "object"
+        },
         "dto.AdminDeptDto": {
             "type": "object",
             "properties": {
@@ -10940,19 +10943,23 @@ const docTemplate = `{
             "properties": {
                 "data": {
                     "description": "数据",
-                    "type": "string"
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/datatypes.JSONType-brosdk_EnvInfo"
+                        }
+                    ]
                 },
                 "envId": {
                     "description": "环境ID",
                     "type": "string"
                 },
+                "envName": {
+                    "description": "名称",
+                    "type": "string"
+                },
                 "id": {
                     "description": "主键",
                     "type": "integer"
-                },
-                "name": {
-                    "description": "名称",
-                    "type": "string"
                 },
                 "status": {
                     "description": "状态 1 停止 3 启动",
@@ -10971,7 +10978,7 @@ const docTemplate = `{
                     "description": "环境ID",
                     "type": "string"
                 },
-                "name": {
+                "envName": {
                     "description": "名称",
                     "type": "string"
                 },
@@ -13246,13 +13253,13 @@ const docTemplate = `{
                     "description": "环境ID",
                     "type": "string"
                 },
+                "envName": {
+                    "description": "名称",
+                    "type": "string"
+                },
                 "id": {
                     "description": "主键",
                     "type": "integer"
-                },
-                "name": {
-                    "description": "名称",
-                    "type": "string"
                 },
                 "status": {
                     "description": "状态 1 停止 3启动",

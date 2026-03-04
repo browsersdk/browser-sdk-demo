@@ -268,6 +268,8 @@ definitions:
       userSig:
         type: string
     type: object
+  datatypes.JSONType-brosdk_EnvInfo:
+    type: object
   dto.AdminDeptDto:
     properties:
       deptPath:
@@ -446,17 +448,18 @@ definitions:
   dto.BrowserDto:
     properties:
       data:
+        allOf:
+        - $ref: '#/definitions/datatypes.JSONType-brosdk_EnvInfo'
         description: 数据
-        type: string
       envId:
         description: 环境ID
+        type: string
+      envName:
+        description: 名称
         type: string
       id:
         description: 主键
         type: integer
-      name:
-        description: 名称
-        type: string
       status:
         description: 状态 1 停止 3 启动
         type: integer
@@ -469,7 +472,7 @@ definitions:
       envId:
         description: 环境ID
         type: string
-      name:
+      envName:
         description: 名称
         type: string
       page:
@@ -2108,12 +2111,12 @@ definitions:
       envId:
         description: 环境ID
         type: string
+      envName:
+        description: 名称
+        type: string
       id:
         description: 主键
         type: integer
-      name:
-        description: 名称
-        type: string
       status:
         description: 状态 1 停止 3启动
         type: integer
@@ -3213,7 +3216,7 @@ paths:
         name: data
         required: true
         schema:
-          $ref: '#/definitions/brosdk.EnvInfo'
+          $ref: '#/definitions/dto.BrowserDto'
       responses:
         "200":
           description: '{"code": 200, "data": [...]}'
