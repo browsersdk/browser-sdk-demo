@@ -17,7 +17,8 @@ export class SdkHttpService {
     console.log('open', code, msg)
   }
   static async close(data: ICloseParams): Promise<void> {
-    const res: IResponse = await axios.post(`${BASE_URL}:${localStorage.getItem('appPost')}/sdk/v1/browser/close`, data)
+    const res = await window.sdkAPI.browserClose(data)
+    // const res: IResponse = await axios.post(`${BASE_URL}:${localStorage.getItem('appPost')}/sdk/v1/browser/close`, data)
     const { code, msg } = res
     console.log('close', code, msg)
   }

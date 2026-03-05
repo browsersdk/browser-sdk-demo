@@ -200,6 +200,27 @@ class BroSDK {
   isWarn = (code) => {
     return this.$_is_warn(code);
   };
+  /**
+   * Read cookies for a browser environment.
+   * @param {bigint|number|string} envId  - The numeric environment ID (uint64).
+   * @returns {{ code: number, ptr: External|null, len: number, response: string|null }}
+   *   `response` is the raw JSON array string "[{...}, ...]".  Call freePointer(ptr) when done.
+   */
+  readCookies = (envId) => {
+    // Build JSON manually to avoid JSON.stringify's BigInt limitation
+    const input = `{"envId":${envId}}`;
+    let outData = [null];
+    let outLen = [0];
+    const ret = this.$_read_cookies(input, this.strLen(input), outData, outLen);
+    const len = Number(outLen[0]);
+    let response = null;
+    if (this.$_is_ok(ret) && outData[0] && len > 0) {
+      const bytes = koffi.decode(outData[0], "uint8", len);
+      response = Buffer.from(bytes).toString("utf8");
+    }
+    return { code: ret, ptr: outData[0], len, response };
+  };
+
   printErrno = (tag, code) => {
     const label = this.isOk(code)
       ? "OK"

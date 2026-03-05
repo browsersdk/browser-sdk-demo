@@ -49,6 +49,13 @@ SDK_API int32_t SDK_CALL sdk_browser_open(const char *data, size_t len);
 SDK_API int32_t SDK_CALL sdk_browser_close(const char *data, size_t len);
 SDK_API int32_t SDK_CALL sdk_token_update(const char *data, size_t len);
 SDK_API int32_t SDK_CALL sdk_shutdown(void);
+/* Read cookies for a browser environment as a JSON array string.
+   Input  (data/len): JSON object  {"envId": <uint64>}
+   Output (out_data): heap-allocated JSON array "[{...}, ...]" – free with sdk_free
+   Output (out_len):  byte length of the JSON string (excluding NUL terminator)
+   Returns CL_OK on success, negative error codes on failure. */
+SDK_API int32_t SDK_CALL sdk_read_cookies(const char *data, size_t len,
+                                           char **out_data, size_t *out_len);
 SDK_API void SDK_CALL sdk_free(void *ptr);
 SDK_API const char *SDK_CALL sdk_error_name(int32_t code);
 SDK_API const char *SDK_CALL sdk_error_string(int32_t code);
