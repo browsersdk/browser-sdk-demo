@@ -18,10 +18,13 @@
     "lint": "run-s lint:*",
     "lint:oxlint": "oxlint . --fix",
     "lint:eslint": "eslint . --fix --cache",
-    "format": "prettier --write --experimental-cli src/"
+    "format": "prettier --write --experimental-cli src/",
+    "sdk": "npm i && node scripts/copyn-brosdk.js"
   },
   "dependencies": {
     "axios": "^1.7.7",
+    "electron-log": "^5.4.3",
+    "koffi": "^2.15.1",
     "pinia": "^3.0.4",
     "puppeteer": "^24.37.2",
     "vue": "^3.5.27",
@@ -43,6 +46,7 @@
     "eslint-plugin-oxlint": "~1.42.0",
     "eslint-plugin-vue": "~10.7.0",
     "jiti": "^2.6.1",
+    "less": "^4.5.1",
     "npm-run-all2": "^8.0.4",
     "oxlint": "~1.42.0",
     "prettier": "3.8.1",
