@@ -112,7 +112,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/brosdk.EnvInfo"
+                            "$ref": "#/definitions/dto.BrowserDto"
                         }
                     }
                 ],
@@ -315,7 +315,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/brosdk.EnvInfo"
+                            "$ref": "#/definitions/dto.BrowserDto"
                         }
                     }
                 ],
@@ -10381,8 +10381,60 @@ const docTemplate = `{
         "brosdk.EnvInfo": {
             "type": "object",
             "properties": {
+                "bridgeProxy": {
+                    "description": "桥代理配置，格式为：socks5://user:pwd@ipaddr:6666",
+                    "type": "string"
+                },
+                "cookie": {
+                    "description": "cookie",
+                    "type": "string"
+                },
+                "customerId": {
+                    "description": "三方用户id",
+                    "type": "string"
+                },
+                "envId": {
+                    "description": "envid 更新时必填",
+                    "type": "string"
+                },
+                "envName": {
+                    "description": "环境名称",
+                    "type": "string"
+                },
+                "finger": {
+                    "$ref": "#/definitions/brosdk.Finger"
+                },
+                "ipChannel": {
+                    "description": "IP监测渠道  海外代理：ip2location，国内代理：ipdata",
+                    "type": "string"
+                },
+                "proxy": {
+                    "description": "代理配置，格式为：socks5://user:pwd@ipaddr:6666",
+                    "type": "string"
+                },
+                "region": {
+                    "description": "国家代号，当无法获取代理配置时，传此参数生成对应区域ip，否则获取客户端ip",
+                    "type": "string"
+                },
+                "remark": {
+                    "description": "备注",
+                    "type": "string"
+                },
+                "serial": {
+                    "description": "环境序号",
+                    "type": "string"
+                }
+            }
+        },
+        "brosdk.Finger": {
+            "type": "object",
+            "properties": {
                 "audioContext": {
                     "description": "AudioContext 1隐身 2真实",
+                    "type": "integer"
+                },
+                "battery": {
+                    "description": "电池 1真实 2噪声",
                     "type": "integer"
                 },
                 "bluetooth": {
@@ -10390,68 +10442,76 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "canvas": {
-                    "description": "浏览器canvas指纹开关 1隐身 2倾向随机 3倾向一致性",
+                    "description": "浏览器canvas指纹开关 0:倾向一致性 1:关闭 2:倾向随机性",
+                    "type": "integer"
+                },
+                "clientRects": {
+                    "description": "ClientRects 1隐身 2真实 目前同fontfinger值",
                     "type": "integer"
                 },
                 "cpu": {
                     "description": "CPU核心数量 不传会自动生成",
                     "type": "integer"
                 },
-                "customerId": {
-                    "type": "string"
-                },
                 "deviceName": {
                     "description": "计算机名 不传会自动生成",
                     "type": "string"
                 },
                 "doNotTrack": {
-                    "description": "请勿跟踪”浏览器设置   1不启用 2启用 3默认（默认）",
+                    "description": "请勿跟踪浏览器设置   1不启用 2启用 3默认",
                     "type": "integer"
                 },
                 "dpi": {
                     "description": "平面分辨率 空自动生成",
                     "type": "string"
                 },
-                "enableCookie": {
-                    "description": "Cookie 1按环境，2按用户",
+                "enableGc": {
+                    "description": "是否开启垃圾回收 1开启 2关闭",
+                    "type": "integer"
+                },
+                "enableNotice": {
+                    "description": "网页通知 1开启，2关闭",
+                    "type": "integer"
+                },
+                "enableOpen": {
+                    "description": "多开设置 1开启，2关闭",
+                    "type": "integer"
+                },
+                "enableOpenNumber": {
+                    "description": "多开人数设置",
+                    "type": "integer"
+                },
+                "enablePic": {
+                    "description": "禁止加载图片 1开启，2关闭",
                     "type": "integer"
                 },
                 "enableScanPort": {
                     "description": "端口扫描防护 1开启(默认) 2关闭",
                     "type": "integer"
                 },
-                "enablenotice": {
-                    "description": "网页通知 1开启，2关闭",
+                "enableSound": {
+                    "description": "禁止播放声音 1开启，2关闭",
                     "type": "integer"
                 },
-                "enableopen": {
-                    "description": "多开设置 1开启，2关闭",
+                "enableVideo": {
+                    "description": "禁止加载视频 1开启，2关闭",
                     "type": "integer"
                 },
-                "enablepic": {
-                    "description": "禁止加载图片 1开启，2关闭",
+                "font": {
+                    "description": "字体列表",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/brosdk.Font"
+                        }
+                    ]
+                },
+                "fontFinger": {
+                    "description": "字体指纹 1隐身 2真实",
                     "type": "integer"
                 },
-                "enablesound": {
-                    "description": "禁止播放声音 1开启，2关闭\",",
+                "gcTime": {
+                    "description": "垃圾回收时间,当enableGc为1时必填 1-5",
                     "type": "integer"
-                },
-                "enablevideo": {
-                    "description": "禁止加载视频 1开启，2关闭\"",
-                    "type": "integer"
-                },
-                "envId": {
-                    "type": "integer"
-                },
-                "envName": {
-                    "type": "string"
-                },
-                "fontList": {
-                    "description": "字体列表 不传系统自动生成",
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
                 },
                 "geographic": {
                     "description": "地理位置 （默认使用IP定位 动态代理IP不支持次选项为禁止）",
@@ -10465,17 +10525,12 @@ const docTemplate = `{
                     "description": "硬件加速 1开启（默认） 2关闭",
                     "type": "integer"
                 },
-                "ignoreCookieErr": {
-                    "description": "忽略Cookie格式错误, 1是 2否",
-                    "type": "integer"
-                },
-                "ipChannel": {
-                    "type": "string"
-                },
                 "kernel": {
+                    "description": "内核",
                     "type": "string"
                 },
                 "kernelVersion": {
+                    "description": "内核版本",
                     "type": "string"
                 },
                 "language": {
@@ -10497,28 +10552,20 @@ const docTemplate = `{
                     "description": "内存参数 不传会自动生成",
                     "type": "number"
                 },
-                "picsize": {
+                "nextsystem": {
+                    "description": "（可选不使用设置为空）指纹生成的时候回根据System 或者 Nextsystem去生成，如果给了多项会从这些当中随机选择生成",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/brosdk.NextSystem"
+                        }
+                    ]
+                },
+                "picSize": {
                     "description": "图片大小",
-                    "type": "string"
-                },
-                "proxy": {
-                    "description": "代理配置，格式为：socks5://user:pwd@ipaddr:6666",
-                    "type": "string"
-                },
-                "publicIp": {
-                    "type": "string"
-                },
-                "remark": {
                     "type": "string"
                 },
                 "scanPort": {
                     "description": "白名单 0~65535 关闭状态不写 当EnableScanPort是1时这里为空会自动生成本地端口",
-                    "type": "array",
-                    "items": {
-                        "type": "integer"
-                    }
-                },
-                "serial": {
                     "type": "string"
                 },
                 "speechVoices": {
@@ -10526,25 +10573,50 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "system": {
+                    "description": "系统",
+                    "type": "string"
+                },
+                "ua": {
+                    "description": "不写根据系统和浏览器版本自动生成",
                     "type": "string"
                 },
                 "uaVersion": {
+                    "description": "浏览器大版本号 不传自动生成 详细查看具体支持的版本号大版本",
                     "type": "string"
                 },
-                "userAgent": {
-                    "description": "UserAgent 不写根据系统和浏览器版本自动生成",
-                    "type": "string"
+                "uilanguage": {
+                    "description": "界面语言 空会根据代理IP地址自动生成",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
                 },
                 "webGl": {
                     "description": "浏览器webgl元数据指纹开关 1隐身 2真实（默认）",
                     "type": "integer"
                 },
+                "webGlInfo": {
+                    "description": "浏览器WebGlInfo 1:真实 2:自定义",
+                    "type": "integer"
+                },
+                "webGlRenderer": {
+                    "description": "浏览器WebGL渲染 自定义时传值，为空会自动生成，该字段不为空时webGLVendor必传",
+                    "type": "string"
+                },
+                "webGlVendor": {
+                    "description": "浏览器WebGL厂商，Windows系统可选值为Google Inc. (NVIDIA)、Google Inc. (AMD)、Google Inc. (Intel)，MacOS系统可选值为Google Inc. (ATI Technologies Inc.)、Google Inc. (NVIDIA)、Google Inc. (Apple)，Android系统可选值为Qualcomm，IOS系统可选值为Apple Inc 自定义时传值，为空会自动生成",
+                    "type": "string"
+                },
                 "webRTC": {
-                    "description": "WebRTC 3隐私 2替换 1真实 4禁用",
+                    "description": "WebRTC 0:禁用,网站会拿不到IP 1:真实,网站会获取真实IP 2:替换,使用代理IP覆盖真实IP",
                     "type": "integer"
                 },
                 "webRTCIP": {
                     "description": "Chrome即时通信组件，支持：proxy 替换 ，使用代理IP覆盖真实IP，代理场景使用 local 真实 ，网站会获取真实IP disabled 禁用(默认)，网站会拿不到IP",
+                    "type": "string"
+                },
+                "widowssize": {
+                    "description": "浏览器窗口大小  （目前可传可不传已经不用了使用dpi计算得出）",
                     "type": "string"
                 },
                 "zone": {
@@ -10553,11 +10625,27 @@ const docTemplate = `{
                 }
             }
         },
+        "brosdk.Font": {
+            "type": "object",
+            "properties": {
+                "enable": {
+                    "description": "1隐身包含 2使用用户设置",
+                    "type": "integer"
+                },
+                "list": {
+                    "description": "enable=2开启情况下如果为空系统自动生成",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
         "brosdk.Geographic": {
             "type": "object",
             "properties": {
                 "accuracy": {
-                    "description": "精度（米）\"",
+                    "description": "精度（米）(当enable等于2且UseIP等于0时使用) 10 - 5000",
                     "type": "string"
                 },
                 "enable": {
@@ -10565,16 +10653,33 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "latitude": {
-                    "description": "纬度",
+                    "description": "纬度(当enable等于2且UseIP等于0时使用) -90 - 90",
                     "type": "string"
                 },
                 "longitude": {
-                    "description": "经度 当 enable等于1或者2 且UseIP等于0时使用",
+                    "description": "经度(当enable等于2且UseIP等于0时使用) -180 - 180",
                     "type": "string"
                 },
                 "useip": {
                     "description": "1使用ip定位(默认),2使用自定义",
                     "type": "integer"
+                }
+            }
+        },
+        "brosdk.NextSystem": {
+            "type": "object",
+            "properties": {
+                "Android": {
+                    "type": "string"
+                },
+                "IOS": {
+                    "type": "string"
+                },
+                "Linux": {
+                    "type": "string"
+                },
+                "MacOS": {
+                    "type": "string"
                 }
             }
         },
@@ -10588,6 +10693,9 @@ const docTemplate = `{
                     "type": "string"
                 }
             }
+        },
+        "datatypes.JSONType-brosdk_EnvInfo": {
+            "type": "object"
         },
         "dto.AdminDeptDto": {
             "type": "object",
@@ -10835,19 +10943,23 @@ const docTemplate = `{
             "properties": {
                 "data": {
                     "description": "数据",
-                    "type": "string"
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/brosdk.EnvInfo"
+                        }
+                    ]
                 },
                 "envId": {
                     "description": "环境ID",
-                    "type": "integer"
+                    "type": "string"
+                },
+                "envName": {
+                    "description": "名称",
+                    "type": "string"
                 },
                 "id": {
                     "description": "主键",
                     "type": "integer"
-                },
-                "name": {
-                    "description": "名称",
-                    "type": "string"
                 },
                 "status": {
                     "description": "状态 1 停止 3 启动",
@@ -10864,9 +10976,9 @@ const docTemplate = `{
             "properties": {
                 "envId": {
                     "description": "环境ID",
-                    "type": "integer"
+                    "type": "string"
                 },
-                "name": {
+                "envName": {
                     "description": "名称",
                     "type": "string"
                 },
@@ -13135,19 +13247,23 @@ const docTemplate = `{
                 },
                 "data": {
                     "description": "数据",
-                    "type": "string"
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/datatypes.JSONType-brosdk_EnvInfo"
+                        }
+                    ]
                 },
                 "envId": {
                     "description": "环境ID",
-                    "type": "integer"
+                    "type": "string"
+                },
+                "envName": {
+                    "description": "名称",
+                    "type": "string"
                 },
                 "id": {
                     "description": "主键",
                     "type": "integer"
-                },
-                "name": {
-                    "description": "名称",
-                    "type": "string"
                 },
                 "status": {
                     "description": "状态 1 停止 3启动",
