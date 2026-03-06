@@ -11,10 +11,10 @@ export const useUserStore = defineStore('user', () => {
   const isAuthenticated = ref(false);
   const isLoading = ref(false);
 
-  const initializeAuth = () => {
+  const initializeAuth = async () => {
     isAuthenticated.value = TokenManager.isAuthenticated();
     if (isAuthenticated.value) {
-      loadUserInfo();
+      await loadUserInfo();
     }
   };
 

@@ -4,15 +4,12 @@ const log = require('electron-log')
 
 class Logger {
   /** 生产环境 */
-  #isProd
   #logger
   static #instance
   constructor() {
-    console.log(process.env.NODE_ENV, process.env.NODE_ENV === 'production')
-    this.#isProd = process.env.NODE_ENV === 'production'
     this.#logger = log.create()
     // 'error' | 'warn' | 'info' | 'verbose' | 'debug' | 'silly';
-    this.#logger.transports.console.level = this.isProd ? 'info' : 'debug'
+    this.#logger.transports.console.level = app.isPackaged ? 'info' : 'debug'
     this.#logger.transports.console.format = '%c{h}:{i}:{s}.{ms}{scope} [{level}]%c {text}'
     this.#logger.transports.file.level = 'debug'
     this.#logger.transports.file.format = '[{y}-{m}-{d} {h}:{i}:{s}] [{level}] {text}'
@@ -48,7 +45,7 @@ class Logger {
    * - 生产环境：userData/logs
    */
   #setLogDirByEnv() {
-    if (!this.#isProd) {
+    if (!app.isPackaged) {
       // 开发环境：项目根目录（向上找，适配 main 进程文件在 src/main 下的情况）
       // __dirname 是当前文件所在目录，根据你的项目结构调整 ../ 的层数
       // return path.join(app.getAppPath(), 'logs')

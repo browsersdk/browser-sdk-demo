@@ -18,8 +18,7 @@
     "lint": "run-s lint:*",
     "lint:oxlint": "oxlint . --fix",
     "lint:eslint": "eslint . --fix --cache",
-    "format": "prettier --write --experimental-cli src/",
-    "sdk": "npm i && node scripts/copyn-brosdk.js"
+    "format": "prettier --write --experimental-cli src/"
   },
   "dependencies": {
     "axios": "^1.7.7",
@@ -64,6 +63,15 @@
     "directories": {
       "output": "dist-electron"
     },
+    "extraResources": [
+      {
+        "from": "./sdk",
+        "to": "sdk",
+        "filter": [
+          "**/*"
+        ]
+      }
+    ],
     "files": [
       "dist/**/*",
       "electron/**/*",

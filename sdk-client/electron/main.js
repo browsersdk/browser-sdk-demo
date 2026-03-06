@@ -10,7 +10,7 @@ const log = logger.getInstance()
 const sdk = new SDK()
 
 async function installVueDevtools() {
-  if (process.env.NODE_ENV !== 'development') return
+  if (app.isPackaged) return
 
   try {
     // 项目内插件存放路径（示例：项目根目录下的 extensions/vue-devtools）
@@ -22,11 +22,13 @@ async function installVueDevtools() {
 
     // 加载项目内的 Vue Devtools 插件
     const extension = await session.defaultSession.loadExtension(vueDevtoolsPath)
-  } catch (err) {}
+  } catch (err) {
+    log.info('vueDevtoolsPath加载错误')
+  }
 }
 
 function createWindow() {
-  console.log('Creating main window...')
+  log.info('Creating main window...')
 
   mainWindow = new BrowserWindow({
     width: 1200,
@@ -47,23 +49,27 @@ function createWindow() {
     frame: true, // 保持窗口框架
     show: false, // 先隐藏窗口，等加载完成后再显示
   })
-
   // 等待页面加载完成后再显示窗口
   mainWindow.once('ready-to-show', () => {
     mainWindow.show()
-    if (process.env.NODE_ENV === 'development') {
+    if (!app.isPackaged) {
       mainWindow.webContents.openDevTools()
     }
   })
 
   // 开发环境下加载Vite开发服务器
-  if (process.env.NODE_ENV === 'development') {
+  if (!app.isPackaged) {
     console.log('Loading development server from http://localhost:5173')
     mainWindow.loadURL('http://localhost:5173')
   } else {
     // 生产环境下加载打包后的文件
-    console.log('Loading production build')
-    mainWindow.loadFile(path.join(__dirname, '../dist/index.html'))
+    log.info('PROD MODE')
+
+    const indexPath = path.join(__dirname, '../dist/index.html')
+
+    log.info('indexPath:', indexPath)
+
+    mainWindow.loadFile(indexPath)
   }
 
   // 监听窗口大小变化
