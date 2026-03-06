@@ -122,11 +122,12 @@ func (e *BrowserApi) Update(c *gin.Context) {
 		return
 	}
 	uid := utils.GetAppUid(c)
-	if err := appS.SerAppBrowser.Update(uid, &req); err != nil {
+	data, err := appS.SerAppBrowser.Update(uid, &req)
+	if err != nil {
 		e.Error(c, err)
 		return
 	}
-	e.Ok(c)
+	e.Ok(c, data)
 }
 
 // Del 删除Browser
