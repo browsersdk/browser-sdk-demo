@@ -58,7 +58,7 @@ tmp/
 
 # Compiled files
 *.exe
-*.dll
+# *.dll
 *.so
 *.dylib
 *.out
