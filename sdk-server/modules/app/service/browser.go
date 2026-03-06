@@ -100,35 +100,35 @@ func (s *BrowserService) Create(uid int, req *dto.BrowserDto) (data *models.Brow
 	return
 }
 
-func (s *BrowserService) Update(uid int, req *dto.BrowserDto) error {
-	var browser models.Browser
-	if err := service.SerBrowser.DB().Where("id = ?", req.Id).Find(&browser).Error; err != nil {
-		return err
+func (s *BrowserService) Update(uid int, req *dto.BrowserDto) (browser *models.Browser, err error) {
+	browser = &models.Browser{}
+	if err := service.SerBrowser.DB().Where("id = ?", req.Id).Find(browser).Error; err != nil {
+		return nil, err
 	}
 	if req.EnvName != "" {
 		browser.EnvName = req.EnvName
 	}
 
 	if browser.UserId != uid {
-		return fmt.Errorf("无权限")
+		return nil, fmt.Errorf("无权限")
 	}
 
 	sdk, err := s.getBroSdk()
 	if err != nil {
-		return err
+		return nil, err
 	}
 	data := req.Data
 	if data != nil {
 		req.Data.EnvName = browser.EnvName
 		env, err := sdk.EnvUpdate(context.Background(), data)
 		if err != nil {
-			return err
+			return nil, err
 		}
 		browser.Data = datatypes.NewJSONType(env)
 	}
 	if err := service.SerBrowser.UpdateById(&browser); err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	return browser, nil
 }
