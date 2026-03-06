@@ -11,10 +11,10 @@ export const useUserStore = defineStore('user', () => {
   const isAuthenticated = ref(false);
   const isLoading = ref(false);
 
-  const initializeAuth = () => {
+  const initializeAuth = async () => {
     isAuthenticated.value = TokenManager.isAuthenticated();
     if (isAuthenticated.value) {
-      loadUserInfo();
+      await loadUserInfo();
     }
   };
 
@@ -24,13 +24,17 @@ export const useUserStore = defineStore('user', () => {
       const tokens = await ApiService.login(username, password);
       TokenManager.setTokens(tokens);
       isAuthenticated.value = true;
-      
+
+      const userSig = await ApiService.getSdkUserSig()
+      TokenManager.setUsersig(userSig)
+
+
       // 直接跳转到主控制台
       router.push('/dashboard');
-      
+
       // 在控制台中异步加载用户信息
-      loadUserInfo();
-      
+      // loadUserInfo();
+
       return true;
     } catch (error) {
       console.error('Login failed:', error);

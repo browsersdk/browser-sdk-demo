@@ -8,7 +8,7 @@
           <div class="subtitle">控制台</div>
         </div>
       </div>
-      
+
       <div class="header-right">
         <div class="user-panel">
           <div class="user-info" v-if="userStore.user">
@@ -16,7 +16,9 @@
               <span>{{ userStore.user.nickname?.charAt(0) || userStore.user.username.charAt(0) }}</span>
             </div>
             <div class="user-details">
-              <div class="welcome-text">WELCOME, {{ (userStore.user.nickname || userStore.user.username).toUpperCase() }}</div>
+              <div class="welcome-text">
+                WELCOME, {{ (userStore.user.nickname || userStore.user.username).toUpperCase() }}
+              </div>
               <div class="user-status">STATUS: <span class="online-indicator">ONLINE</span></div>
             </div>
           </div>
@@ -31,8 +33,8 @@
       <!-- 左侧导航栏 -->
       <nav class="sidebar-nav">
         <div class="nav-items">
-          <button 
-            v-for="tab in tabs" 
+          <button
+            v-for="tab in tabs"
             :key="tab.key"
             :class="['nav-item', { active: activeTab === tab.key }]"
             @click="switchTab(tab.key)"
@@ -57,13 +59,13 @@
                 <span>CREATE NEW ENVIRONMENT</span>
               </button>
             </div>
-            
+
             <!-- 加载状态 -->
             <div v-if="browserStore.loading" class="loading-state">
               <div class="spinner"></div>
               <p>LOADING ENVIRONMENTS...</p>
             </div>
-            
+
             <div v-else>
               <!-- 环境表格 -->
               <div class="environments-table-container">
@@ -78,12 +80,12 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <tr 
-                      v-for="(browser, index) in browserStore.browsers" 
+                    <tr
+                      v-for="(browser, index) in browserStore.browsers"
                       :key="browser?.id || index"
-                      :class="getEnvironmentRowClass(browser?.status)"
+                      :class="getEnvironmentRowClass(browser?.status!)"
                     >
-                      <td>{{ browser?.name || '' }}</td>
+                      <td>{{ browser?.envName || '' }}</td>
                       <td>{{ browser?.envId || '' }}</td>
                       <td>
                         <span :class="getStatusBadgeClass(browser?.status)">
@@ -93,29 +95,25 @@
                       <td>{{ formatDateTime(browser?.createdAt) }}</td>
                       <td>
                         <div class="table-actions">
-                          <button 
-                            class="action-btn start small" 
-                            @click="controlEnvironment(browser?.id, 3)"
-                            :disabled="!browser || browser.status === 3"
+                          <button
+                            class="action-btn start small"
+                            @click="controlEnvironment(browser, 3)"
+                            :disabled="false && (!browser || browser.status === 3)"
                           >
                             启动
                           </button>
-                          <button 
-                            class="action-btn stop small" 
-                            @click="controlEnvironment(browser?.id, 1)"
+                          <button
+                            class="action-btn stop small"
+                            @click="controlEnvironment(browser, 1)"
                             :disabled="!browser || browser.status === 1"
                           >
                             停止
                           </button>
-                          <button 
-                            class="action-btn edit small" 
-                            @click="editEnvironment(browser)"
-                            :disabled="!browser"
-                          >
+                          <button class="action-btn edit small" @click="editEnvironment(browser)" :disabled="!browser">
                             编辑
                           </button>
-                          <button 
-                            class="action-btn delete small" 
+                          <button
+                            class="action-btn delete small"
                             @click="deleteEnvironment(browser?.id)"
                             :disabled="!browser"
                           >
@@ -126,32 +124,31 @@
                     </tr>
                   </tbody>
                 </table>
-                
+
                 <!-- 空状态 -->
                 <div v-if="browserStore.browsers.length === 0" class="empty-state">
                   <div class="empty-icon">⚙️</div>
                   <p>暂无环境配置</p>
-                  <button class="primary-btn" @click="showCreateModal = true">
-                    创建首个环境
-                  </button>
+                  <button class="primary-btn" @click="showCreateModal = true">创建首个环境</button>
                 </div>
               </div>
-              
+
               <!-- 分页组件 -->
               <div v-if="browserStore.browsers.length > 0" class="pagination-container">
                 <div class="pagination-info">
-                  显示第 {{ (browserStore.currentPage - 1) * browserStore.pageSize + 1 }} - {{ Math.min(browserStore.currentPage * browserStore.pageSize, browserStore.total) }} 条，
-                  共 {{ browserStore.total }} 条记录
+                  显示第 {{ (browserStore.currentPage - 1) * browserStore.pageSize + 1 }} -
+                  {{ Math.min(browserStore.currentPage * browserStore.pageSize, browserStore.total) }}
+                  条， 共 {{ browserStore.total }} 条记录
                 </div>
                 <div class="pagination-controls">
-                  <button 
+                  <button
                     class="pagination-btn"
                     :disabled="browserStore.currentPage <= 1"
                     @click="changePage(browserStore.currentPage - 1)"
                   >
                     上一页
                   </button>
-                  
+
                   <div class="pagination-pages">
                     <button
                       v-for="page in getPageNumbers()"
@@ -162,8 +159,8 @@
                       {{ page }}
                     </button>
                   </div>
-                  
-                  <button 
+
+                  <button
                     class="pagination-btn"
                     :disabled="browserStore.currentPage >= Math.ceil(browserStore.total / browserStore.pageSize)"
                     @click="changePage(browserStore.currentPage + 1)"
@@ -218,7 +215,7 @@
           <h3>{{ editingEnvironment ? '编辑环境' : '创建新环境' }}</h3>
           <button class="close-btn" @click="closeModal">×</button>
         </div>
-        
+
         <form @submit.prevent="saveEnvironment" class="modal-form">
           <!-- 基本信息 -->
           <div class="form-section">
@@ -228,7 +225,7 @@
                 <label for="envName">环境名称 *</label>
                 <input
                   id="envName"
-                  v-model="environmentForm.name"
+                  v-model="environmentForm.envName"
                   type="text"
                   placeholder="请输入环境名称"
                   required
@@ -255,10 +252,10 @@
             <h4>浏览器配置</h4>
             <div class="form-row">
               <div class="form-group">
-                <label for="userAgent">User Agent</label>
+                <label for="ua">User Agent</label>
                 <input
-                  id="userAgent"
-                  v-model="environmentForm.userAgent"
+                  id="ua"
+                  v-model="environmentForm.ua"
                   type="text"
                   placeholder="Mozilla/5.0..."
                   class="tech-input"
@@ -266,9 +263,10 @@
               </div>
               <div class="form-group">
                 <label for="system">操作系统</label>
-                <select id="system" v-model="environmentForm.system" class="tech-input">
+                <select id="system" v-model="environmentForm.system" class="tech-input" required>
                   <option value="">请选择系统</option>
-                  <option value="Windows">Windows</option>
+                  <option value="Windows 10">Windows 10</option>
+                  <option value="Windows 11">Windows 11</option>
                   <option value="macOS">macOS</option>
                   <option value="Linux">Linux</option>
                   <option value="Android">Android</option>
@@ -283,8 +281,9 @@
                   id="kernel"
                   v-model="environmentForm.kernel"
                   type="text"
-                  placeholder="Chrome/Gecko/Webkit"
+                  placeholder="Chrome"
                   class="tech-input"
+                  required
                 />
               </div>
               <div class="form-group">
@@ -295,6 +294,7 @@
                   type="text"
                   placeholder="98.0.4758.102"
                   class="tech-input"
+                  required
                 />
               </div>
             </div>
@@ -306,23 +306,11 @@
             <div class="form-row">
               <div class="form-group">
                 <label for="cpu">CPU核心数</label>
-                <input
-                  id="cpu"
-                  v-model.number="environmentForm.cpu"
-                  type="number"
-                  placeholder="4"
-                  class="tech-input"
-                />
+                <input id="cpu" v-model.number="environmentForm.cpu" type="number" placeholder="4" class="tech-input" />
               </div>
               <div class="form-group">
                 <label for="mem">内存(GB)</label>
-                <input
-                  id="mem"
-                  v-model.number="environmentForm.mem"
-                  type="number"
-                  placeholder="8"
-                  class="tech-input"
-                />
+                <input id="mem" v-model.number="environmentForm.mem" type="number" placeholder="8" class="tech-input" />
               </div>
             </div>
             <div class="form-row">
@@ -399,39 +387,24 @@
           </div>
 
           <!-- 功能开关 -->
-          <div class="form-section">
+          <div class="form-section form-section2">
             <h4>功能开关</h4>
             <div class="form-row">
               <div class="form-group checkbox-group">
                 <label>
-                  <input 
-                    type="checkbox" 
-                    v-model="environmentForm.hardware"
-                    true-value="1"
-                    false-value="0"
-                  />
+                  <input type="checkbox" v-model="environmentForm.hardware" true-value="1" false-value="0" />
                   硬件加速
                 </label>
               </div>
               <div class="form-group checkbox-group">
                 <label>
-                  <input 
-                    type="checkbox" 
-                    v-model="environmentForm.webGl"
-                    true-value="1"
-                    false-value="0"
-                  />
+                  <input type="checkbox" v-model="environmentForm.webGl" true-value="1" false-value="0" />
                   WebGL支持
                 </label>
               </div>
               <div class="form-group checkbox-group">
                 <label>
-                  <input 
-                    type="checkbox" 
-                    v-model="environmentForm.canvas"
-                    true-value="1"
-                    false-value="0"
-                  />
+                  <input type="checkbox" v-model="environmentForm.canvas" true-value="1" false-value="0" />
                   Canvas支持
                 </label>
               </div>
@@ -439,34 +412,19 @@
             <div class="form-row">
               <div class="form-group checkbox-group">
                 <label>
-                  <input 
-                    type="checkbox" 
-                    v-model="environmentForm.audioContext"
-                    true-value="1"
-                    false-value="0"
-                  />
+                  <input type="checkbox" v-model="environmentForm.audioContext" true-value="1" false-value="0" />
                   音频上下文
                 </label>
               </div>
               <div class="form-group checkbox-group">
                 <label>
-                  <input 
-                    type="checkbox" 
-                    v-model="environmentForm.mediaDevice"
-                    true-value="1"
-                    false-value="0"
-                  />
+                  <input type="checkbox" v-model="environmentForm.mediaDevice" true-value="1" false-value="0" />
                   媒体设备
                 </label>
               </div>
               <div class="form-group checkbox-group">
                 <label>
-                  <input 
-                    type="checkbox" 
-                    v-model="environmentForm.bluetooth"
-                    true-value="1"
-                    false-value="0"
-                  />
+                  <input type="checkbox" v-model="environmentForm.bluetooth" true-value="1" false-value="0" />
                   蓝牙支持
                 </label>
               </div>
@@ -485,6 +443,7 @@
                   type="text"
                   placeholder="customer_123"
                   class="tech-input"
+                  disabled
                 />
               </div>
               <div class="form-group">
@@ -511,11 +470,9 @@
           </div>
 
           <div class="modal-actions">
-            <button type="button" class="secondary-btn" @click="closeModal">
-              取消
-            </button>
+            <button type="button" class="secondary-btn" @click="closeModal">取消</button>
             <button type="submit" class="primary-btn" :disabled="isSaving">
-              {{ isSaving ? '处理中...' : (editingEnvironment ? '更新' : '创建') }}
+              {{ isSaving ? '处理中...' : editingEnvironment ? '更新' : '创建' }}
             </button>
           </div>
         </form>
@@ -525,58 +482,28 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue';
-import { useUserStore } from '@/stores/user';
-import { useBrowserStore } from '@/stores/browser';
-import { useRouter } from 'vue-router';
-import type { Browser } from '@/services';
+import { ref, onMounted, onUnmounted } from 'vue'
+import { useUserStore } from '@/stores/user'
+import { useBrowserStore } from '@/stores/browser'
+import { useRouter } from 'vue-router'
+import { SdkHttpService } from '@/services'
+import type { Browser, BrowserDto } from '@/services'
 
-type EnvironmentForm = Partial<Browser>;
+type EnvironmentForm = Partial<Browser>
 
-// interface EnvironmentForm {
-//   name: string;
-//   envId?: number;
-//   // 浏览器配置
-//   userAgent?: string;
-//   system?: string;
-//   kernel?: string;
-//   kernelVersion?: string;
-//   // 硬件配置
-//   cpu?: number;
-//   mem?: number;
-//   deviceName?: string;
-//   mac?: string;
-//   // 网络配置
-//   publicIp?: string;
-//   proxy?: string;
-//   zone?: string;
-//   ipChannel?: string;
-//   // 功能开关
-//   hardware?: string;
-//   webGl?: string;
-//   canvas?: string;
-//   audioContext?: string;
-//   mediaDevice?: string;
-//   bluetooth?: string;
-//   // 其他配置
-//   customerId?: string;
-//   serial?: string;
-//   remark?: string;
-// }
+const userStore = useUserStore()
+const browserStore = useBrowserStore()
+const router = useRouter()
 
-const userStore = useUserStore();
-const browserStore = useBrowserStore();
-const router = useRouter();
-
-const activeTab = ref('environments');
-const showCreateModal = ref(false);
-const editingEnvironment = ref<Browser | null>(null);
-const isSaving = ref(false);
+const activeTab = ref('environments')
+const showCreateModal = ref(false)
+const editingEnvironment = ref<BrowserDto | null>(null)
+const isSaving = ref(false)
 // const isActionLoading = ref(false);  // 添加动作加载状态
 
 // 窗口高度相关
-const windowHeight = ref(window.innerHeight);
-const headerHeight = ref(80); // 头部高度估算
+const windowHeight = ref(window.innerHeight)
+const headerHeight = ref(80) // 头部高度估算
 
 // 计算主内容区域可用高度
 // const mainContentHeight = computed(() => {
@@ -585,46 +512,22 @@ const headerHeight = ref(80); // 头部高度估算
 
 // 监听窗口大小变化
 const handleResize = () => {
-  windowHeight.value = window.innerHeight;
-};
-
-onMounted(async () => {
-  window.addEventListener('resize', handleResize);
-  handleResize(); // 初始化
-  
-  if (!userStore.isAuthenticated) {
-    router.push('/login');
-  } else {
-    // 恢复localStorage中的用户信息
-    userStore.restoreUserInfo();
-    // 确保用户信息是最新的
-    userStore.loadUserInfo();
-    // 加载浏览器环境列表
-    try {
-      await browserStore.loadBrowsers();
-    } catch (error) {
-      console.error('Failed to load environments:', error);
-    }
-  }
-});
-
-onUnmounted(() => {
-  window.removeEventListener('resize', handleResize);
-});
+  windowHeight.value = window.innerHeight
+}
 
 const tabs = [
   { key: 'environments', label: '环境管理' },
-  { key: 'settings', label: '系统设置' }
-];
+  { key: 'settings', label: '系统设置' },
+]
 
 const environmentForm = ref<EnvironmentForm>({
-  name: '',
+  envName: '',
   envId: undefined,
   // 浏览器配置
-  userAgent: '',
+  ua: '',
   system: '',
-  kernel: '',
-  kernelVersion: '',
+  kernel: 'Chrome',
+  kernelVersion: '134',
   // 硬件配置
   cpu: 4,
   mem: 8,
@@ -638,15 +541,15 @@ const environmentForm = ref<EnvironmentForm>({
   // 功能开关
   hardware: 0,
   webGl: 0,
-  canvas: 0,
+  canvas: 4,
   audioContext: 0,
   mediaDevice: 0,
   bluetooth: 0,
   // 其他配置
   customerId: '',
   serial: '',
-  remark: ''
-});
+  remark: '',
+})
 
 // 根据status值获取环境卡片的CSS类
 // const getEnvironmentCardClass = (status: number): string => {
@@ -665,13 +568,13 @@ const environmentForm = ref<EnvironmentForm>({
 const getEnvironmentRowClass = (status: number): string => {
   switch (status) {
     case 1:
-      return 'environment-row-stopped';
+      return 'environment-row-stopped'
     case 3:
-      return 'environment-row-active';
+      return 'environment-row-active'
     default:
-      return 'environment-row-unknown';
+      return 'environment-row-unknown'
   }
-};
+}
 
 // const formatDate = (dateString: string) => {
 //   return new Date(dateString).toLocaleString('zh-CN');
@@ -685,45 +588,44 @@ const getEnvironmentRowClass = (status: number): string => {
 
 const changePage = async (page: number) => {
   try {
-    await browserStore.loadBrowsers(page);
+    await browserStore.loadBrowsers(page)
   } catch (error) {
-    console.error('Failed to change page:', error);
+    console.error('Failed to change page:', error)
   }
-};
+}
 
 const getPageNumbers = (): number[] => {
-  const totalPages = Math.ceil(browserStore.total / browserStore.pageSize);
-  const currentPage = browserStore.currentPage;
-  const pages: number[] = [];
-  
+  const totalPages = Math.ceil(browserStore.total / browserStore.pageSize)
+  const currentPage = browserStore.currentPage
+  const pages: number[] = []
+
   // 显示最多5个页码
-  let start = Math.max(1, currentPage - 2);
-  const end = Math.min(totalPages, start + 4);
-  
+  let start = Math.max(1, currentPage - 2)
+  const end = Math.min(totalPages, start + 4)
+
   // 调整起始页码
   if (end - start < 4) {
-    start = Math.max(1, end - 4);
+    start = Math.max(1, end - 4)
   }
-  
-  for (let i = start; i <= end; i++) {
-    pages.push(i);
-  }
-  
-  return pages;
-};
 
+  for (let i = start; i <= end; i++) {
+    pages.push(i)
+  }
+
+  return pages
+}
 
 const switchTab = (tabKey: string) => {
-  activeTab.value = tabKey;
-};
+  activeTab.value = tabKey
+}
 
 const handleLogout = () => {
-  userStore.logout();
+  userStore.logout()
 }
 
 onMounted(async () => {
-  router.push('/login');
-});
+  router.push('/login')
+})
 
 // const showModal = () => {
 //   showCreateModal.value = true;
@@ -732,20 +634,20 @@ onMounted(async () => {
 // };
 
 const closeModal = () => {
-  showCreateModal.value = false;
-  editingEnvironment.value = null;
-  resetForm();
-  isSaving.value = false;
-};
+  showCreateModal.value = false
+  editingEnvironment.value = null
+  resetForm()
+  isSaving.value = false
+}
 
 const resetForm = () => {
   environmentForm.value = {
-    name: '',
+    envName: '',
     envId: undefined,
-    userAgent: '',
+    ua: '',
     system: '',
-    kernel: '',
-    kernelVersion: '',
+    kernel: 'Chrome',
+    kernelVersion: '134',
     cpu: 4,
     mem: 8,
     deviceName: '',
@@ -756,234 +658,301 @@ const resetForm = () => {
     ipChannel: '',
     hardware: 0,
     webGl: 0,
-    canvas: 0,
+    canvas: 4,
     audioContext: 0,
     mediaDevice: 0,
     bluetooth: 0,
     customerId: '',
     serial: '',
-    remark: ''
-  };
-};
-
-const controlEnvironment = async (id: number | undefined, status: number) => {
-  if (!id) {
-    console.warn('Invalid browser id for control operation');
-    return;
+    remark: '',
   }
-  
+}
+
+const controlEnvironment = async (item: BrowserDto, status: number) => {
+  if (!item.id) {
+    console.warn('Invalid browser id for control operation')
+    return
+  }
+
   try {
     // 使用现有的updateBrowser方法来更新状态
-    const browser = await browserStore.getBrowser(id);
-    if (browser) {
-      await browserStore.updateBrowser({
-        id: browser.id,
-        name: browser.name,
-        envId: browser.envId,
-        userId: browser.userId,
-        data: browser.data,
-        status: status
-      });
-    }
-  } catch (error) {
-    console.error('Failed to control environment:', error);
-    alert('操作失败，请重试');
-  }
-};
+    // const browser = await browserStore.getBrowser(item.id)
+    // console.log('环境详细信息', browser)
+    // if (browser) {
+    //   await browserStore.updateBrowser({
+    //     id: browser.id,
+    //     name: browser.name,
+    //     envId: browser.envId,
+    //     userId: browser.userId,
+    //     data: browser.data,
+    //     status: status,
+    //   })
+    // }
 
-const editEnvironment = (browser: Browser | undefined) => {
-  if (!browser) {
-    console.warn('Cannot edit undefined browser');
-    return;
+    if (status === 3)
+      SdkHttpService.open({
+        envs: [
+          {
+            envId: item.envId!,
+            // envId: '2028737264313438208',
+            args: [],
+          },
+        ],
+      })
+    if (status === 1)
+      SdkHttpService.close({
+        envs: [item.envId!],
+      })
+  } catch (error) {
+    console.error('Failed to control environment:', error)
+    alert('操作失败，请重试')
   }
-  
-  editingEnvironment.value = browser;
+}
+
+const editEnvironment = (browser: BrowserDto | undefined) => {
+  if (!browser) {
+    console.warn('Cannot edit undefined browser')
+    return
+  }
+
+  console.log('editEnvironment', browser)
+  editingEnvironment.value = browser
   environmentForm.value = {
-    name: browser.name,
+    envName: browser.envName,
     envId: browser.envId,
-    userAgent: browser.userAgent || '',
-    system: browser.system || '',
-    kernel: browser.kernel || '',
-    kernelVersion: browser.kernelVersion || '',
-    cpu: browser.cpu || 4,
-    mem: browser.mem || 8,
-    deviceName: browser.deviceName || '',
-    mac: browser.mac || '',
-    publicIp: browser.publicIp || '',
-    proxy: browser.proxy || '',
-    zone: browser.zone || '',
-    ipChannel: browser.ipChannel || '',
-    hardware: browser.hardware || 0,
-    webGl: browser.webGl || 0,
-    canvas: browser.canvas || 0,
-    audioContext: browser.audioContext || 0,
-    mediaDevice: browser.mediaDevice || 0,
-    bluetooth: browser.bluetooth || 0,
-    customerId: browser.customerId || '',
-    serial: browser.serial || '',
-    remark: browser.remark || ''
-  };
-  showCreateModal.value = true;
-};
+    ua: browser.data!.finger.ua || '',
+    system: browser.data!.finger.system || '',
+    kernel: browser.data!.finger.kernel || '',
+    kernelVersion: browser.data!.finger.kernelVersion || '',
+    cpu: browser.data!.finger.cpu || 4,
+    mem: browser.data!.finger.mem || 8,
+    deviceName: browser.data!.finger.deviceName || '',
+    mac: browser.data!.finger.mac || '',
+    publicIp: browser.data!.publicIp || '',
+    proxy: browser.data!.proxy || '',
+    zone: browser.data!.finger.zone || '',
+    ipChannel: browser.data!.ipChannel || '',
+    hardware: browser.data!.finger.hardware || 0,
+    webGl: browser.data!.finger.webGl || 0,
+    canvas: browser.data!.finger.canvas || 4,
+    audioContext: browser.data!.finger.audioContext || 0,
+    mediaDevice: browser.data!.finger.mediaDevice || 0,
+    bluetooth: browser.data!.finger.bluetooth || 0,
+    customerId: browser.data!.customerId || '',
+    serial: browser.data!.serial || '',
+    remark: browser.data!.remark || '',
+  }
+  showCreateModal.value = true
+}
 
 const saveEnvironment = async () => {
-  if (!environmentForm.value.name!.trim()) return;
-  
-  isSaving.value = true;
-  
+  if (!environmentForm.value.envName!.trim()) return
+
+  isSaving.value = true
+
   try {
     const browserData = {
-      audioContext: environmentForm.value.audioContext || 0,
-      bluetooth: environmentForm.value.bluetooth || 0,
-      canvas: environmentForm.value.canvas || 0,
-      cpu: environmentForm.value.cpu || 4,
+      ...editingEnvironment.value?.data,
+      envId: environmentForm.value.envId || '',
+      envName: environmentForm.value.envName!,
+      // bridgeProxy: '',
+      // cookie: '',
       customerId: environmentForm.value.customerId || '',
-      deviceName: environmentForm.value.deviceName || '',
-      doNotTrack: 0,
-      dpi: '1920x1080',
-      enableCookie: 1,
-      enableScanPort: 0,
-      enablenotice: 1,
-      enableopen: 1,
-      enablepic: 1,
-      enablesound: 1,
-      enablevideo: 1,
-      envId: environmentForm.value.envId || 0,
-      envName: environmentForm.value.name,
-      fontList: ['Arial', 'Helvetica', 'Times New Roman'],
-      geographic: {
-        accuracy: 'high',
-        enable: 1,
-        latitude: '39.9042',
-        longitude: '116.4074',
-        useip: 1
-      },
-      hardware: environmentForm.value.hardware || 0,
-      ignoreCookieErr: 0,
       ipChannel: environmentForm.value.ipChannel || '',
-      kernel: environmentForm.value.kernel || '',
-      kernelVersion: environmentForm.value.kernelVersion || '',
-      language: ['zh-CN', 'en-US'],
-      mac: environmentForm.value.mac || '',
-      mediaDevice: environmentForm.value.mediaDevice || 0,
-      mem: environmentForm.value.mem || 8,
-      picsize: '1920x1080',
-      proxy: environmentForm.value.proxy || '',
       publicIp: environmentForm.value.publicIp || '',
+      proxy: environmentForm.value.proxy || '',
+      // region: '',
       remark: environmentForm.value.remark || '',
-      scanPort: [],
       serial: environmentForm.value.serial || '',
-      speechVoices: 1,
-      system: environmentForm.value.system || '',
-      uaVersion: '1.0.0',
-      userAgent: environmentForm.value.userAgent || '',
-      webGl: environmentForm.value.webGl || 0,
-      webRTC: 1,
-      webRTCIP: '127.0.0.1',
-      zone: environmentForm.value.zone || ''
-    };
+      finger: {
+        audioContext: (environmentForm.value.audioContext || 0) * 1,
+        // battery: 0,
+        bluetooth: (environmentForm.value.bluetooth || 0) * 1,
+        canvas: (environmentForm.value.canvas || 4) * 1,
+        // clientRects: 0,
+        cpu: (environmentForm.value.cpu || 4) * 1,
+        deviceName: environmentForm.value.deviceName || '',
+        // doNotTrack: 0,
+        // dpi: '1920x1080',
+        // enableGc: 0,
+        // enablenotice: 1,
+        // enableopen: 1,
+        // enableOpenNumber: 0,
+        // enablepic: 1,
+        // enableScanPort: 0,
+        // enablesound: 1,
+        // enablevideo: 1,
+        // font: {
+        //   enable: 0,
+        //   list: ['Arial', 'Helvetica', 'Times New Roman'],
+        // },
+        // fontFinger: 0,
+        // gcTime: 0,
+        // geographic: {
+        //   accuracy: 'high',
+        //   enable: 1,
+        //   latitude: '39.9042',
+        //   longitude: '116.4074',
+        //   useip: 1,
+        // },
+        hardware: (environmentForm.value.hardware || 0) * 1,
+        kernel: environmentForm.value.kernel || '',
+        kernelVersion: environmentForm.value.kernelVersion || '',
+        language: ['zh-CN', 'en-US'],
+        mac: environmentForm.value.mac || '',
+        mediaDevice: (environmentForm.value.mediaDevice || 0) * 1,
+        mem: (environmentForm.value.mem || 8) * 1,
+        // picSize: '1920x1080',
+        // scanPort: '',
+        // speechVoices: 1,
+        system: environmentForm.value.system || '',
+        ua: environmentForm.value.ua || '',
+        // uaVersion: '134',
+        // uilanguage: [],
+        webGl: (environmentForm.value.webGl || 0) * 1,
+        // webGlInfo: 0,
+        // webGlRenderer: '',
+        // webGlVendor: '',
+        // webRTC: 5,
+        // webRTCIP: '127.0.0.1',
+        // widowssize: '1920x1080',
+        zone: environmentForm.value.zone || '',
+      },
+    }
 
     if (editingEnvironment.value) {
+      browserData.finger = {
+        ...editingEnvironment.value.data!.finger,
+        audioContext: (environmentForm.value.audioContext || 0) * 1,
+        bluetooth: (environmentForm.value.bluetooth || 0) * 1,
+        canvas: (environmentForm.value.canvas || 4) * 1,
+        cpu: (environmentForm.value.cpu || 4) * 1,
+        deviceName: environmentForm.value.deviceName || '',
+        hardware: (environmentForm.value.hardware || 0) * 1,
+        kernel: environmentForm.value.kernel || '',
+        kernelVersion: environmentForm.value.kernelVersion || '',
+        language: editingEnvironment.value.data!.finger.language || [],
+        mac: environmentForm.value.mac || '',
+        mediaDevice: (environmentForm.value.mediaDevice || 0) * 1,
+        mem: (environmentForm.value.mem || 8) * 1,
+        system: environmentForm.value.system || '',
+        ua: environmentForm.value.ua || '',
+        webGl: (environmentForm.value.webGl || 0) * 1,
+        zone: environmentForm.value.zone || '',
+      }
       // 更新现有环境
       await browserStore.updateBrowser({
-        id: editingEnvironment.value.id,
-        name: environmentForm.value.name!,
-        envId: environmentForm.value.envId,
+        id: editingEnvironment.value.id!,
+        envName: environmentForm.value.envName!,
+        envId: environmentForm.value.envId!,
         userId: userStore.user?.id || 0,
-        data: JSON.stringify(browserData)
-      });
+        // data: JSON.stringify(browserData),
+        data: browserData,
+      })
     } else {
       // 创建新环境
       await browserStore.createBrowser({
-        name: environmentForm.value.name!,
+        // envName: environmentForm.value.name!,
+        envName: environmentForm.value.envName!,
         envId: environmentForm.value.envId,
         userId: userStore.user?.id || 0,
-        data: JSON.stringify(browserData)
-      });
+        // data: JSON.stringify(browserData),
+        data: browserData,
+      })
     }
-    
-    closeModal();
+
+    closeModal()
   } catch (error) {
-    console.error('Failed to save environment:', error);
-    alert('操作失败，请重试');
+    console.error('Failed to save environment:', error)
+    alert('操作失败，请重试')
   } finally {
-    isSaving.value = false;
+    isSaving.value = false
   }
-};
+}
 
 const deleteEnvironment = async (id: number | undefined) => {
   if (!id) {
-    console.warn('Cannot delete environment with invalid id');
-    return;
+    console.warn('Cannot delete environment with invalid id')
+    return
   }
-  
+
   if (confirm('确定要删除这个环境吗？此操作不可撤销。')) {
     try {
-      await browserStore.deleteBrowser(id);
+      await browserStore.deleteBrowser(id)
     } catch (error) {
-      console.error('Failed to delete environment:', error);
-      alert('删除失败，请重试');
+      console.error('Failed to delete environment:', error)
+      alert('删除失败，请重试')
     }
   }
-};
+}
 
 const formatDateTime = (dateString: string | undefined) => {
-  if (!dateString) return '';
+  if (!dateString) return ''
   return new Date(dateString).toLocaleString('zh-CN', {
     year: 'numeric',
     month: '2-digit',
     day: '2-digit',
     hour: '2-digit',
     minute: '2-digit',
-    second: '2-digit'
-  });
-};
+    second: '2-digit',
+  })
+}
 
 const getStatusBadgeClass = (status: number | undefined): string => {
-  if (status === undefined) return 'status-badge unknown';
-  
+  if (status === undefined) return 'status-badge unknown'
+
   switch (status) {
     case 1:
-      return 'status-badge stopped';
+      return 'status-badge stopped'
     case 3:
-      return 'status-badge running';
+      return 'status-badge running'
     default:
-      return 'status-badge unknown';
+      return 'status-badge unknown'
   }
-};
+}
 
 const getStatusText = (status: number | undefined): string => {
-  if (status === undefined) return '未知';
-  
+  if (status === undefined) return '未知'
+
   switch (status) {
     case 1:
-      return '停止';
+      return '停止'
     case 3:
-      return '运行';
+      return '运行'
     default:
-      return '未知';
+      return '未知'
   }
-};
+}
 
 onMounted(async () => {
+  window.addEventListener('resize', handleResize)
+  handleResize() // 初始化
+
   if (!userStore.isAuthenticated) {
-    router.push('/login');
+    router.push('/login')
   } else {
     // 恢复localStorage中的用户信息
-    userStore.restoreUserInfo();
+    userStore.restoreUserInfo()
     // 确保用户信息是最新的
-    userStore.loadUserInfo();
+    userStore.loadUserInfo()
+
+    console.log('userStore.user', userStore.user)
+
     // 加载浏览器环境列表
     try {
-      await browserStore.loadBrowsers();
+      await browserStore.loadBrowsers()
     } catch (error) {
-      console.error('Failed to load environments:', error);
+      console.error('Failed to load environments:', error)
     }
   }
-});
+})
+
+onUnmounted(() => {
+  window.removeEventListener('resize', handleResize)
+})
 </script>
 
-<style scoped>
+<style lang="less" scoped>
 /* 隐藏滚动条的全局样式 */
 ::-webkit-scrollbar {
   width: 0px;
@@ -1018,7 +987,6 @@ body {
   overflow: hidden; /* 防止整体滚动 */
 }
 
-
 /* 背景网格效果 */
 .main-layout::before {
   content: '';
@@ -1027,7 +995,7 @@ body {
   left: 0;
   right: 0;
   bottom: 0;
-  background-image: 
+  background-image:
     linear-gradient(rgba(0, 255, 255, 0.03) 1px, transparent 1px),
     linear-gradient(90deg, rgba(0, 255, 255, 0.03) 1px, transparent 1px);
   background-size: 40px 40px;
@@ -1037,8 +1005,12 @@ body {
 }
 
 @keyframes gridMove {
-  0% { transform: translate(0, 0); }
-  100% { transform: translate(40px, 40px); }
+  0% {
+    transform: translate(0, 0);
+  }
+  100% {
+    transform: translate(40px, 40px);
+  }
 }
 
 .main-header {
@@ -1755,8 +1727,12 @@ body {
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .loading-state p {
@@ -1771,12 +1747,12 @@ body {
     max-width: 1000px;
     padding: 0 20px;
   }
-  
+
   .environments-grid {
     grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
     gap: 20px;
   }
-  
+
   .main-content {
     padding: 25px 30px;
   }
@@ -1786,20 +1762,20 @@ body {
   .content-wrapper {
     max-width: 900px;
   }
-  
+
   .environments-grid {
     grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
     gap: 15px;
   }
-  
+
   .main-content {
     padding: 20px 25px;
   }
-  
+
   .header-section h2 {
     font-size: 22px;
   }
-  
+
   .app-title {
     font-size: 18px;
   }
@@ -1809,7 +1785,7 @@ body {
   .layout-container {
     flex-direction: column;
   }
-  
+
   .sidebar-nav {
     width: 100%;
     height: auto;
@@ -1817,45 +1793,45 @@ body {
     border-bottom: 1px solid rgba(0, 255, 255, 0.2);
     padding: 15px 0;
   }
-  
+
   .nav-items {
     flex-direction: row;
     justify-content: center;
     flex-wrap: wrap;
     gap: 10px;
   }
-  
+
   .nav-item {
     padding: 12px 20px;
     flex: 1;
     text-align: center;
     min-width: 120px;
   }
-  
+
   .content-wrapper {
     max-width: 100%;
     padding: 0 15px;
   }
-  
+
   .environments-grid {
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: 15px;
   }
-  
+
   .main-content {
     padding: 20px 15px;
   }
-  
+
   .content-header {
     flex-direction: column;
     gap: 15px;
     align-items: stretch;
   }
-  
+
   .header-section {
     text-align: center;
   }
-  
+
   .primary-btn {
     align-self: center;
   }
@@ -1867,65 +1843,65 @@ body {
     flex-direction: column;
     gap: 15px;
   }
-  
+
   .header-left {
     text-align: center;
   }
-  
+
   .user-panel {
     justify-content: center;
     width: 100%;
   }
-  
+
   .environments-grid {
     grid-template-columns: 1fr;
     gap: 15px;
   }
-  
+
   .environment-card {
     margin: 0 10px;
   }
-  
+
   .card-header {
     flex-direction: column;
     gap: 15px;
     align-items: stretch;
   }
-  
+
   .header-content {
     justify-content: center;
   }
-  
+
   .card-actions {
     justify-content: center;
     min-width: unset;
     width: 100%;
   }
-  
+
   .action-btn {
     flex: 1;
     min-width: unset;
   }
-  
+
   .info-grid {
     grid-template-columns: 1fr;
     gap: 10px;
   }
-  
+
   .modal-content {
     width: 95%;
     padding: 20px;
     margin: 10px;
   }
-  
+
   .modal-header h3 {
     font-size: 18px;
   }
-  
+
   .settings-panel {
     grid-template-columns: 1fr;
   }
-  
+
   .status-grid {
     grid-template-columns: 1fr;
   }
@@ -1935,104 +1911,106 @@ body {
   .main-header {
     padding: 12px 15px;
   }
-  
+
   .app-title {
     font-size: 16px;
     letter-spacing: 1px;
   }
-  
+
   .subtitle {
     font-size: 10px;
   }
-  
+
   .user-info {
     padding: 8px 15px;
     gap: 10px;
   }
-  
+
   .user-avatar {
     width: 30px;
     height: 30px;
     font-size: 14px;
   }
-  
+
   .welcome-text {
     font-size: 11px;
   }
-  
+
   .user-status {
     font-size: 10px;
   }
-  
+
   .logout-btn {
     padding: 8px 15px;
     font-size: 11px;
   }
-  
+
   .environments-grid {
     gap: 12px;
   }
-  
+
   .environment-card {
     margin: 0 5px;
   }
-  
+
   .card-header {
     padding: 15px;
   }
-  
+
   .card-header h3 {
     font-size: 14px;
   }
-  
+
   .card-body {
     padding: 15px;
   }
-  
+
   .action-btn {
     padding: 5px 10px;
     font-size: 10px;
     height: 24px;
   }
-  
+
   .info-item {
     flex-direction: column;
     align-items: flex-start;
     gap: 3px;
   }
-  
-  .label, .value {
+
+  .label,
+  .value {
     font-size: 11px;
   }
-  
+
   .modal-content {
     padding: 15px;
   }
-  
+
   .modal-header {
     margin-bottom: 20px;
     padding-bottom: 12px;
   }
-  
+
   .modal-header h3 {
     font-size: 16px;
   }
-  
+
   .form-group label {
     font-size: 11px;
   }
-  
+
   .tech-input {
     padding: 10px 12px;
     font-size: 13px;
   }
-  
+
   .modal-actions {
     flex-direction: column;
     gap: 10px;
   }
-  
-  .primary-btn, .secondary-btn {
+
+  .primary-btn,
+  .secondary-btn {
     width: 100%;
     padding: 12px;
   }
@@ -2211,6 +2189,13 @@ body {
   background: rgba(5, 5, 15, 0.3);
   border-radius: 8px;
   border: 1px solid rgba(0, 255, 255, 0.1);
+  &.form-section2 {
+    .form-group {
+      label {
+        padding-left: 16px;
+      }
+    }
+  }
 }
 
 .form-section h4 {
@@ -2235,7 +2220,7 @@ body {
 
 .checkbox-group {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
 }
 
 .checkbox-group label {
@@ -2247,7 +2232,7 @@ body {
   font-size: 13px;
 }
 
-.checkbox-group input[type="checkbox"] {
+.checkbox-group input[type='checkbox'] {
   width: 16px;
   height: 16px;
   accent-color: #00ffff;
@@ -2271,30 +2256,30 @@ body {
   .environments-table-container {
     overflow-x: auto;
   }
-  
+
   .environments-table {
     min-width: 800px;
   }
-  
+
   .form-row {
     grid-template-columns: 1fr;
   }
-  
+
   .modal-content.large {
     width: 95vw;
     padding: 20px;
   }
-  
+
   .pagination-container {
     flex-direction: column;
     gap: 15px;
     text-align: center;
   }
-  
+
   .table-actions {
     justify-content: flex-start;
   }
-  
+
   .action-btn.small {
     min-width: 45px;
     padding: 3px 8px;
@@ -2305,38 +2290,38 @@ body {
   .main-header {
     padding: 10px 12px;
   }
-  
+
   .app-title {
     font-size: 14px;
   }
-  
+
   .environments-grid {
     gap: 10px;
   }
-  
+
   .environment-card {
     margin: 0;
   }
-  
+
   .card-header {
     padding: 12px;
   }
-  
+
   .card-body {
     padding: 12px;
   }
-  
+
   .action-btn {
     padding: 4px 8px;
     font-size: 9px;
     height: 22px;
   }
-  
+
   .modal-content {
     padding: 12px;
     margin: 5px;
   }
-  
+
   .close-btn {
     width: 25px;
     height: 25px;
@@ -2355,7 +2340,7 @@ body {
   .layout-container {
     flex-direction: row;
   }
-  
+
   .sidebar-nav {
     width: 180px;
     height: 100vh;
@@ -2363,18 +2348,18 @@ body {
     border-bottom: none;
     padding: 20px 0;
   }
-  
+
   .nav-items {
     flex-direction: column;
     justify-content: flex-start;
   }
-  
+
   .nav-item {
     padding: 14px 15px;
     text-align: left;
     min-width: unset;
   }
-  
+
   .main-content {
     padding: 20px;
   }
@@ -2385,19 +2370,19 @@ body {
   .content-wrapper {
     max-width: 1600px;
   }
-  
+
   .environments-grid {
     grid-template-columns: repeat(auto-fill, minmax(420px, 1fr));
   }
-  
+
   .environment-card {
     padding: 25px;
   }
-  
+
   .card-header {
     padding: 25px;
   }
-  
+
   .card-body {
     padding: 25px;
   }
@@ -2408,23 +2393,23 @@ body {
   .main-header {
     padding: 15px 30px;
   }
-  
+
   .layout-container {
     height: calc(100vh - 60px); /* 调整头部高度计算 */
   }
-  
+
   .sidebar-nav {
     padding: 15px 0;
   }
-  
+
   .nav-item {
     padding: 12px 20px;
   }
-  
+
   .main-content {
     padding: 20px 30px;
   }
-  
+
   .content-header {
     margin-bottom: 20px;
     padding-bottom: 15px;
@@ -2435,28 +2420,28 @@ body {
   .main-header {
     padding: 12px 25px;
   }
-  
+
   .layout-container {
     height: calc(100vh - 50px);
   }
-  
+
   .sidebar-nav {
     padding: 10px 0;
   }
-  
+
   .nav-item {
     padding: 10px 18px;
     font-size: 12px;
   }
-  
+
   .main-content {
     padding: 15px 25px;
   }
-  
+
   .environments-grid {
     gap: 15px;
   }
-  
+
   .environment-card {
     padding: 15px;
   }
@@ -2467,19 +2452,19 @@ body {
   .layout-container {
     height: calc(100vh - 100px);
   }
-  
+
   .main-content {
     padding: 40px 50px;
   }
-  
+
   .content-wrapper {
     max-width: 1400px;
   }
-  
+
   .environments-grid {
     gap: 35px;
   }
-  
+
   .environment-card {
     padding: 30px;
   }
@@ -2491,12 +2476,12 @@ body {
     max-width: 1000px;
     padding: 0 20px;
   }
-  
+
   .environments-grid {
     grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
     gap: 20px;
   }
-  
+
   .main-content {
     padding: 25px 30px;
   }
@@ -2506,20 +2491,20 @@ body {
   .content-wrapper {
     max-width: 900px;
   }
-  
+
   .environments-grid {
     grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
     gap: 15px;
   }
-  
+
   .main-content {
     padding: 20px 25px;
   }
-  
+
   .header-section h2 {
     font-size: 22px;
   }
-  
+
   .app-title {
     font-size: 18px;
   }
@@ -2530,7 +2515,7 @@ body {
     flex-direction: column;
     height: calc(100vh - v-bind(headerHeight) * 1px);
   }
-  
+
   .sidebar-nav {
     width: 100%;
     height: auto;
@@ -2540,46 +2525,46 @@ body {
     max-height: 200px; /* 限制侧边栏最大高度 */
     overflow-y: auto;
   }
-  
+
   .nav-items {
     flex-direction: row;
     justify-content: center;
     flex-wrap: wrap;
     gap: 10px;
   }
-  
+
   .nav-item {
     padding: 12px 20px;
     flex: 1;
     text-align: center;
     min-width: 120px;
   }
-  
+
   .content-wrapper {
     max-width: 100%;
     padding: 0 15px;
   }
-  
+
   .environments-grid {
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: 15px;
   }
-  
+
   .main-content {
     padding: 20px 15px;
     height: calc(100% - 200px); /* 减去侧边栏高度 */
   }
-  
+
   .content-header {
     flex-direction: column;
     gap: 15px;
     align-items: stretch;
   }
-  
+
   .header-section {
     text-align: center;
   }
-  
+
   .primary-btn {
     align-self: center;
   }
@@ -2591,65 +2576,65 @@ body {
     flex-direction: column;
     gap: 15px;
   }
-  
+
   .header-left {
     text-align: center;
   }
-  
+
   .user-panel {
     justify-content: center;
     width: 100%;
   }
-  
+
   .environments-grid {
     grid-template-columns: 1fr;
     gap: 15px;
   }
-  
+
   .environment-card {
     margin: 0 10px;
   }
-  
+
   .card-header {
     flex-direction: column;
     gap: 15px;
     align-items: stretch;
   }
-  
+
   .header-content {
     justify-content: center;
   }
-  
+
   .card-actions {
     justify-content: center;
     min-width: unset;
     width: 100%;
   }
-  
+
   .action-btn {
     flex: 1;
     min-width: unset;
   }
-  
+
   .info-grid {
     grid-template-columns: 1fr;
     gap: 10px;
   }
-  
+
   .modal-content {
     width: 95%;
     padding: 20px;
     margin: 10px;
   }
-  
+
   .modal-header h3 {
     font-size: 18px;
   }
-  
+
   .settings-panel {
     grid-template-columns: 1fr;
   }
-  
+
   .status-grid {
     grid-template-columns: 1fr;
   }
@@ -2659,104 +2644,106 @@ body {
   .main-header {
     padding: 12px 15px;
   }
-  
+
   .app-title {
     font-size: 16px;
     letter-spacing: 1px;
   }
-  
+
   .subtitle {
     font-size: 10px;
   }
-  
+
   .user-info {
     padding: 8px 15px;
     gap: 10px;
   }
-  
+
   .user-avatar {
     width: 30px;
     height: 30px;
     font-size: 14px;
   }
-  
+
   .welcome-text {
     font-size: 11px;
   }
-  
+
   .user-status {
     font-size: 10px;
   }
-  
+
   .logout-btn {
     padding: 8px 15px;
     font-size: 11px;
   }
-  
+
   .environments-grid {
     gap: 12px;
   }
-  
+
   .environment-card {
     margin: 0 5px;
   }
-  
+
   .card-header {
     padding: 15px;
   }
-  
+
   .card-header h3 {
     font-size: 14px;
   }
-  
+
   .card-body {
     padding: 15px;
   }
-  
+
   .action-btn {
     padding: 5px 10px;
     font-size: 10px;
     height: 24px;
   }
-  
+
   .info-item {
     flex-direction: column;
     align-items: flex-start;
     gap: 3px;
   }
-  
-  .label, .value {
+
+  .label,
+  .value {
     font-size: 11px;
   }
-  
+
   .modal-content {
     padding: 15px;
   }
-  
+
   .modal-header {
     margin-bottom: 20px;
     padding-bottom: 12px;
   }
-  
+
   .modal-header h3 {
     font-size: 16px;
   }
-  
+
   .form-group label {
     font-size: 11px;
   }
-  
+
   .tech-input {
     padding: 10px 12px;
     font-size: 13px;
   }
-  
+
   .modal-actions {
     flex-direction: column;
     gap: 10px;
   }
-  
-  .primary-btn, .secondary-btn {
+
+  .primary-btn,
+  .secondary-btn {
     width: 100%;
     padding: 12px;
   }
@@ -2767,38 +2754,38 @@ body {
   .main-header {
     padding: 10px 12px;
   }
-  
+
   .app-title {
     font-size: 14px;
   }
-  
+
   .environments-grid {
     gap: 10px;
   }
-  
+
   .environment-card {
     margin: 0;
   }
-  
+
   .card-header {
     padding: 12px;
   }
-  
+
   .card-body {
     padding: 12px;
   }
-  
+
   .action-btn {
     padding: 4px 8px;
     font-size: 9px;
     height: 22px;
   }
-  
+
   .modal-content {
     padding: 12px;
     margin: 5px;
   }
-  
+
   .close-btn {
     width: 25px;
     height: 25px;
@@ -2817,7 +2804,7 @@ body {
   .layout-container {
     flex-direction: row;
   }
-  
+
   .sidebar-nav {
     width: 180px;
     height: 100vh;
@@ -2825,18 +2812,18 @@ body {
     border-bottom: none;
     padding: 20px 0;
   }
-  
+
   .nav-items {
     flex-direction: column;
     justify-content: flex-start;
   }
-  
+
   .nav-item {
     padding: 14px 15px;
     text-align: left;
     min-width: unset;
   }
-  
+
   .main-content {
     padding: 20px;
   }
@@ -2847,19 +2834,19 @@ body {
   .content-wrapper {
     max-width: 1600px;
   }
-  
+
   .environments-grid {
     grid-template-columns: repeat(auto-fill, minmax(420px, 1fr));
   }
-  
+
   .environment-card {
     padding: 25px;
   }
-  
+
   .card-header {
     padding: 25px;
   }
-  
+
   .card-body {
     padding: 25px;
   }
