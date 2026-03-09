@@ -1,4 +1,4 @@
-export * from './WebSocketService';
+export * from './socket/WebSocketService';
 export * from './api';
 export * from './sdk'
 export * from './sdkHttp'

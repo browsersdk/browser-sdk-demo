@@ -80,48 +80,58 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <tr
-                      v-for="(browser, index) in browserStore.browsers"
-                      :key="browser?.id || index"
-                      :class="getEnvironmentRowClass(browser?.status!)"
-                    >
-                      <td>{{ browser?.envName || '' }}</td>
-                      <td>{{ browser?.envId || '' }}</td>
-                      <td>
-                        <span :class="getStatusBadgeClass(browser?.status)">
-                          {{ getStatusText(browser?.status) }}
-                        </span>
-                      </td>
-                      <td>{{ formatDateTime(browser?.createdAt) }}</td>
-                      <td>
-                        <div class="table-actions">
-                          <button
-                            class="action-btn start small"
-                            @click="controlEnvironment(browser, 3)"
-                            :disabled="false && (!browser || browser.status === 3)"
-                          >
-                            启动
-                          </button>
-                          <button
-                            class="action-btn stop small"
-                            @click="controlEnvironment(browser, 1)"
-                            :disabled="!browser || browser.status === 1"
-                          >
-                            停止
-                          </button>
-                          <button class="action-btn edit small" @click="editEnvironment(browser)" :disabled="!browser">
-                            编辑
-                          </button>
-                          <button
-                            class="action-btn delete small"
-                            @click="deleteEnvironment(browser?.id)"
-                            :disabled="!browser"
-                          >
-                            删除
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
+                    <template v-for="(browser, index) in browserStore.browsers" :key="browser?.id || index">
+                      <tr v-if="index < browserStore.pageSize" :class="getEnvironmentRowClass(browser?.status!)">
+                        <td>{{ browser?.envName || '' }}</td>
+                        <td>{{ browser?.envId || '' }}</td>
+                        <td>
+                          <span :class="getStatusBadgeClass(browser?.status)">
+                            {{ getStatusText(browser?.status) }}
+                          </span>
+                        </td>
+                        <td>{{ formatDateTime(browser?.createdAt) }}</td>
+                        <td>
+                          <div class="table-actions">
+                            <button
+                              class="action-btn start small"
+                              @click="controlEnvironment(browser, 3)"
+                              :disabled="
+                                browserStore.startedDict.has(browser?.envId) ||
+                                browserStore.startingDict.has(browser?.envId) ||
+                                browserStore.closingDict.has(browser?.envId)
+                              "
+                            >
+                              启动
+                            </button>
+                            <button
+                              class="action-btn stop small"
+                              @click="controlEnvironment(browser, 1)"
+                              :disabled="
+                                browserStore.startingDict.has(browser?.envId) ||
+                                browserStore.closingDict.has(browser?.envId) ||
+                                !browserStore.startedDict.has(browser?.envId)
+                              "
+                            >
+                              停止
+                            </button>
+                            <button
+                              class="action-btn edit small"
+                              @click="editEnvironment(browser)"
+                              :disabled="!browser"
+                            >
+                              编辑
+                            </button>
+                            <button
+                              class="action-btn delete small"
+                              @click="deleteEnvironment(browser?.id)"
+                              :disabled="!browser"
+                            >
+                              删除
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    </template>
                   </tbody>
                 </table>
 
@@ -675,34 +685,34 @@ const controlEnvironment = async (item: BrowserDto, status: number) => {
   }
 
   try {
-    // 使用现有的updateBrowser方法来更新状态
-    // const browser = await browserStore.getBrowser(item.id)
-    // console.log('环境详细信息', browser)
-    // if (browser) {
-    //   await browserStore.updateBrowser({
-    //     id: browser.id,
-    //     name: browser.name,
-    //     envId: browser.envId,
-    //     userId: browser.userId,
-    //     data: browser.data,
-    //     status: status,
-    //   })
-    // }
-
-    if (status === 3)
-      SdkHttpService.open({
+    if (status === 3) {
+      const code = await SdkHttpService.open({
         envs: [
           {
             envId: item.envId!,
-            // envId: '2028737264313438208',
             args: [],
           },
         ],
       })
-    if (status === 1)
-      SdkHttpService.close({
+      if (code === 1) {
+        browserStore.startingDict.set(item.envId, item)
+      } else {
+        // 启动失败
+        alert(`启动：${item.envName} 环境失败`)
+      }
+    }
+
+    if (status === 1) {
+      const code = await SdkHttpService.close({
         envs: [item.envId!],
       })
+      if (code === 1) {
+        browserStore.closingDict.set(item.envId, item)
+      } else {
+        // 关闭失败
+        alert(`停止：${item.envName}环境失败`)
+      }
+    }
   } catch (error) {
     console.error('Failed to control environment:', error)
     alert('操作失败，请重试')

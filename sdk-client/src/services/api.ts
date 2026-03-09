@@ -108,12 +108,13 @@ export class ApiService {
     }
   }
 
-  static async deleteBrowser(ids: number[]): Promise<void> {
+  static async deleteBrowser(ids: number[]): Promise<number> {
     const res: BaseResponse<void> = await axios.post('/api/app/browser/del', { ids });
     const { code, data, msg } = res;
 
     if (code !== 200) {
       throw new Error(msg || 'Failed to delete browser');
     }
+    return code
   }
 }
