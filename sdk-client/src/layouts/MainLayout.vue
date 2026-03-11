@@ -496,7 +496,7 @@ import { ref, onMounted, onUnmounted } from 'vue'
 import { useUserStore } from '@/stores/user'
 import { useBrowserStore } from '@/stores/browser'
 import { useRouter } from 'vue-router'
-import { SdkHttpService } from '@/services'
+import { SdkService } from '@/services'
 import type { Browser, BrowserDto } from '@/services'
 
 type EnvironmentForm = Partial<Browser>
@@ -686,7 +686,7 @@ const controlEnvironment = async (item: BrowserDto, status: number) => {
 
   try {
     if (status === 3) {
-      const code = await SdkHttpService.open({
+      const code = await SdkService.open({
         envs: [
           {
             envId: item.envId!,
@@ -703,7 +703,7 @@ const controlEnvironment = async (item: BrowserDto, status: number) => {
     }
 
     if (status === 1) {
-      const code = await SdkHttpService.close({
+      const code = await SdkService.close({
         envs: [item.envId!],
       })
       if (code === 1) {

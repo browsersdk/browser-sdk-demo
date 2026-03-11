@@ -58,10 +58,18 @@ export class TokenManager {
   }
 
   static setUsersig(usersigs: IUserSigData): void {
+    const expire = usersigs.expireTime + ''
+    const time = expire.length === 14 ? expire : usersigs.expireTime + '000'
     localStorage.setItem(this.USERSIG_KEY, usersigs.userSig)
-    localStorage.setItem(this.USERSIG_EXPIRES_KEY, usersigs.expireTime + '')
+    localStorage.setItem(this.USERSIG_EXPIRES_KEY, time)
   }
   static getUsersig(): string | null {
     return localStorage.getItem(this.USERSIG_KEY)
+  }
+  static isUsersigExpired(): boolean {
+    const expires = localStorage.getItem(this.USERSIG_EXPIRES_KEY);
+    if (!expires) return true;
+
+    return Number(expires) < (new Date().getTime() + 10000);
   }
 }

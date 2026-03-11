@@ -14,8 +14,12 @@ watch(
     console.log('nVal发生变化', nVal)
     if (nVal) {
       // 初始化SDK
-      SdkService.appInit(port.value)
-      skService.connect(port.value)
+      const code = await SdkService.appInit(port.value)
+      console.log('初始化', code)
+      if (code === 0) {
+        skService.connect(port.value)
+      }
+      if (code !== 0) alert('Sdk初始化失败!')
     }
   },
   {
