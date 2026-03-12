@@ -59,7 +59,7 @@ export class SdkService {
   static async updateUsersig(init = true): Promise<void> {
     if (TokenManager.isUsersigExpired()) {
       console.log('usersig已过期')
-      const userSig = await ApiService.getSdkUserSig(60)
+      const userSig = await ApiService.getSdkUserSig()
       TokenManager.setUsersig(userSig)
       if (init) await SdkHttpService.tokenUpdate(userSig.userSig)
     }

@@ -33,7 +33,10 @@ export class ApiService {
     }
   }
 
-  /** 获取用户sdk usersig */
+  /** 
+   * 获取用户sdk usersig
+   * @param duration 过期时长（秒）
+   */
   static async getSdkUserSig(duration = 3600 * 24): Promise<IUserSigData> {
     const res: IResponse & {
       data: IUserSigData
