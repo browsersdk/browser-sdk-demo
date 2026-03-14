@@ -32,16 +32,30 @@ class SDK {
     }
   }
 
-  tokenUpdate = async (_event, data) => {}
+  tokenUpdate = async (_event, data) => {
+    const res = await this.broSDK.tokenUpdate(JSON.stringify(data))
+    return {
+      code: res,
+      msg: '',
+    }
+  }
   browserOpen = async (_event, data) => {
     console.log('启动环境', data)
     const res = await this.broSDK.browserOpen(JSON.stringify(data))
     console.log(res)
+    return {
+      code: res,
+      msg: '',
+    }
   }
   browserClose = async (_event, data) => {
     console.log('关闭环境', data)
     const res = await this.broSDK.browserClose(data)
     console.log(res)
+    return {
+      code: res,
+      msg: '',
+    }
   }
   shutdown = async (_event) => {
     if (!this.bindStatus) return

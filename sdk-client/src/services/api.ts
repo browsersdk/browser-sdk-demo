@@ -1,6 +1,6 @@
 import { TokenManager } from '@/utils/tokenManager';
 import axios from '@/utils/axios'
-import type { IResponse, LoginRequest, LoginResponse, AuthTokens, IUserSigData, UserInfo, UserInfoResponse, Browser, BrowserDto, BrowserGetPageReq, PageResponse, BaseResponse } from './type/type'
+import type { IResponse, LoginRequest, LoginResponse, AuthTokens, IUserSigData, UserInfo, UserInfoResponse, Browser, BrowserDto, BrowserGetPageReq, PageResponse, BaseResponse } from './type'
 
 const BASE_URL = 'http://192.168.0.127:7888';
 
@@ -33,11 +33,18 @@ export class ApiService {
     }
   }
 
-  /** 获取用户sdk usersig */
-  static async getSdkUserSig(): Promise<IUserSigData> {
+  /** 
+   * 获取用户sdk usersig
+   * @param duration 过期时长（秒）
+   */
+  static async getSdkUserSig(duration = 3600 * 24): Promise<IUserSigData> {
     const res: IResponse & {
       data: IUserSigData
-    } = await axios.get('/api/app/user/getSdkUserSig');
+    } = await axios.get('/api/app/user/getSdkUserSig', {
+      params: {
+        duration
+      }
+    });
     const { code, data, msg } = res;
 
     // 根据实际API响应调整判断条件
@@ -108,12 +115,13 @@ export class ApiService {
     }
   }
 
-  static async deleteBrowser(ids: number[]): Promise<void> {
+  static async deleteBrowser(ids: number[]): Promise<number> {
     const res: BaseResponse<void> = await axios.post('/api/app/browser/del', { ids });
     const { code, data, msg } = res;
 
     if (code !== 200) {
       throw new Error(msg || 'Failed to delete browser');
     }
+    return code
   }
 }

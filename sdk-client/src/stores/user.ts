@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
-import { ApiService } from '@/services';
+import { ApiService, SdkService } from '@/services';
 import type { UserInfo } from '@/services';
 import { TokenManager } from '@/utils/tokenManager';
 
@@ -23,11 +23,8 @@ export const useUserStore = defineStore('user', () => {
     try {
       const tokens = await ApiService.login(username, password);
       TokenManager.setTokens(tokens);
+      await SdkService.updateUsersig(false)
       isAuthenticated.value = true;
-
-      const userSig = await ApiService.getSdkUserSig()
-      TokenManager.setUsersig(userSig)
-
 
       // 直接跳转到主控制台
       router.push('/dashboard');

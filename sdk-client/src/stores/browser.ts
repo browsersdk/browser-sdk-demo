@@ -4,11 +4,18 @@ import { ApiService } from '@/services';
 import type { Browser, BrowserDto } from '@/services';
 
 export const useBrowserStore = defineStore('browser', () => {
+  /** 已启动 */
+  const startedDict = ref(new Set())
+  /** 启动中 */
+  const startingDict = ref(new Map())
+  /** 关闭中 */
+  const closingDict = ref(new Map())
   const browsers = ref<BrowserDto[]>([]);
   const loading = ref(false);
   const currentPage = ref(1);
   const pageSize = ref(10);
   const total = ref(0);
+  const currentEnvName = ref<string>()
 
   const loadBrowsers = async (page: number = 1, name?: string) => {
     loading.value = true;
@@ -22,6 +29,7 @@ export const useBrowserStore = defineStore('browser', () => {
       browsers.value = response.list;
       total.value = response.total;
       currentPage.value = page;
+      currentEnvName.value = name
     } catch (error) {
       console.error('Failed to load browsers:', error);
       throw error;
@@ -69,10 +77,11 @@ export const useBrowserStore = defineStore('browser', () => {
 
   const deleteBrowser = async (id: number): Promise<void> => {
     try {
-      await ApiService.deleteBrowser([id]);
-      // 从列表中移除
-      browsers.value = browsers.value.filter(b => b.id !== id);
-      total.value -= 1;
+      const code = await ApiService.deleteBrowser([id]);
+
+      if (code === 200) {
+        loadBrowsers(currentPage.value, currentEnvName.value)
+      }
     } catch (error) {
       console.error('Failed to delete browser:', error);
       throw error;
@@ -92,6 +101,9 @@ export const useBrowserStore = defineStore('browser', () => {
   };
 
   return {
+    startedDict,
+    startingDict,
+    closingDict,
     browsers,
     loading,
     currentPage,
