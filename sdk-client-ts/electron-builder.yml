@@ -1,4 +1,4 @@
-appId: com.client.sdk.browser.app
+appId: com.yunlogin.fbmain
 productName: browser-sdk-client
 directories:
   buildResources: build
@@ -19,7 +19,7 @@ win:
   extraResources:
   - from: sdk/windows-x64/brosdk.dll
     to: sdk/windows-x64/brosdk.dll
-  - from: sdk/windows-x64/.brosdk/cores/
+  - from: sdk/windows-x64/.brosdk/cores/å
     to: sdk/windows-x64/.brosdk/cores/
 nsis:
   artifactName: ${name}-${version}-setup.${ext}

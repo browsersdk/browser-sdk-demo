@@ -83,7 +83,7 @@ function createWindow(): void {
 }
 
 app.whenReady().then(async () => {
-  electronApp.setAppUserModelId('com.client.sdk.browser.app')
+  electronApp.setAppUserModelId('com.yunlogin.fbmain')
 
   app.on('browser-window-created', (_, window) => {
     optimizer.watchWindowShortcuts(window)
