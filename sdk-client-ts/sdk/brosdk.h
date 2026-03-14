@@ -26,14 +26,9 @@
 #define SDK_CALL
 #endif
 
-#define SDK_WARN_BASE 0x64
-#define SDK_REQID_BASE 0xFF
-
 #ifdef __cplusplus
 extern "C" {
 #endif
-using sdk_errno_t = int32_t;
-using sdk_port_t = uint16_t;
 typedef void *sdk_handle_t;
 typedef void(SDK_CALL *sdk_result_cb_t)(int32_t code, void *user_data,
                                         const char *data, size_t len);
@@ -51,16 +46,26 @@ SDK_API int32_t SDK_CALL sdk_browser_info(const char *data, size_t len,
                                           char **out_data, size_t *out_len);
 SDK_API int32_t SDK_CALL sdk_browser_open(const char *data, size_t len);
 SDK_API int32_t SDK_CALL sdk_browser_close(const char *data, size_t len);
+SDK_API int32_t SDK_CALL sdk_env_create(const char *data, size_t len,
+                                        char **out_data, size_t *out_len);
+SDK_API int32_t SDK_CALL sdk_env_update(const char *data, size_t len,
+                                        char **out_data, size_t *out_len);
+SDK_API int32_t SDK_CALL sdk_env_page(const char *data, size_t len,
+                                      char **out_data, size_t *out_len);
+SDK_API int32_t SDK_CALL sdk_env_destroy(const char *data, size_t len,
+                                         char **out_data, size_t *out_len);
 SDK_API int32_t SDK_CALL sdk_token_update(const char *data, size_t len);
 SDK_API int32_t SDK_CALL sdk_shutdown(void);
 SDK_API void SDK_CALL sdk_free(void *ptr);
 SDK_API const char *SDK_CALL sdk_error_name(int32_t code);
 SDK_API const char *SDK_CALL sdk_error_string(int32_t code);
+SDK_API const char *SDK_CALL sdk_event_name(int32_t evtid);
 SDK_API bool SDK_CALL sdk_is_error(int32_t code);
 SDK_API bool SDK_CALL sdk_is_warn(int32_t code);
 SDK_API bool SDK_CALL sdk_is_reqid(int32_t code);
 SDK_API bool SDK_CALL sdk_is_ok(int32_t code);
 SDK_API bool SDK_CALL sdk_is_done(int32_t code);
+SDK_API bool SDK_CALL sdk_is_event(int32_t code);
 
 #ifdef __cplusplus
 }

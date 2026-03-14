@@ -1,4 +1,4 @@
-import { app, shell, BrowserWindow, session } from 'electron'
+import { app, shell, BrowserWindow, session, globalShortcut } from 'electron'
 import path, { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
@@ -30,8 +30,6 @@ async function installVueDevtools(): Promise<void> {
 
 function createWindow(): void {
   log.info('Creating main window...')
-  log.info('process.resourcesPath', path.join(process.resourcesPath, 'sdk', 'brosdk.dll'))
-  log.info('__dirname', path.join(__dirname, 'brosdk', 'brosdk.dll'))
   mainWindow = new BrowserWindow({
     width: 1200,
     height: 800,
@@ -65,10 +63,27 @@ function createWindow(): void {
   } else {
     mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
   }
+
+  const shortcutKey = 'CommandOrControl+F12'
+  const isRegistered = globalShortcut.register(shortcutKey, () => {
+    mainWindow.webContents.toggleDevTools()
+  })
+
+  // 可选：额外注册 Mac 独有的 Control+F12（纯 Ctrl 键）
+  if (process.platform === 'darwin') {
+    globalShortcut.register('Control+F12', () => {
+      mainWindow.webContents.toggleDevTools()
+    })
+  }
+
+  // 验证注册结果
+  if (!isRegistered) {
+    console.log(`${shortcutKey} 快捷键注册失败（可能被占用）`)
+  }
 }
 
 app.whenReady().then(async () => {
-  electronApp.setAppUserModelId('com.electron')
+  electronApp.setAppUserModelId('com.client.sdk.browser.app')
 
   app.on('browser-window-created', (_, window) => {
     optimizer.watchWindowShortcuts(window)
@@ -81,9 +96,12 @@ app.whenReady().then(async () => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow()
   })
 })
-
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     app.quit()
   }
+})
+
+app.on('will-quit', () => {
+  globalShortcut.unregisterAll()
 })

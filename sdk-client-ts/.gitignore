@@ -39,7 +39,7 @@ tsconfig.tsbuildinfo
 *.exe
 # *.dll
 *.so
-*.dylib
+# *.dylib
 *.app
 
 # Build artifacts

@@ -60,7 +60,7 @@ tmp/
 *.exe
 # *.dll
 *.so
-*.dylib
+# *.dylib
 *.out
 
 # Go specific

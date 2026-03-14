@@ -16,14 +16,11 @@ asarUnpack:
 win:
   executableName: browser-sdk-client
   # requestedExecutionLevel: requireAdministrator
-
-extraResources:
-  - from: sdk/brosdk.dll
-    to: sdk/brosdk.dll
-  - from: sdk/brosdk.h
-    to: sdk/brosdk.h
-  - from: sdk/.brosdk/cores/
-    to: sdk/.brosdk/cores/
+  extraResources:
+  - from: sdk/windows-x64/brosdk.dll
+    to: sdk/windows-x64/brosdk.dll
+  - from: sdk/windows-x64/.brosdk/cores/
+    to: sdk/windows-x64/.brosdk/cores/
 nsis:
   artifactName: ${name}-${version}-setup.${ext}
   shortcutName: ${productName}
@@ -31,13 +28,27 @@ nsis:
   createDesktopShortcut: always
   # oneClick: false
 mac:
-  entitlementsInherit: build/entitlements.mac.plist
+  target: ["dmg", "zip"]
+  # icon: build/icon.icns # 应用图标（放在build文件夹，也可改为根目录：./icon.icns）
+  hardenedRuntime: true # 硬运行时（增强安全性）
+  gatekeeperAssess: false
+  # 修复权限文件路径：指向根目录的entitlements.mac.plist（关键！）
+  entitlements: ./mac/entitlements.mac.plist
+  entitlementsInherit: ./mac/entitlements.mac.plist
+  # 可选：指定签名身份（匹配你的证书名称）
+  identity: "Apple Development: fanis (5TNS742NKP)"
+  minimumSystemVersion: 10.15
   extendInfo:
     - NSCameraUsageDescription: Application requests access to the device's camera.
     - NSMicrophoneUsageDescription: Application requests access to the device's microphone.
     - NSDocumentsFolderUsageDescription: Application requests access to the user's Documents folder.
     - NSDownloadsFolderUsageDescription: Application requests access to the user's Downloads folder.
-  notarize: false
+  # notarize: false
+  extraResources:
+  - from: sdk/arm64-osx/brosdk.dylib
+    to: sdk/arm64-osx/brosdk.dylib
+  - from: sdk/arm64-osx/.brosdk/cores/
+    to: sdk/arm64-osx/.brosdk/cores/
 dmg:
   artifactName: ${name}-${version}.${ext}
 linux:

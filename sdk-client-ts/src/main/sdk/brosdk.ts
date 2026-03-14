@@ -50,10 +50,20 @@ export default class BroSDK {
   #nativeCb: koffi.IKoffiRegisteredCallback | null = null
 
   constructor() {
-    console.log('app.isPackaged', app.isPackaged, app.getPath('exe'), app.getPath('home'))
-    this._DLL_PATH = !app.isPackaged
-      ? path.join(app.getAppPath(), 'sdk', 'brosdk.dll')
-      : path.join(process.resourcesPath, 'sdk', 'brosdk.dll')
+    const isWindows = process.platform === 'win32' // Windows 系统
+    const isMac = process.platform === 'darwin' // macOS 系统
+    // const isLinux = process.platform === 'linux' // Linux 系统
+
+    if (isMac) {
+      this._DLL_PATH = !app.isPackaged
+        ? path.join(app.getAppPath(), 'sdk', 'arm64-osx', 'brosdk.dylib')
+        : path.join(process.resourcesPath, 'sdk', 'arm64-osx', 'brosdk.dylib')
+    }
+    if (isWindows) {
+      this._DLL_PATH = !app.isPackaged
+        ? path.join(app.getAppPath(), 'sdk', 'windows-x64', 'brosdk.dll')
+        : path.join(process.resourcesPath, 'sdk', 'windows-x64', 'brosdk.dll')
+    }
     // this._DLL_PATH = path.join(__dirname, "brosdk", "brosdk.dll");
     this.#lib = koffi.load(this._DLL_PATH)
 
