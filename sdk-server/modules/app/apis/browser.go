@@ -11,7 +11,6 @@ import (
 
 	"github.com/baowk/dilu-core/core/base"
 	"github.com/gin-gonic/gin"
-	"github.com/jinzhu/copier"
 )
 
 type BrowserApi struct {
@@ -41,17 +40,12 @@ func (e *BrowserApi) QueryPage(c *gin.Context) {
 		return
 	}
 	req.SortOrder = "desc"
+	req.UserId = uid
+
 	list := make([]models.Browser, 10)
 	var total int64
 
-	var model models.Browser
-	if err := copier.Copy(&model, req); err != nil {
-		e.Error(c, err)
-		return
-	}
-	model.UserId = uid
-
-	if err := service.SerBrowser.Page(model, &list, &total, req.GetSize(), req.GetOffset()); err != nil {
+	if err := service.SerBrowser.QueryPage(req, &list, &total, req.GetSize(), req.GetOffset()); err != nil {
 		e.Error(c, err)
 		return
 	}
@@ -122,11 +116,12 @@ func (e *BrowserApi) Update(c *gin.Context) {
 		return
 	}
 	uid := utils.GetAppUid(c)
-	if err := appS.SerAppBrowser.Update(uid, &req); err != nil {
+	data, err := appS.SerAppBrowser.Update(uid, &req)
+	if err != nil {
 		e.Error(c, err)
 		return
 	}
-	e.Ok(c)
+	e.Ok(c, data)
 }
 
 // Del 删除Browser

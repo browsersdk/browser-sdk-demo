@@ -13,6 +13,10 @@ type BrowserGetPageReq struct {
 	UserId       int    `json:"userId" form:"userId"`   //用户ID
 }
 
+func (BrowserGetPageReq) TableName() string {
+	return "browser"
+}
+
 // Browser
 type BrowserDto struct {
 	Id      int             `json:"id"`      //主键
