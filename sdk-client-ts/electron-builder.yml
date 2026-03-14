@@ -19,7 +19,7 @@ win:
   extraResources:
   - from: sdk/windows-x64/brosdk.dll
     to: sdk/windows-x64/brosdk.dll
-  - from: sdk/windows-x64/.brosdk/cores/å
+  - from: sdk/windows-x64/.brosdk/cores/
     to: sdk/windows-x64/.brosdk/cores/
 nsis:
   artifactName: ${name}-${version}-setup.${ext}
