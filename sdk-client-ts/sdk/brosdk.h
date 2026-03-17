@@ -32,18 +32,17 @@ extern "C" {
 typedef void *sdk_handle_t;
 typedef void(SDK_CALL *sdk_result_cb_t)(int32_t code, void *user_data,
                                         const char *data, size_t len);
-
+typedef void(SDK_CALL *sdk_cookies_storage_cb_t)(const char *data, size_t len,
+                                                 char **new_data,
+                                                 size_t *new_len,
+                                                 void *user_data);
 SDK_API int32_t SDK_CALL sdk_register_result_cb(sdk_result_cb_t cb,
                                                 void *user_data);
-SDK_API int32_t SDK_CALL sdk_init_webapi(uint16_t port);
-SDK_API int32_t SDK_CALL sdk_init_async(sdk_handle_t *cpp_handle,
-                                        const char *data, size_t len);
+SDK_API int32_t SDK_CALL sdk_register_cookies_storage_cb(sdk_cookies_storage_cb_t cb, void *user_data);
 SDK_API int32_t SDK_CALL sdk_init(sdk_handle_t *cpp_handle, const char *data,
                                   size_t len, char **out_data, size_t *out_len);
-SDK_API int32_t SDK_CALL sdk_info(const char *data, size_t len, char **out_data,
-                                  size_t *out_len);
-SDK_API int32_t SDK_CALL sdk_browser_info(const char *data, size_t len,
-                                          char **out_data, size_t *out_len);
+SDK_API int32_t SDK_CALL sdk_info(char **out_data, size_t *out_len);
+SDK_API int32_t SDK_CALL sdk_browser_info(char **out_data, size_t *out_len);
 SDK_API int32_t SDK_CALL sdk_browser_open(const char *data, size_t len);
 SDK_API int32_t SDK_CALL sdk_browser_close(const char *data, size_t len);
 SDK_API int32_t SDK_CALL sdk_env_create(const char *data, size_t len,
@@ -57,6 +56,7 @@ SDK_API int32_t SDK_CALL sdk_env_destroy(const char *data, size_t len,
 SDK_API int32_t SDK_CALL sdk_token_update(const char *data, size_t len);
 SDK_API int32_t SDK_CALL sdk_shutdown(void);
 SDK_API void SDK_CALL sdk_free(void *ptr);
+SDK_API void *SDK_CALL sdk_malloc(size_t size);
 SDK_API const char *SDK_CALL sdk_error_name(int32_t code);
 SDK_API const char *SDK_CALL sdk_error_string(int32_t code);
 SDK_API const char *SDK_CALL sdk_event_name(int32_t evtid);
@@ -76,10 +76,8 @@ SDK_API bool SDK_CALL sdk_is_event(int32_t code);
 class ISDK {
 public:
   virtual ~ISDK() = default;
-  virtual int32_t InitAsync(const char *data, size_t len) = 0;
   virtual int32_t Init(const char *data, size_t len, char **out_data,
                        size_t *out_len) = 0;
-  virtual int32_t InitWebAPI(uint16_t port) = 0;
   virtual int32_t BrowserOpen(const char *data, size_t len) = 0;
   virtual int32_t BrowserClose(const char *data, size_t len) = 0;
   virtual int32_t RegisterResultCb(sdk_result_cb_t cb, void *user_data) = 0;

@@ -1,0 +1,489 @@
+/* 现代简约配色样式覆盖 */
+:root {
+  --primary-color: #3b82f6;
+  --primary-hover: #2563eb;
+  --success-color: #22c55e;
+  --danger-color: #ef4444;
+  --warning-color: #f59e0b;
+  --background: #f8fafc;
+  --surface: #ffffff;
+  --surface-hover: #f1f5f9;
+  --border: #e2e8f0;
+  --text-primary: #1e293b;
+  --text-secondary: #64748b;
+  --text-muted: #94a3b8;
+}
+
+/* 主布局 */
+.main-layout {
+  background: #f8fafc !important;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif !important;
+}
+
+/* 移除背景网格 */
+.main-layout::before {
+  display: none !important;
+}
+
+/* 头部 */
+.main-header {
+  background: #ffffff !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
+  border-bottom: 1px solid #e2e8f0 !important;
+  backdrop-filter: none !important;
+}
+
+.app-title {
+  color: #1e293b !important;
+  text-shadow: none !important;
+  letter-spacing: normal !important;
+}
+
+.subtitle {
+  color: #64748b !important;
+}
+
+/* 侧边栏 */
+.sidebar-nav {
+  background: #ffffff !important;
+  border-right: 1px solid #e2e8f0 !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+}
+
+.nav-item {
+  color: #64748b !important;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif !important;
+  letter-spacing: normal !important;
+  transform: none !important;
+}
+
+.nav-item:hover {
+  color: #1e293b !important;
+  background: #f1f5f9 !important;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+.nav-item.active {
+  color: #3b82f6 !important;
+  background: #eff6ff !important;
+  border-left: 3px solid #3b82f6 !important;
+}
+
+.nav-glow,
+.nav-item.active::after {
+  display: none !important;
+}
+
+/* 主内容区 */
+.main-content {
+  background: transparent !important;
+}
+
+/* 主按钮 */
+.primary-btn {
+  background: #3b82f6 !important;
+  color: #ffffff !important;
+  border: none !important;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif !important;
+  letter-spacing: normal !important;
+}
+
+.primary-btn:hover:not(:disabled) {
+  background: #2563eb !important;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3) !important;
+  transform: translateY(-1px) !important;
+}
+
+.primary-btn:disabled {
+  background: #cbd5e1 !important;
+}
+
+/* 次要按钮 */
+.secondary-btn {
+  background: #ffffff !important;
+  color: #64748b !important;
+  border: 1px solid #e2e8f0 !important;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif !important;
+}
+
+.secondary-btn:hover {
+  background: #f1f5f9 !important;
+  border-color: #cbd5e1 !important;
+  color: #1e293b !important;
+}
+
+/* 表格容器 */
+.environments-table-container {
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
+  backdrop-filter: none !important;
+}
+
+/* 表格 */
+.environments-table th {
+  background: #f8fafc !important;
+  color: #64748b !important;
+  border-bottom: 1px solid #e2e8f0 !important;
+  letter-spacing: normal !important;
+}
+
+.environments-table td {
+  color: #1e293b !important;
+  border-bottom: 1px solid #f1f5f9 !important;
+}
+
+.environments-table tr:hover {
+  background: #f8fafc !important;
+}
+
+/* 表格行状态 */
+.environment-row-active {
+  background: #f0fdf4 !important;
+}
+
+.environment-row-stopped {
+  background: #ffffff !important;
+}
+
+.environment-row-unknown {
+  background: #fefce8 !important;
+}
+
+/* 操作按钮 */
+.action-btn {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif !important;
+  letter-spacing: normal !important;
+  font-size: 13px !important;
+}
+
+.action-btn.start {
+  background: #dcfce7 !important;
+  color: #166534 !important;
+  border: 1px solid #bbf7d0 !important;
+}
+
+.action-btn.start:hover:not(:disabled) {
+  background: #bbf7d0 !important;
+  border-color: #86efac !important;
+  box-shadow: 0 2px 8px rgba(34, 197, 94, 0.2) !important;
+}
+
+.action-btn.stop {
+  background: #fee2e2 !important;
+  color: #991b1b !important;
+  border: 1px solid #fecaca !important;
+}
+
+.action-btn.stop:hover:not(:disabled) {
+  background: #fecaca !important;
+  border-color: #fca5a5 !important;
+  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.2) !important;
+}
+
+.action-btn.edit {
+  background: #dbeafe !important;
+  color: #1e40af !important;
+  border: 1px solid #bfdbfe !important;
+}
+
+.action-btn.edit:hover {
+  background: #bfdbfe !important;
+  border-color: #93c5fd !important;
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.2) !important;
+}
+
+.action-btn.advanced {
+  background: #fef3c7 !important;
+  color: #92400e !important;
+  border: 1px solid #fde68a !important;
+}
+
+.action-btn.advanced:hover:not(:disabled) {
+  background: #fde68a !important;
+  border-color: #fcd34d !important;
+  box-shadow: 0 2px 8px rgba(245, 158, 11, 0.2) !important;
+}
+
+.action-btn.delete {
+  background: #fee2e2 !important;
+  color: #dc2626 !important;
+  border: 1px solid #fca5a5 !important;
+}
+
+.action-btn.delete:hover {
+  background: #fca5a5 !important;
+  border-color: #f87171 !important;
+  box-shadow: 0 2px 8px rgba(220, 38, 38, 0.2) !important;
+}
+
+.action-btn:disabled {
+  opacity: 0.5 !important;
+}
+
+/* 模态框 */
+.modal-overlay {
+  background: rgba(0, 0, 0, 0.5) !important;
+  backdrop-filter: blur(4px) !important;
+}
+
+.modal-content {
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15) !important;
+  backdrop-filter: none !important;
+  border-radius: 12px !important;
+}
+
+.modal-header {
+  border-bottom: 1px solid #e2e8f0 !important;
+}
+
+.modal-header h3 {
+  color: #1e293b !important;
+  letter-spacing: normal !important;
+}
+
+.close-btn {
+  color: #64748b !important;
+  border-radius: 6px !important;
+}
+
+.close-btn:hover {
+  background: #f1f5f9 !important;
+  color: #1e293b !important;
+}
+
+/* 表单 */
+.form-group label {
+  color: #64748b !important;
+  font-size: 13px !important;
+  letter-spacing: normal !important;
+  font-weight: 500 !important;
+}
+
+.tech-input {
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  color: #1e293b !important;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif !important;
+}
+
+.tech-input:focus {
+  border-color: #3b82f6 !important;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1) !important;
+  outline: none !important;
+}
+
+.tech-input::placeholder {
+  color: #94a3b8 !important;
+}
+
+/* 表单区块 */
+.form-section {
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+}
+
+.form-section.required-section {
+  background: #f0f9ff !important;
+  border-color: #bae6fd !important;
+}
+
+.form-section h4 {
+  color: #1e293b !important;
+  border-bottom: 1px solid #e2e8f0 !important;
+  letter-spacing: normal !important;
+}
+
+/* 折叠区块 */
+.collapsible-section {
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+}
+
+.section-header {
+  background: #f8fafc !important;
+}
+
+.section-header:hover {
+  background: #f1f5f9 !important;
+}
+
+.section-title {
+  color: #1e293b !important;
+}
+
+.toggle-icon {
+  color: #64748b !important;
+}
+
+.toggle-icon.expanded {
+  color: #3b82f6 !important;
+}
+
+.section-content {
+  border-top: 1px solid #e2e8f0 !important;
+}
+
+/* 分页 */
+.pagination-container {
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  box-shadow: none !important;
+}
+
+.pagination-info {
+  color: #64748b !important;
+}
+
+.pagination-btn {
+  background: #f1f5f9 !important;
+  color: #3b82f6 !important;
+  border: 1px solid #e2e8f0 !important;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif !important;
+  letter-spacing: normal !important;
+}
+
+.pagination-btn:hover:not(:disabled) {
+  background: #e2e8f0 !important;
+  border-color: #cbd5e1 !important;
+  box-shadow: none !important;
+}
+
+.pagination-btn:disabled {
+  opacity: 0.4 !important;
+  background: #f1f5f9 !important;
+}
+
+/* 环境卡片 */
+.environment-card {
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
+  backdrop-filter: none !important;
+}
+
+.environment-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+  transform: translateY(-2px) !important;
+}
+
+.environment-active {
+  background: #f0fdf4 !important;
+  border-color: #86efac !important;
+}
+
+.environment-stopped {
+  background: #ffffff !important;
+  border-color: #e2e8f0 !important;
+}
+
+.environment-unknown {
+  background: #fefce8 !important;
+  border-color: #fde047 !important;
+}
+
+/* 复选框 */
+.checkbox-group label {
+  color: #64748b !important;
+}
+
+/* 帮助文本 */
+.help-text {
+  color: #94a3b8 !important;
+}
+
+/* 验证消息 */
+.validation-msg.valid {
+  color: #22c55e !important;
+}
+
+.validation-msg.invalid {
+  color: #ef4444 !important;
+}
+
+/* 空状态 */
+.empty-state {
+  background: #ffffff !important;
+  border: 1px dashed #e2e8f0 !important;
+}
+
+.empty-state p {
+  color: #64748b !important;
+}
+
+.empty-icon {
+  filter: none !important;
+  opacity: 1 !important;
+}
+
+/* 标签页 */
+.tab-btn {
+  background: transparent !important;
+  color: #64748b !important;
+  border: none !important;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif !important;
+}
+
+.tab-btn:hover {
+  color: #1e293b !important;
+  background: #f1f5f9 !important;
+}
+
+.tab-btn.active {
+  color: #3b82f6 !important;
+  background: #eff6ff !important;
+}
+
+/* 卡片标题 */
+.card-title {
+  color: #1e293b !important;
+}
+
+/* 信息项 */
+.info-item {
+  color: #64748b !important;
+}
+
+.info-value {
+  color: #1e293b !important;
+}
+
+/* 状态徽章 */
+.status-badge {
+  color: #ffffff !important;
+}
+
+.status-badge.active {
+  background: #22c55e !important;
+}
+
+.status-badge.stopped {
+  background: #64748b !important;
+}
+
+.status-badge.unknown {
+  background: #f59e0b !important;
+}
+
+/* 滚动条样式 */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}

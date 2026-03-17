@@ -1,61 +1,66 @@
 <template>
-  <div class="login-container">
-    <div class="login-box">
+  <div class="login-page">
+    <div class="login-card">
       <div class="login-header">
-        <div class="header-glow">
-          <h2>FINGERPRINT BROWSER DEMO</h2>
-          <div class="subtitle">指纹浏览器</div>
+        <div class="logo">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"/>
+            <path d="M12 6v6l4 2"/>
+          </svg>
         </div>
-        <div class="divider"></div>
+        <h1>指纹浏览器</h1>
+        <p>安全、高效的环境管理</p>
       </div>
 
       <form class="login-form" @submit.prevent="handleLogin">
-        <div class="form-group">
-          <label for="username">USERNAME</label>
+        <div class="form-field">
+          <label for="username">用户名</label>
           <div class="input-wrapper">
+            <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+              <circle cx="12" cy="7" r="4"/>
+            </svg>
             <input
               id="username"
               v-model="loginForm.username"
               type="text"
-              placeholder="ENTER YOUR USERNAME"
+              placeholder="请输入用户名"
               required
               :disabled="isLoading"
-              class="tech-input"
             />
-            <div class="input-glow"></div>
           </div>
         </div>
 
-        <div class="form-group">
-          <label for="password">PASSWORD</label>
+        <div class="form-field">
+          <label for="password">密码</label>
           <div class="input-wrapper">
+            <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+            </svg>
             <input
               id="password"
               v-model="loginForm.password"
               type="password"
-              placeholder="ENTER YOUR PASSWORD"
+              placeholder="请输入密码"
               required
               :disabled="isLoading"
-              class="tech-input"
             />
-            <div class="input-glow"></div>
           </div>
         </div>
 
-        <button type="submit" class="login-button" :disabled="isLoading || !isFormValid">
-          <span class="button-text">{{ isLoading ? 'AUTHENTICATING...' : 'LOGIN' }}</span>
-          <div class="button-glow"></div>
+        <button 
+          type="submit" 
+          class="login-btn"
+          :disabled="isLoading || !isFormValid"
+        >
+          <span v-if="isLoading" class="loading-spinner"></span>
+          <span>{{ isLoading ? '登录中...' : '登录' }}</span>
         </button>
       </form>
-    </div>
 
-    <!-- 背景装饰元素 -->
-    <div class="background-elements">
-      <div class="grid-lines"></div>
-      <div class="floating-orbs">
-        <div class="orb orb-1"></div>
-        <div class="orb orb-2"></div>
-        <div class="orb orb-3"></div>
+      <div class="login-footer">
+        <p>© 2024 指纹浏览器 SDK</p>
       </div>
     </div>
   </div>
@@ -85,10 +90,8 @@ const handleLogin = async (): Promise<void> => {
 
   try {
     await userStore.login(loginForm.value.username, loginForm.value.password)
-    // 登录成功后的跳转由store处理
   } catch (error) {
     console.error('Login error:', error)
-    // 错误处理可以在这里添加更友好的提示
   } finally {
     isLoading.value = false
   }
@@ -96,283 +99,175 @@ const handleLogin = async (): Promise<void> => {
 </script>
 
 <style scoped>
-.login-container {
+.login-page {
   min-height: 100vh;
-  background: #0a0a0a;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 20px;
-  position: relative;
-  overflow: hidden;
-  font-family: 'Courier New', monospace;
+  padding: 24px;
+  background: #f8fafc;
 }
 
-/* 背景装饰 */
-.background-elements {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  pointer-events: none;
-}
-
-.grid-lines {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-image:
-    linear-gradient(rgba(0, 255, 255, 0.05) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0, 255, 255, 0.05) 1px, transparent 1px);
-  background-size: 30px 30px;
-  animation: grid-move 20s linear infinite;
-}
-
-@keyframes grid-move {
-  0% {
-    transform: translate(0, 0);
-  }
-  100% {
-    transform: translate(30px, 30px);
-  }
-}
-
-.floating-orbs {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-}
-
-.orb {
-  position: absolute;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(0, 255, 255, 0.3) 0%, transparent 70%);
-  filter: blur(20px);
-  animation: float 15s infinite ease-in-out;
-}
-
-.orb-1 {
-  width: 200px;
-  height: 200px;
-  top: 10%;
-  left: 5%;
-  animation-delay: 0s;
-}
-
-.orb-2 {
-  width: 150px;
-  height: 150px;
-  top: 60%;
-  right: 10%;
-  animation-delay: -5s;
-}
-
-.orb-3 {
-  width: 100px;
-  height: 100px;
-  bottom: 20%;
-  left: 15%;
-  animation-delay: -10s;
-}
-
-@keyframes float {
-  0%,
-  100% {
-    transform: translate(0, 0) scale(1);
-    opacity: 0.3;
-  }
-  25% {
-    transform: translate(20px, -20px) scale(1.1);
-    opacity: 0.5;
-  }
-  50% {
-    transform: translate(-10px, 20px) scale(0.9);
-    opacity: 0.4;
-  }
-  75% {
-    transform: translate(15px, 10px) scale(1.05);
-    opacity: 0.6;
-  }
-}
-
-.login-box {
-  background: rgba(15, 15, 25, 0.85);
-  backdrop-filter: blur(20px);
-  border-radius: 15px;
-  padding: 45px 35px;
+.login-card {
   width: 100%;
-  max-width: 420px;
-  box-shadow:
-    0 0 30px rgba(0, 255, 255, 0.2),
-    inset 0 0 20px rgba(128, 0, 255, 0.1);
-  border: 1px solid rgba(0, 255, 255, 0.3);
-  position: relative;
-  z-index: 10;
+  max-width: 400px;
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 48px 40px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e2e8f0;
 }
 
 .login-header {
   text-align: center;
-  margin-bottom: 28px;
+  margin-bottom: 32px;
 }
 
-.header-glow {
-  position: relative;
-  padding: 15px;
+.logo {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 20px;
+  background: #3b82f6;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
 }
 
-.header-glow h2 {
-  color: #00ffff;
-  font-size: 22px;
+.logo svg {
+  width: 32px;
+  height: 32px;
+}
+
+.login-header h1 {
+  font-size: 24px;
   font-weight: 600;
-  margin: 0 0 12px 0;
-  letter-spacing: 2px;
-  text-shadow: 0 0 10px rgba(0, 255, 255, 0.7);
-  animation: text-glow 2s ease-in-out infinite alternate;
+  color: #1e293b;
+  margin-bottom: 8px;
 }
 
-@keyframes text-glow {
-  0% {
-    text-shadow: 0 0 10px rgba(0, 255, 255, 0.7);
-  }
-  100% {
-    text-shadow:
-      0 0 15px rgba(0, 255, 255, 0.9),
-      0 0 20px rgba(128, 0, 255, 0.5);
-  }
-}
-
-.subtitle {
-  color: rgba(255, 255, 255, 0.7);
+.login-header p {
   font-size: 14px;
-  letter-spacing: 1px;
-}
-
-.divider {
-  height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(0, 255, 255, 0.5), transparent);
-  margin: 20px auto;
-  width: 60%;
+  color: #64748b;
 }
 
 .login-form {
-  margin-bottom: 28px;
+  margin-bottom: 24px;
 }
 
-.form-group {
-  margin-bottom: 28px;
+.form-field {
+  margin-bottom: 20px;
 }
 
-.form-group label {
+.form-field label {
   display: block;
-  color: rgba(0, 255, 255, 0.8);
-  margin-bottom: 12px;
-  font-size: 12px;
-  letter-spacing: 1px;
+  font-size: 14px;
   font-weight: 500;
+  color: #64748b;
+  margin-bottom: 8px;
 }
 
 .input-wrapper {
   position: relative;
 }
 
-.tech-input {
-  width: 100%;
-  padding: 15px 20px;
-  border: 1px solid rgba(0, 255, 255, 0.3);
-  border-radius: 8px;
-  background: rgba(5, 5, 15, 0.6);
-  color: #ffffff;
-  font-size: 14px;
-  font-family: 'Courier New', monospace;
-  transition: all 0.3s ease;
-  position: relative;
-  z-index: 2;
-}
-
-.tech-input::placeholder {
-  color: rgba(255, 255, 255, 0.4);
-  font-style: italic;
-}
-
-.tech-input:focus {
-  outline: none;
-  border-color: #00ffff;
-  box-shadow: 0 0 15px rgba(0, 255, 255, 0.4);
-}
-
-.tech-input:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.input-glow {
+.input-icon {
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  border-radius: 8px;
-  background: linear-gradient(90deg, transparent, rgba(0, 255, 255, 0.1), transparent);
-  opacity: 0;
-  transition: opacity 0.3s ease;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 20px;
+  height: 20px;
+  color: #94a3b8;
   pointer-events: none;
-  z-index: 1;
 }
 
-.tech-input:focus + .input-glow {
-  opacity: 1;
-}
-
-.login-button {
+.input-wrapper input {
   width: 100%;
-  padding: 16px;
-  border: 1px solid rgba(0, 255, 255, 0.4);
-  border-radius: 8px;
-  background: linear-gradient(45deg, rgba(0, 255, 255, 0.1), rgba(128, 0, 255, 0.1));
-  color: #00ffff;
+  padding: 12px 12px 12px 44px;
   font-size: 14px;
-  font-weight: 600;
-  font-family: 'Courier New', monospace;
-  letter-spacing: 1px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  position: relative;
-  overflow: hidden;
+  color: #1e293b;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  transition: border-color 0.2s ease;
 }
 
-.login-button:hover:not(:disabled) {
-  border-color: #00ffff;
-  box-shadow: 0 0 20px rgba(0, 255, 255, 0.6);
-  transform: translateY(-2px);
+.input-wrapper input:hover {
+  border-color: #cbd5e1;
 }
 
-.login-button:disabled {
-  opacity: 0.4;
+.input-wrapper input:focus {
+  outline: none;
+  border-color: #3b82f6;
+}
+
+.input-wrapper input::placeholder {
+  color: #94a3b8;
+}
+
+.input-wrapper input:disabled {
+  background: #f8fafc;
   cursor: not-allowed;
-  transform: none;
 }
 
-.button-text {
-  position: relative;
-  z-index: 2;
-}
-
-.button-glow {
-  position: absolute;
-  top: 0;
-  left: -100%;
+.login-btn {
   width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(0, 255, 255, 0.3), transparent);
-  transition: left 0.5s ease;
+  padding: 12px 24px;
+  margin-top: 8px;
+  font-size: 15px;
+  font-weight: 500;
+  color: #ffffff;
+  background: #3b82f6;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
 }
 
-.login-button:hover:not(:disabled) .button-glow {
-  left: 100%;
+.login-btn:hover:not(:disabled) {
+  background: #2563eb;
+}
+
+.login-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.loading-spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.login-footer {
+  text-align: center;
+  padding-top: 24px;
+  border-top: 1px solid #e2e8f0;
+}
+
+.login-footer p {
+  font-size: 12px;
+  color: #94a3b8;
+}
+
+@media (max-width: 480px) {
+  .login-card {
+    padding: 32px 24px;
+  }
 }
 </style>

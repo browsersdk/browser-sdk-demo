@@ -15,7 +15,6 @@ Browser SDK Demo 是一个完整的浏览器端SDK演示项目，包含后台管
 
 ```
 browser-sdk-demo/
-├── sdk-admin/     # 后台管理系统 (Vue 3 + TypeScript)
 ├── sdk-server/    # 服务端API (Go + Gin)
 ├── sdk-client/    # 桌面客户端 (Electron + Vue 3)
 ```
@@ -34,8 +33,7 @@ browser-sdk-demo/
 - Gin Web 框架
 - GORM ORM
 - JWT 认证
-- Redis 缓存
-- MySQL 数据库
+- SQLite 数据库
 
 ## 🚀 快速开始
 
@@ -44,22 +42,14 @@ browser-sdk-demo/
 - **Node.js**: >= 20.19.0
 - **Go**: >= 1.25
 - **pnpm**: 包管理器
-- **MySQL**: 数据库
-- **Redis**: 缓存服务
+- **SQLite**: 数据库
 
-### 安装依赖
+### 下载项目
 
 ```bash
 # 克隆项目
 git clone https://github.com/browsersdk/browser-sdk-demo.git
 cd browser-sdk-demo
-
-# 安装前端依赖
-cd sdk-admin && pnpm install
-cd ../sdk-client && npm install
-
-# 安装后端依赖
-cd ../sdk-server && go mod tidy
 ```
 
 ### 启动服务
@@ -67,18 +57,20 @@ cd ../sdk-server && go mod tidy
 **1. 启动后端服务:**
 ```bash
 cd sdk-server
+go mod tidy
 go run main.go start -c resources/config.dev.yaml
 ```
 
-**2. 启动后台管理:**
-```bash
-cd sdk-admin
-pnpm dev
-```
+**2. 下载浏览器内核**
+
+下载地址 https://github.com/browsersdk/brosdk-core，将下载的内核解压后放置到目录 `sdk-client-ts/sdk/windows-x64/.brosdk` 下。
+
+例如：`YunBrowser119-1.0.1.9-windows-x64.zip` 解压后放置到 `sdk-client-ts/sdk/windows-x64/.brosdk` 下，最终路径为 `sdk-client-ts/sdk/windows-x64/.brosdk/cores/YunBrowser119-1.0.1.9`。
 
 **3. 启动桌面客户端:**
 ```bash
-cd sdk-client
+cd sdk-client-ts
+npm install
 npm run dev
 ```
 
@@ -86,15 +78,6 @@ npm run dev
 
 ```
 browser-sdk-demo/
-├── sdk-admin/              # 后台管理系统
-│   ├── src/               # 源代码
-│   │   ├── components/    # 组件
-│   │   ├── layout/        # 布局
-│   │   ├── router/        # 路由
-│   │   ├── store/         # 状态管理
-│   │   └── views/         # 页面视图
-│   ├── package.json       # 依赖配置
-│   └── vite.config.ts     # 构建配置
 │
 ├── sdk-server/            # 服务端
 │   ├── cmd/               # 命令行工具
@@ -114,13 +97,6 @@ browser-sdk-demo/
 ```
 
 ## 🔧 核心功能
-
-### 后台管理系统 (sdk-admin)
-- 用户认证与权限管理
-- 浏览器环境监控
-- SDK配置管理
-- 数据统计分析
-- 国际化支持
 
 ### 服务端API (sdk-server)
 - RESTful API 接口
