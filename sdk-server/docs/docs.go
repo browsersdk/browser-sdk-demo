@@ -232,6 +232,42 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/app/browser/getUiFingerList": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "browser-third-server"
+                ],
+                "summary": "获取筛选条件列表（专家模式获取选择项目的时候）",
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"data\": [...]}",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/base.Resp"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/brosdk.GetUiFingerList"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
         "/api/app/browser/page": {
             "post": {
                 "security": [
@@ -10378,6 +10414,33 @@ const docTemplate = `{
                 }
             }
         },
+        "brosdk.CONAB": {
+            "type": "object",
+            "properties": {
+                "ab": {
+                    "description": "简写",
+                    "type": "string"
+                },
+                "code": {
+                    "type": "string"
+                },
+                "country": {
+                    "description": "国家",
+                    "type": "string"
+                },
+                "ecountry": {
+                    "description": "国家英文名",
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "province": {
+                    "description": "省",
+                    "type": "string"
+                }
+            }
+        },
         "brosdk.EnvInfo": {
             "type": "object",
             "properties": {
@@ -10385,16 +10448,12 @@ const docTemplate = `{
                     "description": "桥代理配置，格式为：socks5://user:pwd@ipaddr:6666",
                     "type": "string"
                 },
-                "cookie": {
-                    "description": "cookie",
-                    "type": "string"
-                },
                 "customerId": {
                     "description": "三方用户id",
                     "type": "string"
                 },
                 "envId": {
-                    "description": "envid 更新时必填",
+                    "description": "envid",
                     "type": "string"
                 },
                 "envName": {
@@ -10414,10 +10473,6 @@ const docTemplate = `{
                 },
                 "region": {
                     "description": "国家代号，当无法获取代理配置时，传此参数生成对应区域ip，否则获取客户端ip",
-                    "type": "string"
-                },
-                "remark": {
-                    "description": "备注",
                     "type": "string"
                 },
                 "serial": {
@@ -10442,7 +10497,15 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "canvas": {
-                    "description": "浏览器canvas指纹开关 0:倾向一致性 1:关闭 2:倾向随机性",
+                    "description": "浏览器canvas指纹开关 4:倾向一致性 1:真实 2:倾向随机性 3关闭",
+                    "type": "integer"
+                },
+                "clearCookie": {
+                    "description": "清理cookie 1:清理  2:不清理",
+                    "type": "integer"
+                },
+                "clearStorage": {
+                    "description": "清理缓存 1:清理  2:不清理",
                     "type": "integer"
                 },
                 "clientRects": {
@@ -10458,12 +10521,16 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "doNotTrack": {
-                    "description": "请勿跟踪浏览器设置   1不启用 2启用 3默认",
+                    "description": "请勿跟踪浏览器设置  2默认 1启用 3不启用(OK)",
                     "type": "integer"
                 },
                 "dpi": {
                     "description": "平面分辨率 空自动生成",
                     "type": "string"
+                },
+                "enableDevtools": {
+                    "description": "调试模式 1:开启 2:关闭",
+                    "type": "integer"
                 },
                 "enableGc": {
                     "description": "是否开启垃圾回收 1开启 2关闭",
@@ -10477,20 +10544,20 @@ const docTemplate = `{
                     "description": "多开设置 1开启，2关闭",
                     "type": "integer"
                 },
-                "enableOpenNumber": {
-                    "description": "多开人数设置",
-                    "type": "integer"
-                },
                 "enablePic": {
                     "description": "禁止加载图片 1开启，2关闭",
                     "type": "integer"
                 },
                 "enableScanPort": {
-                    "description": "端口扫描防护 1开启(默认) 2关闭",
+                    "description": "端口扫描防护 1开启 2关闭",
                     "type": "integer"
                 },
                 "enableSound": {
                     "description": "禁止播放声音 1开启，2关闭",
+                    "type": "integer"
+                },
+                "enableStorage": {
+                    "description": "缓存 1:开启 2:关闭",
                     "type": "integer"
                 },
                 "enableVideo": {
@@ -10498,7 +10565,7 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "font": {
-                    "description": "字体列表",
+                    "description": "Widowssize string ` + "`" + `json:\"widowssize\"` + "`" + ` //浏览器窗口大小  （目前可传可不传已经不用了使用dpi计算得出）",
                     "allOf": [
                         {
                             "$ref": "#/definitions/brosdk.Font"
@@ -10522,7 +10589,7 @@ const docTemplate = `{
                     ]
                 },
                 "hardware": {
-                    "description": "硬件加速 1开启（默认） 2关闭",
+                    "description": "硬件加速 1开启 2关闭",
                     "type": "integer"
                 },
                 "kernel": {
@@ -10552,14 +10619,6 @@ const docTemplate = `{
                     "description": "内存参数 不传会自动生成",
                     "type": "number"
                 },
-                "nextsystem": {
-                    "description": "（可选不使用设置为空）指纹生成的时候回根据System 或者 Nextsystem去生成，如果给了多项会从这些当中随机选择生成",
-                    "allOf": [
-                        {
-                            "$ref": "#/definitions/brosdk.NextSystem"
-                        }
-                    ]
-                },
                 "picSize": {
                     "description": "图片大小",
                     "type": "string"
@@ -10567,6 +10626,14 @@ const docTemplate = `{
                 "scanPort": {
                     "description": "白名单 0~65535 关闭状态不写 当EnableScanPort是1时这里为空会自动生成本地端口",
                     "type": "string"
+                },
+                "searchEngine": {
+                    "description": "搜索引擎 1:百度  2:谷歌  3:360",
+                    "type": "integer"
+                },
+                "shortName": {
+                    "description": "任务栏名称 1:不显示 2:显示序号 3:显示名称前5位 4:显示名称后5位",
+                    "type": "integer"
                 },
                 "speechVoices": {
                     "description": "SpeechVoices指纹，1：每个浏览器使用当前电脑默认的SpeechVoices,真实 2：添加相应的噪音，同一电脑上为每个浏览器生成不同的SpeechVoices（默认）",
@@ -10576,6 +10643,10 @@ const docTemplate = `{
                     "description": "系统",
                     "type": "string"
                 },
+                "translateLang": {
+                    "description": "默认翻译目标语言 1跟随IP 2:zh-CN 3:en",
+                    "type": "integer"
+                },
                 "ua": {
                     "description": "不写根据系统和浏览器版本自动生成",
                     "type": "string"
@@ -10583,13 +10654,6 @@ const docTemplate = `{
                 "uaVersion": {
                     "description": "浏览器大版本号 不传自动生成 详细查看具体支持的版本号大版本",
                     "type": "string"
-                },
-                "uilanguage": {
-                    "description": "界面语言 空会根据代理IP地址自动生成",
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
                 },
                 "webGl": {
                     "description": "浏览器webgl元数据指纹开关 1隐身 2真实（默认）",
@@ -10608,15 +10672,11 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "webRTC": {
-                    "description": "WebRTC 0:禁用,网站会拿不到IP 1:真实,网站会获取真实IP 2:替换,使用代理IP覆盖真实IP",
+                    "description": "WebRTC 5:禁用,网站会拿不到IP 1:真实,网站会获取真实IP 2:替换,使用代理IP覆盖真实IP",
                     "type": "integer"
                 },
                 "webRTCIP": {
                     "description": "Chrome即时通信组件，支持：proxy 替换 ，使用代理IP覆盖真实IP，代理场景使用 local 真实 ，网站会获取真实IP disabled 禁用(默认)，网站会拿不到IP",
-                    "type": "string"
-                },
-                "widowssize": {
-                    "description": "浏览器窗口大小  （目前可传可不传已经不用了使用dpi计算得出）",
                     "type": "string"
                 },
                 "zone": {
@@ -10660,26 +10720,146 @@ const docTemplate = `{
                     "description": "经度(当enable等于2且UseIP等于0时使用) -180 - 180",
                     "type": "string"
                 },
-                "useip": {
+                "user": {
                     "description": "1使用ip定位(默认),2使用自定义",
                     "type": "integer"
                 }
             }
         },
-        "brosdk.NextSystem": {
+        "brosdk.GetUiFingerList": {
+            "type": "object",
+            "properties": {
+                "chromeKernelVersion": {
+                    "description": "支持的浏览器内核大版本",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/brosdk.KernelVersionInfo"
+                    }
+                },
+                "chromeUAversion": {
+                    "description": "浏览器UA版本",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "cpu": {
+                    "description": "CPU参数"
+                },
+                "dpi": {
+                    "description": "屏幕分辨率"
+                },
+                "firefoxKernelversion": {
+                    "description": "支持的浏览器火狐内核大版本",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/brosdk.KernelVersionInfo"
+                    }
+                },
+                "firefoxUAversion": {
+                    "description": "火狐浏览器UA版本",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "language": {
+                    "description": "语言",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/brosdk.CONAB"
+                    }
+                },
+                "mem": {
+                    "description": "内存参数"
+                },
+                "region": {
+                    "description": "Region"
+                },
+                "system": {
+                    "description": "操作系统版本",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/brosdk.SYSTEMKERNEL"
+                        }
+                    ]
+                },
+                "webgl": {
+                    "description": "webgl"
+                },
+                "zone": {
+                    "description": "时区",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "brosdk.KernelVersionInfo": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "version": {
+                    "type": "string"
+                }
+            }
+        },
+        "brosdk.SYSDEVICE": {
+            "type": "object",
+            "properties": {
+                "browser": {
+                    "description": "浏览器上面对应的版本",
+                    "type": "string"
+                },
+                "name": {
+                    "description": "系统平台 Windows Android MAC iPhone Linux",
+                    "type": "string"
+                },
+                "platformVersion": {
+                    "description": "浏览器的platformVersion",
+                    "type": "string"
+                },
+                "system": {
+                    "description": "具体的系统版本号",
+                    "type": "string"
+                }
+            }
+        },
+        "brosdk.SYSTEMKERNEL": {
             "type": "object",
             "properties": {
                 "Android": {
-                    "type": "string"
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/brosdk.SYSDEVICE"
+                    }
                 },
                 "IOS": {
-                    "type": "string"
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/brosdk.SYSDEVICE"
+                    }
                 },
                 "Linux": {
-                    "type": "string"
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/brosdk.SYSDEVICE"
+                    }
                 },
                 "MacOS": {
-                    "type": "string"
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/brosdk.SYSDEVICE"
+                    }
+                },
+                "Windows": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/brosdk.SYSDEVICE"
+                    }
                 }
             }
         },

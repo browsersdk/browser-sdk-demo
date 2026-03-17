@@ -21,5 +21,6 @@ func registerBrowserRouter(v1 *gin.RouterGroup) {
 		r.POST("create", apis.ApiBrowser.Create)
 		r.POST("update", apis.ApiBrowser.Update)
 		r.POST("del", apis.ApiBrowser.Del)
+		r.POST("getUiFingerList", apis.ApiBrowser.GetUiFingerList)
 	}
 }

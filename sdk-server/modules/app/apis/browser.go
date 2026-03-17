@@ -145,3 +145,21 @@ func (e *BrowserApi) Del(c *gin.Context) {
 	}
 	e.Ok(c)
 }
+
+// GetUiFingerList 获取筛选条件列表（专家模式获取选择项目的时候）
+// @Summary 获取筛选条件列表（专家模式获取选择项目的时候）
+// @Tags browser-third-server
+// @Accept application/json
+// @Product application/json
+// @Success 200 {object} base.Resp{data=brosdk.GetUiFingerList} "{"code": 200, "data": [...]}"
+// @Router /api/app/browser/getUiFingerList [get]
+// @Security Bearer
+func (e *BrowserApi) GetUiFingerList(c *gin.Context) {
+	data, err := appS.SerAppBrowser.GetUiFingerList()
+	if err != nil {
+		e.Error(c, err)
+		return
+	}
+
+	e.Ok(c, data)
+}

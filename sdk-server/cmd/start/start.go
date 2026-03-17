@@ -5,6 +5,7 @@ import (
 	"dilu/common/config"
 	"dilu/common/middleware"
 	"dilu/common/utils"
+	"dilu/modules/sys/models"
 	"fmt"
 	"log/slog"
 	"time"
@@ -115,6 +116,37 @@ func run() {
 	}
 
 	core.Init()
+
+	if err := core.DB().AutoMigrate(
+		// sys/models - 认证与用户
+		&models.Admin{},
+		&models.AdminDept{},
+		&models.AdminRole{},
+		&models.SysUser{},
+		&models.SysEmail{},
+		&models.SysSms{},
+		&models.ThirdLogin{},
+		&models.SysUserLoginLog{},
+		// sys/models - 权限与菜单
+		&models.SysApi{},
+		&models.SysMenu{},
+		&models.SysMenuApiRule{},
+		// sys/models - 配置与工具
+		&models.SysCfg{},
+		&models.SysOperaLog{},
+		&models.UploadLog{},
+		&models.Counter{},
+		// sys/models - 团队体系
+		&models.SysTeam{},
+		&models.SysDept{},
+		&models.SysMember{},
+		&models.SysRole{},
+		&models.SysRoleMenu{},
+		// sys/models - 浏览器
+		&models.Browser{},
+	); err != nil {
+		panic(err)
+	}
 
 	i18n.Register(&codes.Code{
 		EnableI18N: core.Cfg.Server.I18n,

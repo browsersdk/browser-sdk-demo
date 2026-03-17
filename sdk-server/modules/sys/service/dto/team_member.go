@@ -72,7 +72,7 @@ type TeamMemberResp struct {
 
 type TeamMember struct {
 	Owner     int       `json:"owner"`     //团队拥有者id
-	TeamId    int       `json:"teamId"`    //团队id
+	TeamId    uint      `json:"teamId"`    //团队id
 	TeamName  string    `json:"teamName"`  //团队名
 	UserId    int       `json:"userId"`    //用户id
 	Nickname  string    `json:"nickname"`  //昵称

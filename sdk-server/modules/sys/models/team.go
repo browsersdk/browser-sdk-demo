@@ -11,7 +11,7 @@ import (
 
 // 团队
 type SysTeam struct {
-	Id              int       `json:"id" gorm:"type:int;primaryKey;autoIncrement;comment:主键"`  // 主键
+	Id              uint      `json:"id" gorm:"primaryKey;autoIncrement;comment:主键"`           //主键
 	Name            string    `json:"name" gorm:"type:varchar(32);comment:团队名"`                // 团队名
 	Owner           int       `json:"owner" gorm:"type:int unsigned;comment:团队拥有者"`            // 团队拥有者
 	Status          int       `json:"status" gorm:"type:tinyint;comment:状态"`                   // 状态 2 正常 -1 关闭

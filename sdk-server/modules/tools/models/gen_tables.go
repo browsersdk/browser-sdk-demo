@@ -6,7 +6,7 @@ import (
 
 // GenTables
 type GenTables struct {
-	TableId             int          `json:"tableId" gorm:"type:bigint;primaryKey;autoIncrement;comment:主键"`           //主键
+	TableId             int          `json:"tableId" gorm:"type:bigint;primaryKey;autoIncrement:true;comment:主键"`      //主键
 	DbName              string       `json:"dbName" gorm:"type:varchar(64);comment:DbName"`                            //
 	TBName              string       `json:"tableName" gorm:"column:table_name;type:varchar(128);comment:TableName"`   //
 	TableComment        string       `json:"tableComment" gorm:"type:varchar(128);comment:TableComment"`               //
@@ -34,8 +34,8 @@ type GenTables struct {
 	IsLogicalDelete     string       `json:"isLogicalDelete" gorm:"type:varchar(1);comment:IsLogicalDelete"`           //
 	LogicalDelete       bool         `json:"logicalDelete" gorm:"type:tinyint(1);comment:LogicalDelete"`               //
 	LogicalDeleteColumn string       `json:"logicalDeleteColumn" gorm:"type:varchar(128);comment:LogicalDeleteColumn"` //
-	CreatedAt           time.Time    `json:"createdAt" gorm:"type:datetime(3);comment:创建时间"`                           //创建时间
-	UpdatedAt           time.Time    `json:"updatedAt" gorm:"type:datetime(3);comment:最后更新时间"`                         //最后更新时间
+	CreatedAt           time.Time    `json:"createdAt" gorm:"comment:创建时间"`                                            //创建时间
+	UpdatedAt           time.Time    `json:"updatedAt" gorm:"comment:最后更新时间"`                                          //最后更新时间
 	CreateBy            int          `json:"createBy" gorm:"type:int unsigned;comment:创建者"`                            //创建者
 	UpdateBy            int          `json:"updateBy" gorm:"type:int unsigned;comment:更新者"`                            //更新者
 	Columns             []GenColumns `gorm:"-" json:"columns"`
