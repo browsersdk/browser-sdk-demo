@@ -65,7 +65,7 @@ func (s *AdminRoleService) Del(id, userId int) error {
 	model.Status = enums.STATUS_DEL
 	err := s.DB().Save(&model).Error
 	if err == nil {
-		core.Cache.Del(ckey.RoleUserMenu(int(enums.MenuPriPlatform), model.Id))
+		core.Cache.Del(ckey.RoleUserMenu(int(enums.MenuPriPlatform), int(model.Id)))
 	}
 	return err
 }

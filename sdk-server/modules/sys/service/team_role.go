@@ -41,7 +41,7 @@ func (s *SysRoleService) Create(userId, teamId int, req dto.SysRoleDto) error {
 	//m := make(map[int]bool, 0)
 	var rms []models.SysRoleMenu
 	for _, mids := range req.MenuIds {
-		rms = append(rms, models.SysRoleMenu{RoleId: model.Id, MenuId: mids})
+		rms = append(rms, models.SysRoleMenu{RoleId: int(model.Id), MenuId: mids})
 	}
 	if err := tx.Create(rms).Error; err != nil {
 		tx.Rollback()
@@ -71,7 +71,7 @@ func (s *SysRoleService) Update(userId, teamId int, req dto.SysRoleDto) error {
 	//m := make(map[int]bool, 0)
 	var rms []models.SysRoleMenu
 	for _, mids := range req.MenuIds {
-		rms = append(rms, models.SysRoleMenu{RoleId: model.Id, MenuId: mids})
+		rms = append(rms, models.SysRoleMenu{RoleId: int(model.Id), MenuId: mids})
 	}
 	if err := tx.Create(rms).Error; err != nil {
 		tx.Rollback()
@@ -79,8 +79,8 @@ func (s *SysRoleService) Update(userId, teamId int, req dto.SysRoleDto) error {
 	}
 	err := tx.Commit().Error
 	if err == nil {
-		core.Cache.Del(ckey.RoleUserMenu(int(enums.MenuPriTeam), model.Id))
-		core.Cache.Del(ckey.RoleApis(int(enums.MenuPriTeam), model.Id))
+		core.Cache.Del(ckey.RoleUserMenu(int(enums.MenuPriTeam), int(model.Id)))
+		core.Cache.Del(ckey.RoleApis(int(enums.MenuPriTeam), int(model.Id)))
 	}
 	return err
 }
@@ -133,8 +133,8 @@ func (s *SysRoleService) Del(id, userId, teamId int) error {
 	model.Status = enums.STATUS_DEL
 	err := s.DB().Save(&model).Error
 	if err == nil {
-		core.Cache.Del(ckey.RoleUserMenu(int(enums.MenuPriTeam), model.Id))
-		core.Cache.Del(ckey.RoleApis(int(enums.MenuPriTeam), model.Id))
+		core.Cache.Del(ckey.RoleUserMenu(int(enums.MenuPriTeam), int(model.Id)))
+		core.Cache.Del(ckey.RoleApis(int(enums.MenuPriTeam), int(model.Id)))
 	}
 	return err
 }

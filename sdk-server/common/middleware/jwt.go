@@ -27,9 +27,14 @@ func JwtAppHandler() gin.HandlerFunc {
 		//fmt.Println(accessToken)
 		// 解析Token
 		err = utils.ParseApp(accessToken, &appClaims, core.Cfg.JWT.SignKey, jwt.WithSubject(core.Cfg.JWT.Subject))
-		if err != nil || appClaims.Uid == 0 {
+		if err != nil {
 			slog.Error("JwtAppHandler", "err", err, "uid ", appClaims.Uid, "URL", c.Request.URL.Path)
 			Fail(c, 401, err.Error())
+			return
+		}
+		if appClaims.Uid == 0 {
+			slog.Error("JwtAppHandler", "err", "uid is 0", "uid ", appClaims.Uid, "URL", c.Request.URL.Path)
+			Fail(c, 401, "uid is 0")
 			return
 		}
 

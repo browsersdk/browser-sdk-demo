@@ -34,23 +34,35 @@ func (e *Init) DoInit(c *gin.Context) {
 
 	result := "执行成功"
 	if err := core.DB().AutoMigrate(
+		// sys/models - 认证与用户
+		&models.Admin{},
+		&models.AdminDept{},
+		&models.AdminRole{},
+		&models.SysUser{},
 		&models.SysEmail{},
 		&models.SysSms{},
-		&models.SysApi{},
-		&models.SysCfg{},
-		&models.SysDept{},
-		&models.SysMenu{},
-		&models.SysOperaLog{},
-		&models.SysRole{},
-		&models.SysUser{},
 		&models.ThirdLogin{},
-		&models.SysMember{},
+		&models.SysUserLoginLog{},
+		// sys/models - 权限与菜单
+		&models.SysApi{},
+		&models.SysMenu{},
+		&models.SysMenuApiRule{},
+		// sys/models - 配置与工具
+		&models.SysCfg{},
+		&models.SysOperaLog{},
+		&models.UploadLog{},
+		&models.Counter{},
+		// sys/models - 团队体系
 		&models.SysTeam{},
+		&models.SysDept{},
+		&models.SysMember{},
+		&models.SysRole{},
 		&models.SysRoleMenu{},
+		// sys/models - 浏览器
+		&models.Browser{},
+		// tools/models - 代码生成
 		&tm.GenTables{},
 		&tm.GenColumns{},
-		// &tools.GenColumn{},
-		// &tools.GenTable{},
 	); err != nil {
 		result = "sys执行失败"
 	}

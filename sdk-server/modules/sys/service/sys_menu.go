@@ -159,7 +159,7 @@ func (e *SysMenu) TeamUserCanAccess(teamId, uid int, method, url string) error {
 	SerSysApi.GetByType(3, &apis)
 	for _, api := range apis {
 		if api.Method == method && utils.KeyMatch2(url, api.Path) {
-			aid = api.Id
+			aid = int(api.Id)
 			break
 		}
 	}
@@ -243,7 +243,7 @@ func (e *SysMenu) AdminCanAccess(adminId int, method, url string) error {
 	SerSysApi.GetByType(3, &apis)
 	for _, api := range apis {
 		if api.Method == method && utils.KeyMatch2(url, api.Path) {
-			aid = api.Id
+			aid = int(api.Id)
 			break
 		}
 	}
@@ -276,7 +276,7 @@ func (e *SysMenu) treeMenuVo(ms []models.SysMenu) []dto.MenuVo {
 	topM := make(map[int]struct{}, 0)
 	for _, menu := range ms {
 		if menu.ParentId == 0 {
-			topM[menu.Id] = struct{}{}
+			topM[int(menu.Id)] = struct{}{}
 		}
 	}
 
@@ -338,7 +338,7 @@ func menuToVo(menu models.SysMenu) dto.MenuVo {
 		Meta:      meta,
 		Path:      menu.Path,
 		Component: menu.Component,
-		Id:        menu.Id,
+		Id:        int(menu.Id),
 	}
 	return vo
 }

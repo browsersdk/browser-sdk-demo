@@ -35,7 +35,7 @@ func (s *SysTeamService) Page(req *dto.SysTeamGetPageReq, data *[]dto.SysTeamDat
 	}
 	for _, v := range list {
 		*data = append(*data, dto.SysTeamData{
-			Id:        v.Id,
+			Id:        int(v.Id),
 			Name:      v.Name,
 			Owner:     v.Owner,
 			Status:    v.Status,
@@ -71,8 +71,8 @@ func (s *SysTeamService) Create(team *models.SysTeam, user *models.SysUser, owne
 		return nil
 	}
 	owner = &models.SysMember{
-		TeamId:   team.Id,
-		UserId:   user.Id,
+		TeamId:   int(team.Id),
+		UserId:   int(user.Id),
 		Nickname: user.Nickname,
 		Name:     user.Name,
 		PostId:   enums.Admin.Id,

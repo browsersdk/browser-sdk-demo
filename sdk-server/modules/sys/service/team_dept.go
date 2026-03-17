@@ -93,7 +93,7 @@ func (s *SysDeptService) Del(id, teamId int, uid int) error {
 	if count > 0 {
 		return fmt.Errorf("存在子部门，不允许删除")
 	}
-	cnt, err := SerSysMember.CountMembers(dept.Id)
+	cnt, err := SerSysMember.CountMembers(int(dept.Id))
 	if err != nil {
 		return err
 	}
