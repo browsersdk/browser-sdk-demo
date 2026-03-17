@@ -126,7 +126,7 @@ export class WebSocketService {
         if (this.heartbeatTimer) return;
         this.heartbeatTimer = window.setInterval(() => {
             if (this.socket?.readyState === WebSocket.OPEN) {
-                this.socket.send('ping'); // 根据后端协议，可以发送更复杂的心跳包
+                this.socket.send('{"type":"heartbeat"}'); // 根据后端协议，可以发送更复杂的心跳包
             }
         }, this.options.heartbeatInterval);
     }

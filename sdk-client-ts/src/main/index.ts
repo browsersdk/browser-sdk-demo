@@ -1,5 +1,5 @@
-import { app, shell, BrowserWindow, session, globalShortcut } from 'electron'
-import path, { join } from 'path'
+import { app, shell, BrowserWindow, globalShortcut } from 'electron'
+import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import Logger from './logs/logs'
@@ -11,21 +11,27 @@ const log = Logger.getInstance()
 new SDK()
 
 async function installVueDevtools(): Promise<void> {
-  if (app.isPackaged) return
+  // 暂时禁用Vue DevTools加载，避免扩展文件缺失导致的错误
+  // 如果需要使用Vue DevTools，可以通过以下方式：
+  // 1. 使用Chrome Web Store安装（推荐）
+  // 2. 构建本地的vue-devtools扩展
+  return
 
-  try {
-    // 项目内插件存放路径（示例：项目根目录下的 extensions/vue-devtools）
-    const vueDevtoolsPath = path.join(
-      process.cwd(), // 项目根目录
-      'extensions', // 插件存放目录
-      'vue-devtools' // Vue Devtools 插件目录
-    )
+  // if (app.isPackaged) return
 
-    // 加载项目内的 Vue Devtools 插件
-    await session.defaultSession.loadExtension(vueDevtoolsPath)
-  } catch {
-    log.info('vueDevtoolsPath加载错误')
-  }
+  // try {
+  //   // 项目内插件存放路径（示例：项目根目录下的 extensions/vue-devtools）
+  //   const vueDevtoolsPath = path.join(
+  //     process.cwd(), // 项目根目录
+  //     'extensions', // 插件存放目录
+  //     'vue-devtools' // Vue Devtools 插件目录
+  //   )
+
+  //   // 加载项目内的 Vue Devtools 插件
+  //   await session.defaultSession.extensions.loadExtension(vueDevtoolsPath)
+  // } catch (err) {
+  //   log.error('vueDevtoolsPath加载错误', err)
+  // }
 }
 
 function createWindow(): void {

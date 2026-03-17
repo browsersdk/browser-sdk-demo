@@ -4,10 +4,24 @@ export interface IResponse {
   /** 错误或提示信息 */
   msg: string
 }
+export interface IOpenCookie {
+  domain: string
+  expirationDate: number
+  hostOnly: boolean
+  httpOnly: boolean
+  name: string
+  path: string
+  sameSite: string
+  secure: boolean
+  session: boolean
+  storeId?: string
+  value: string
+}
 export interface IOpenEnv {
   envId: string
   args?: string[]
   urls?: string[]
+  cookies?: IOpenCookie[]
 }
 export interface IAppBindParams {
   port: number

@@ -8,6 +8,7 @@ const BASE_URL = 'http://localhost'
  */
 export class SdkHttpService {
   static open(data: IOpenParams): Promise<IResponse> {
+    console.log('open', data);
     return axios.post(`${BASE_URL}:${localStorage.getItem('appPost')}/sdk/v1/browser/open`, data)
   }
   static close(data: ICloseParams): Promise<IResponse> {

@@ -144,7 +144,7 @@ func (s *BrowserService) GetUiFingerList() (data *brosdk.GetUiFingerList, err er
 	if err != nil {
 		return nil, err
 	}
-	*data = *resp
+	data = resp
 
 	return
 }
