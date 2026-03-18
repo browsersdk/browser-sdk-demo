@@ -8,6 +8,14 @@
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
   position: relative;
   overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+/* 移动设备视图优化 */
+.main-layout.mobile-view {
+  overflow-y: auto;
+  height: auto;
+  min-height: 100vh;
 }
 
 /* 头部 */
@@ -855,38 +863,221 @@
 }
 
 /* 响应式设计 */
+
+/* 超大屏幕 (1400px+) */
+@media (max-width: 1440px) {
+  .content-wrapper { max-width: 1100px; }
+  .main-content { padding: 24px 28px; }
+}
+
+/* 大屏幕 (1200px+) */
+@media (max-width: 1200px) {
+  .content-wrapper { max-width: 950px; }
+  .main-content { padding: 22px 24px; }
+  .content-header h2 { font-size: 22px; }
+  .app-title { font-size: 18px; }
+  .sidebar-nav { width: 200px; }
+  .nav-item { padding: 11px 20px; font-size: 13px; }
+}
+
+/* 中等屏幕 (992px+) */
+@media (max-width: 992px) {
+  .layout-container { flex-direction: column; }
+  .sidebar-nav {
+    width: 100%;
+    height: auto;
+    border-right: none;
+    border-bottom: 1px solid #e2e8f0;
+    padding: 12px 15px;
+    background: #ffffff;
+  }
+  .nav-items {
+    flex-direction: row;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .nav-item {
+    padding: 10px 18px;
+    flex: 0 0 auto;
+    text-align: center;
+    min-width: 100px;
+    font-size: 13px;
+    border-radius: 6px;
+  }
+  .nav-item.active { border-right: none; border-bottom: 3px solid #3b82f6; }
+  .content-wrapper { max-width: 100%; padding: 0 15px; }
+  .main-content { padding: 20px 15px; }
+  .content-header {
+    flex-direction: column;
+    gap: 15px;
+    align-items: stretch;
+    text-align: center;
+  }
+  .content-header button { width: 100%; }
+  .modal-content { width: 95%; max-width: 600px; }
+}
+
+/* 平板 (768px+) */
 @media (max-width: 768px) {
+  .main-header {
+    padding: 12px 20px;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .header-left { text-align: center; width: 100%; }
+  .user-panel {
+    justify-content: center;
+    width: 100%;
+    flex-wrap: wrap;
+  }
+  .user-info {
+    padding: 10px 15px;
+    gap: 12px;
+  }
+  .user-avatar { width: 32px; height: 32px; font-size: 14px; }
+  .logout-btn { padding: 8px 16px; font-size: 11px; }
   .environments-table-container {
     overflow-x: auto;
+    border-radius: 8px;
   }
-
-  .environments-table {
-    min-width: 800px;
-  }
-
-  .form-row {
-    grid-template-columns: 1fr;
-  }
-
+  .environments-table { min-width: 700px; }
+  .form-row { grid-template-columns: 1fr; gap: 15px; }
   .modal-content.large {
     width: 95vw;
     padding: 20px;
+    max-height: 85vh;
   }
-
   .pagination-container {
     flex-direction: column;
     gap: 15px;
     text-align: center;
+    padding: 15px;
   }
+  .pagination-controls { flex-wrap: wrap; justify-content: center; }
+  .settings-panel { grid-template-columns: 1fr; }
+  .status-grid { grid-template-columns: 1fr; }
+  .setting-card { padding: 20px; }
+  .setting-card h3 { font-size: 16px; }
+  .table-actions { justify-content: flex-start; }
+  .action-btn.small { min-width: 45px; padding: 3px 8px; }
+}
 
-  .table-actions {
-    justify-content: flex-start;
+/* 大手机 (576px+) */
+@media (max-width: 576px) {
+  .main-header { padding: 12px 15px; }
+  .app-title { font-size: 16px; }
+  .subtitle { font-size: 11px; }
+  .content-header h2 { font-size: 18px; }
+  .content-header p { font-size: 13px; }
+  .nav-items { justify-content: center; }
+  .nav-item {
+    min-width: 80px;
+    padding: 10px 14px;
+    font-size: 12px;
   }
+  .primary-btn, .secondary-btn {
+    padding: 10px 16px;
+    font-size: 13px;
+  }
+  .modal-actions { flex-direction: column; gap: 10px; }
+  .modal-actions button { width: 100%; }
+  .main-content { padding: 16px 12px; }
+  .content-wrapper { padding: 0 10px; }
+  .environments-table { min-width: 650px; font-size: 13px; }
+  .environments-table th { padding: 10px 12px; font-size: 12px; }
+  .environments-table td { padding: 10px 12px; font-size: 12px; }
+  .action-btn {
+    padding: 4px 8px;
+    font-size: 10px;
+    min-width: 42px;
+    height: 24px;
+  }
+  .table-actions { gap: 6px; }
+}
 
-  .action-btn.small {
-    min-width: 45px;
-    padding: 3px 8px;
+/* 小手机 (480px+) */
+@media (max-width: 480px) {
+  .main-header { padding: 10px 12px; }
+  .app-title { font-size: 15px; }
+  .subtitle { font-size: 10px; }
+  .user-info {
+    padding: 8px 12px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
   }
+  .user-avatar { width: 30px; height: 30px; }
+  .user-details { gap: 2px; }
+  .welcome-text { font-size: 11px; }
+  .user-status { font-size: 10px; }
+  .logout-btn { padding: 6px 12px; font-size: 10px; }
+  .nav-items { flex-direction: column; }
+  .nav-item {
+    width: 100%;
+    text-align: center;
+    padding: 12px;
+    border-radius: 6px;
+  }
+  .sidebar-nav { padding: 10px; }
+  .content-header h2 { font-size: 16px; }
+  .content-header p { font-size: 12px; }
+  .modal-content { padding: 18px; border-radius: 10px; }
+  .modal-header h3 { font-size: 16px; }
+  .close-btn { width: 28px; height: 28px; font-size: 20px; }
+  .pagination-info { font-size: 12px; }
+  .pagination-btn { padding: 6px 12px; font-size: 11px; }
+  .pagination-page { padding: 6px 10px; font-size: 11px; }
+  .empty-state { padding: 50px 15px; }
+  .empty-icon { font-size: 36px; }
+  .empty-state p { font-size: 14px; }
+}
+
+/* 超小手机 (360px+) */
+@media (max-width: 360px) {
+  .app-title { font-size: 14px; }
+  .subtitle { display: none; }
+  .environments-table { min-width: 600px; font-size: 12px; }
+  .action-btn {
+    padding: 3px 6px;
+    font-size: 9px;
+    min-width: 38px;
+    height: 22px;
+  }
+  .status-badge { padding: 2px 6px; font-size: 10px; }
+  .tech-input { padding: 10px 12px; font-size: 13px; }
+}
+
+/* 横屏模式优化 */
+@media (max-height: 600px) and (orientation: landscape) {
+  .main-header { padding: 8px 20px; }
+  .sidebar-nav { padding: 8px 0; }
+  .nav-item { padding: 8px 16px; font-size: 12px; }
+  .main-content { padding: 12px 20px; }
+  .content-header { margin-bottom: 20px; padding-bottom: 15px; }
+  .content-header h2 { font-size: 18px; }
+  .environments-table th, .environments-table td { padding: 8px 12px; }
+}
+
+/* 高分辨率屏幕优化 */
+@media (min-width: 1920px) {
+  .content-wrapper { max-width: 1400px; }
+  .main-content { padding: 30px 40px; }
+  .content-header h2 { font-size: 28px; }
+  .content-header p { font-size: 16px; }
+  .environments-table th { font-size: 14px; padding: 14px 18px; }
+  .environments-table td { font-size: 15px; padding: 14px 18px; }
+  .primary-btn, .secondary-btn { padding: 12px 24px; font-size: 15px; }
+}
+
+/* 打印样式 */
+@media print {
+  .main-header, .sidebar-nav, .action-btn, .pagination-container {
+    display: none !important;
+  }
+  .main-content { padding: 0; overflow: visible; }
+  .environments-table-container { box-shadow: none; border: 1px solid #000; }
+  .environments-table { font-size: 10pt; }
 }
 
 /* 状态徽章 */

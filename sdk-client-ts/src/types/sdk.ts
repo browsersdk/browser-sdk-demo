@@ -4,6 +4,22 @@ export interface IResponse {
   /** 错误或提示信息 */
   msg: string
 }
+
+export interface IBrowserInfoResponse {
+  /** 状态码 */
+  code: number;
+  /** 响应类型标识 */
+  type: string;
+  /** 数据主体 */
+  data: {
+    /** 环境列表 */
+    envs: Array<{
+      /** 环境 ID（数值型） */
+      envId: string;
+    }>;
+  };
+}
+
 export interface IOpenCookie {
   domain: string
   expirationDate: number

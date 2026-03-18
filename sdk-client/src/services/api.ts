@@ -2,8 +2,6 @@ import { TokenManager } from '@/utils/tokenManager';
 import axios from '@/utils/axios'
 import type { IResponse, LoginRequest, LoginResponse, AuthTokens, IUserSigData, UserInfo, UserInfoResponse, Browser, BrowserDto, BrowserGetPageReq, PageResponse, BaseResponse } from './type'
 
-const BASE_URL = 'http://192.168.0.127:7888';
-
 export class ApiService {
 
   static async login(username: string, password: string): Promise<AuthTokens> {
@@ -106,6 +104,17 @@ export class ApiService {
 
   static async updateBrowser(browser: BrowserDto): Promise<BrowserDto> {
     const res: BaseResponse<BrowserDto> = await axios.post('/api/app/browser/update', browser);
+    const { code, data, msg } = res;
+
+    if (code === 200) {
+      return data;
+    } else {
+      throw new Error(msg || 'Failed to update browser');
+    }
+  }
+
+  static async updateBrowserStatus(browser: BrowserDto): Promise<BrowserDto> {
+    const res: BaseResponse<BrowserDto> = await axios.post('/api/app/browser/update-status', browser);
     const { code, data, msg } = res;
 
     if (code === 200) {
