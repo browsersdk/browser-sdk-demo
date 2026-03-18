@@ -303,31 +303,35 @@ const deleteEnvironment = async (id: number | undefined) => {
 // ── 环境控制 ──────────────────────────────────────
 const controlEnvironment = async (item: BrowserDto, status: number) => {
   if (!item.id) return
+
   try {
     if (status === 3) {
+      // 启动环境
       const code = await SdkService.open({ envs: [{ envId: item.envId!, args: [] }] })
-      if (code === 1) browserStore.startingDict.set(item.envId!, item)
-      else alert(`启动：${item.envName} 环境失败`)
-    
-      // 停止成功后同步更新服务端状态
-      browserStore.updateBrowserStatus({
-          id: item.id!,
-          envId: item.envId?.toString(),
-          status: 3
-      })
+      if (code === 1) {
+        // 添加到启动中
+        browserStore.startingDict.set(item.envId!, item)
+
+        // 预同步服务端状态为运行中
+        await browserStore.syncBrowserStatus({
+          id: item.id,
+          envId: item.envId?.toString()
+        }, 3)
+      } else {
+        alert(`启动：${item.envName} 环境失败`)
+      }
     } else if (status === 1) {
+      // 停止环境
       const code = await SdkService.close({ envs: [item.envId!] })
       if (code === 1) {
+        // 添加到关闭中
         browserStore.closingDict.set(item.envId!, item)
-        // 停止成功后同步更新服务端状态
-        browserStore.updateBrowserStatus({
-          id: item.id!,
-          envId: item.envId?.toString(),
-          status: 1
-      })
-        // 同步更新本地列表
-        const idx = browserStore.browsers.findIndex((b) => b.id === item.id)
-        if (idx !== -1) browserStore.browsers[idx].status = 1
+
+        // 预同步服务端状态为停止
+        await browserStore.syncBrowserStatus({
+          id: item.id,
+          envId: item.envId?.toString()
+        }, 1)
       } else {
         alert(`停止：${item.envName} 环境失败`)
       }

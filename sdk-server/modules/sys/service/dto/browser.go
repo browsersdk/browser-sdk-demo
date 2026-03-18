@@ -8,9 +8,9 @@ import (
 type BrowserGetPageReq struct {
 	base.ReqPage `query:"-"`
 	SortOrder    string `json:"-" query:"type:order;column:id"`
-	EnvName      string `json:"envName" form:"envName"` //名称
-	EnvId        string `json:"envId" form:"envId"`     //环境ID
-	UserId       int    `json:"userId" form:"userId"`   //用户ID
+	EnvName      string `json:"envName" form:"envName"`                      //名称
+	EnvId        string `json:"envId" form:"envId"`                          //环境ID
+	UserId       int    `json:"userId" form:"userId" query:"column:user_id"` //用户ID
 }
 
 func (BrowserGetPageReq) TableName() string {
