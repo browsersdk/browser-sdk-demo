@@ -28,6 +28,21 @@ export class SdkService {
     return code
   }
   /**
+   * 获取当前正在运行的环境 ID 列表
+   * @returns 运行中的 envId 字符串数组，失败时返回空数组
+   */
+  static async info(): Promise<string[]> {
+    try {
+      const res = await SdkHttpService.info()
+      if (res.code === 0 && res.data?.envs?.length) {
+        return res.data.envs.map((e) => e.envId)
+      }
+    } catch (error) {
+      console.warn('SdkService.info failed:', error)
+    }
+    return []
+  }
+  /**
    * 启动环境
    * @param data
    * @returns

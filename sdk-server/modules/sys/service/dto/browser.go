@@ -27,6 +27,13 @@ type BrowserDto struct {
 	Status  int8            `json:"status"`  //状态 1 停止 3 启动
 }
 
+type BrowserStatusDto struct {
+	Id     int    `json:"id"`     //主键
+	EnvId  string `json:"envId"`  //环境ID
+	UserId int    `json:"userId"` //用户ID
+	Status int8   `json:"status"` //状态 1 停止 3 启动
+}
+
 type KernelVersionInfo struct {
 	Id      int    `json:"id"`
 	Version string `json:"version"`

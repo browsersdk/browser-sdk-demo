@@ -346,11 +346,11 @@ export interface BrowserDto {
   /** 浏览器记录 ID（用于更新时） */
   id?: number
   /** 浏览器或设备名称 */
-  envName: string
+  envName?: string
   /** 环境 ID */
   envId?: string
   /** 关联用户 ID */
-  userId: number
+  userId?: number
   /** 额外数据（通常为 JSON） */
   data?: BrowserData
   /** 创建时间，ISO 字符串 */

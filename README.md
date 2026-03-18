@@ -169,11 +169,12 @@ go vet ./...
 
 **构建前端:**
 ```bash
-# 后台管理构建
-cd sdk-admin && pnpm build
-
 # 客户端构建
-cd sdk-client && npm run build
+cd sdk-client
+npm run build
+
+## win 构建
+npm run build:win
 ```
 
 **构建后端:**
@@ -185,9 +186,6 @@ go build -ldflags "-w -s" -o bin/server main.go
 ### 测试
 
 ```bash
-# 前端测试
-cd sdk-admin && pnpm test
-
 # 后端测试
 cd sdk-server && go test ./...
 ```

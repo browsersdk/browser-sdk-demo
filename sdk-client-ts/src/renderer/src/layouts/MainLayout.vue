@@ -1,5 +1,5 @@
 <template>
-  <div class="main-layout">
+  <div class="main-layout" :class="{ 'mobile-view': isMobile }">
     <!-- 头部 -->
     <header class="main-header">
       <div class="header-left">
@@ -154,6 +154,10 @@ const userStore = useUserStore()
 const browserStore = useBrowserStore()
 const router = useRouter()
 
+// 响应式状态
+const isMobile = ref(false)
+const screenWidth = ref(window.innerWidth)
+
 const tabs = [
   { key: 'environments', label: '环境管理' },
   { key: 'settings', label: '系统设置' }
@@ -170,6 +174,12 @@ const environmentForm = ref<EnvironmentForm>({ ...DEFAULT_FORM })
 const showAdvancedStartModal = ref(false)
 const advancedStartBrowser = ref<BrowserDto | null>(null)
 const isStarting = ref(false)
+
+// ── 响应式处理 ──────────────────────────────────────
+const handleResize = () => {
+  screenWidth.value = window.innerWidth
+  isMobile.value = window.innerWidth < 768
+}
 
 // ── 创建/编辑环境 ──────────────────────────────────
 const openCreateModal = () => {
@@ -298,10 +308,29 @@ const controlEnvironment = async (item: BrowserDto, status: number) => {
       const code = await SdkService.open({ envs: [{ envId: item.envId!, args: [] }] })
       if (code === 1) browserStore.startingDict.set(item.envId!, item)
       else alert(`启动：${item.envName} 环境失败`)
+    
+      // 停止成功后同步更新服务端状态
+      browserStore.updateBrowserStatus({
+          id: item.id!,
+          envId: item.envId?.toString(),
+          status: 3
+      })
     } else if (status === 1) {
       const code = await SdkService.close({ envs: [item.envId!] })
-      if (code === 1) browserStore.closingDict.set(item.envId!, item)
-      else alert(`停止：${item.envName} 环境失败`)
+      if (code === 1) {
+        browserStore.closingDict.set(item.envId!, item)
+        // 停止成功后同步更新服务端状态
+        browserStore.updateBrowserStatus({
+          id: item.id!,
+          envId: item.envId?.toString(),
+          status: 1
+      })
+        // 同步更新本地列表
+        const idx = browserStore.browsers.findIndex((b) => b.id === item.id)
+        if (idx !== -1) browserStore.browsers[idx].status = 1
+      } else {
+        alert(`停止：${item.envName} 环境失败`)
+      }
     }
   } catch (error) {
     console.error('Failed to control environment:', error)
@@ -344,7 +373,10 @@ const performAdvancedStart = async (params: { args: string[]; urls: string[]; co
 
 // ── 生命周期 ──────────────────────────────────────
 onMounted(async () => {
-  window.addEventListener('resize', () => {})
+  // 监听窗口大小变化
+  handleResize()
+  window.addEventListener('resize', handleResize)
+
   if (!userStore.isAuthenticated) {
     router.push('/login')
   } else {
@@ -352,6 +384,10 @@ onMounted(async () => {
     userStore.loadUserInfo()
     try {
       await browserStore.loadBrowsers()
+      // 查询 SDK 中正在运行的环境，初始化 startedDict
+      const runningEnvIds = await SdkService.info()
+      browserStore.startedDict.clear()
+      runningEnvIds.forEach((id) => browserStore.startedDict.add(id))
     } catch (error) {
       console.error('Failed to load environments:', error)
     }
@@ -359,6 +395,6 @@ onMounted(async () => {
 })
 
 onUnmounted(() => {
-  window.removeEventListener('resize', () => {})
+  window.removeEventListener('resize', handleResize)
 })
 </script>

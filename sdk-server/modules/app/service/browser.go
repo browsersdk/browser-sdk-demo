@@ -94,7 +94,7 @@ func (s *BrowserService) Create(uid int, req *dto.BrowserDto) (data *models.Brow
 
 	data.EnvId = resp.EnvId
 	data.Data = datatypes.NewJSONType(resp)
-	data.Status = 3
+	//data.Status = 3
 	if err = service.SerBrowser.UpdateById(&data); err != nil {
 		return
 	}
@@ -128,6 +128,20 @@ func (s *BrowserService) Update(uid int, req *dto.BrowserDto) (browser *models.B
 		}
 		browser.Data = datatypes.NewJSONType(env)
 	}
+	if err := service.SerBrowser.UpdateById(&browser); err != nil {
+		return nil, err
+	}
+
+	return browser, nil
+}
+
+func (s *BrowserService) UpdateStatus(uid int, req *dto.BrowserStatusDto) (browser *models.Browser, err error) {
+	browser = &models.Browser{}
+	if err := service.SerBrowser.DB().Where("id = ?", req.Id).Find(browser).Error; err != nil {
+		return nil, err
+	}
+	browser.Status = req.Status
+
 	if err := service.SerBrowser.UpdateById(&browser); err != nil {
 		return nil, err
 	}

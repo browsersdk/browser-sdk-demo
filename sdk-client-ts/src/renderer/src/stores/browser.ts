@@ -75,6 +75,21 @@ export const useBrowserStore = defineStore('browser', () => {
     }
   }
 
+  const updateBrowserStatus = async (browser: BrowserDto): Promise<BrowserDto> => {
+    try {
+      const updatedBrowser = await ApiService.updateBrowserStatus(browser)
+      // 更新列表中的对应项
+      const index = browsers.value.findIndex((b) => b.id === browser.id)
+      if (index !== -1) {
+        browsers.value[index] = updatedBrowser
+      }
+      return updatedBrowser
+    } catch (error) {
+      console.error('Failed to update browser:', error)
+      throw error
+    }
+  }
+
   const deleteBrowser = async (id: number): Promise<void> => {
     try {
       const code = await ApiService.deleteBrowser([id])
@@ -113,6 +128,7 @@ export const useBrowserStore = defineStore('browser', () => {
     getBrowser,
     createBrowser,
     updateBrowser,
+    updateBrowserStatus,
     deleteBrowser,
     deleteMultipleBrowsers
   }
