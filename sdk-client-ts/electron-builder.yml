@@ -1,4 +1,4 @@
-appId: com.yunlogin.fbmain
+appId: com.chenlian.sdk
 productName: browser-sdk-client
 directories:
   buildResources: build
@@ -36,7 +36,9 @@ mac:
   entitlements: ./mac/entitlements.mac.plist
   entitlementsInherit: ./mac/entitlements.mac.plist
   # 可选：指定签名身份（匹配你的证书名称）
-  identity: "Apple Development: fanis (5TNS742NKP)"
+  # identity: "Apple Development: xiangjiao cao (5TNS742NKP)"
+  # identity: "Hangzhou Chenlian Information Technology Co., Ltd (GC679455P9)"
+  identity: "Apple Development: Hangzhou Chenlian Information Technology Co., Ltd (GC679455P9)"
   minimumSystemVersion: 10.15
   extendInfo:
     - NSCameraUsageDescription: Application requests access to the device's camera.
