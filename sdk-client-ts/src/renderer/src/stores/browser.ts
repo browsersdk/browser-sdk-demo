@@ -5,11 +5,11 @@ import type { BrowserDto } from '@/services'
 
 export const useBrowserStore = defineStore('browser', () => {
   /** 已启动 */
-  const startedDict = ref(new Set())
+  const startedDict = ref(new Set<string>())
   /** 启动中 */
-  const startingDict = ref(new Map())
+  const startingDict = ref(new Map<string, BrowserDto>())
   /** 关闭中 */
-  const closingDict = ref(new Map())
+  const closingDict = ref(new Map<string, BrowserDto>())
   const browsers = ref<BrowserDto[]>([])
   const loading = ref(false)
   const currentPage = ref(1)

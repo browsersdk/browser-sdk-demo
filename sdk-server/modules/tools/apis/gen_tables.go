@@ -232,7 +232,7 @@ func (e *GenTablesApi) GenMenuAndApi(c *gin.Context) {
 		Mmenu.CreateBy = 1
 		Mmenu.PlatformType = 1
 		sService.SerSysMenu.Insert(&Mmenu)
-		menuPid = Mmenu.Id
+		menuPid = int(Mmenu.Id)
 	}
 
 	curPath := fmt.Sprintf("%s/%s/%s/page", tab.ApiRoot, tab.PackageName, tab.ModuleName)
@@ -283,7 +283,7 @@ func (e *GenTablesApi) GenMenuAndApi(c *gin.Context) {
 	MList.Path = tab.TBName + "_detail"
 	MList.MenuType = 3
 	MList.Permission = tab.PackageName + ":" + tab.BusinessName + ":query"
-	MList.ParentId = Cmenu.Id
+	MList.ParentId = int(Cmenu.Id)
 	MList.NoCache = false
 	MList.Sort = 0
 	MList.Hidden = false
@@ -310,7 +310,7 @@ func (e *GenTablesApi) GenMenuAndApi(c *gin.Context) {
 	MCreate.Path = tab.TBName + "_create"
 	MCreate.MenuType = 3
 	MCreate.Permission = tab.PackageName + ":" + tab.BusinessName + ":add"
-	MCreate.ParentId = Cmenu.Id
+	MCreate.ParentId = int(Cmenu.Id)
 	MCreate.NoCache = false
 	MCreate.Sort = 0
 	MCreate.Hidden = false
@@ -337,7 +337,7 @@ func (e *GenTablesApi) GenMenuAndApi(c *gin.Context) {
 	MUpdate.Path = tab.TBName + "_update"
 	MUpdate.MenuType = 3
 	MUpdate.Permission = tab.PackageName + ":" + tab.BusinessName + ":edit"
-	MUpdate.ParentId = Cmenu.Id
+	MUpdate.ParentId = int(Cmenu.Id)
 	MUpdate.NoCache = false
 	MUpdate.Sort = 0
 	MUpdate.Hidden = false
@@ -364,7 +364,7 @@ func (e *GenTablesApi) GenMenuAndApi(c *gin.Context) {
 	MDelete.Path = tab.TBName + "_del"
 	MDelete.MenuType = 3
 	MDelete.Permission = tab.PackageName + ":" + tab.BusinessName + ":remove"
-	MDelete.ParentId = Cmenu.Id
+	MDelete.ParentId = int(Cmenu.Id)
 	MDelete.NoCache = false
 	MDelete.Sort = 0
 	MDelete.Hidden = false

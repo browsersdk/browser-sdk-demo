@@ -78,10 +78,10 @@ func (s *UploadLogService) DelFile(urlPath string) error {
 		return nil
 	}
 	ula := models.UploadLog{
-		Id:         ul.Id,
 		Status:     -1,
 		SyncStatus: 1,
 	}
+	ula.Id = ul.Id
 	if err := s.UpdateById(&ula); err != nil {
 		return err
 	}

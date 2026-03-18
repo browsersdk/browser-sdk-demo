@@ -15,7 +15,6 @@ Browser SDK Demo is a comprehensive browser-side SDK demonstration project that 
 
 ```
 browser-sdk-demo/
-├── sdk-admin/     # Backend Management System (Vue 3 + TypeScript)
 ├── sdk-server/    # Server-side API (Go + Gin)
 ├── sdk-client/    # Desktop Client (Electron + Vue 3)
 ```
@@ -55,8 +54,7 @@ git clone https://github.com/browsersdk/browser-sdk-demo.git
 cd browser-sdk-demo
 
 # Install frontend dependencies
-cd sdk-admin && pnpm install
-cd ../sdk-client && npm install
+cd sdk-client && npm install
 
 # Install backend dependencies
 cd ../sdk-server && go mod tidy
@@ -70,13 +68,7 @@ cd sdk-server
 go run main.go start -c resources/config.dev.yaml
 ```
 
-**2. Start Backend Management:**
-```bash
-cd sdk-admin
-pnpm dev
-```
-
-**3. Start Desktop Client:**
+**2. Start Desktop Client:**
 ```bash
 cd sdk-client
 npm run dev
@@ -86,15 +78,6 @@ npm run dev
 
 ```
 browser-sdk-demo/
-├── sdk-admin/              # Backend Management System
-│   ├── src/               # Source Code
-│   │   ├── components/    # Components
-│   │   ├── layout/        # Layout
-│   │   ├── router/        # Router
-│   │   ├── store/         # State Management
-│   │   └── views/         # Page Views
-│   ├── package.json       # Dependency Configuration
-│   └── vite.config.ts     # Build Configuration
 │
 ├── sdk-server/            # Server Side
 │   ├── cmd/               # Command Line Tools

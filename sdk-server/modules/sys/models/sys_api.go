@@ -2,21 +2,18 @@ package models
 
 import (
 	"time"
-
-	"github.com/baowk/dilu-core/core/base"
 )
 
 // 接口列表
 type SysApi struct {
-	base.Model
-
+	Id        uint      `json:"id" gorm:"primaryKey;autoIncrement;comment:主键"`                           //主键
 	Title     string    `json:"title" gorm:"type:varchar(128);comment:标题"`                               //标题
 	Method    string    `json:"method" gorm:"type:varchar(16);uniqueIndex:idx_method_path;comment:请求类型"` //请求类型
 	Path      string    `json:"path" gorm:"type:varchar(128);uniqueIndex:idx_method_path;comment:请求地址"`  //请求地址
 	PermType  int       `json:"permType" gorm:"tinyint unsigned;comment:权限类型（1：无需认证 2:须token 3：须鉴权）"`    //权限类型（1：无需认证 2:须token 3：须鉴权）
 	Status    int       `json:"status" gorm:"type:tinyint unsigned;comment:状态 3 DEF 2 OK 1 del"`         //状态 3 DEF 2 OK 1 del
 	UpdateBy  int       `json:"updateBy" gorm:"type:int unsigned;comment:更新者"`                           //更新者
-	UpdatedAt time.Time `json:"updatedAt" gorm:"type:datetime(3);comment:最后更新时间"`                        //最后更新时间
+	UpdatedAt time.Time `json:"updatedAt" gorm:"comment:最后更新时间"`                                         //最后更新时间
 }
 
 func (SysApi) TableName() string {
@@ -27,7 +24,7 @@ func NewSysApi() *SysApi {
 	return &SysApi{}
 }
 
-func (e *SysApi) SetId(id int) *SysApi {
+func (e *SysApi) SetId(id uint) *SysApi {
 	e.Id = id
 	return e
 }

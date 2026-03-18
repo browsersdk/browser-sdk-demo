@@ -19,6 +19,10 @@ export default class SDK {
       port: 65535,
       userSig: data.usersin
     }
+    this.broSDK.registerCookiesStorageCb((cookies) => {
+      console.log('cookies...', cookies)
+      return null
+    })
     const res = await this.broSDK.init(JSON.stringify(initParam))
     console.log('res...', initParam, res)
     let msg = 'Initialization failed.'
@@ -60,12 +64,12 @@ export default class SDK {
   shutdown = async (_event): Promise<IResponse | void> => {
     if (!this.bindStatus) return
 
-    const res = await this.broSDK.shutdown()
-    if (res.code === 0) {
+    const code = await this.broSDK.shutdown()
+    if (code === 0) {
       this.bindStatus = false
     }
     return {
-      code: res.code,
+      code,
       msg: ''
     }
   }

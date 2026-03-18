@@ -40,7 +40,7 @@ func (m *SysUserGetPageReq) GetNeedquery() interface{} {
 }
 
 type ResetSysUserPwdReq struct {
-	Id       int    `json:"id" comment:"用户ID" vd:"$>0"` // 用户ID
+	Id       uint   `json:"id" comment:"用户ID" vd:"$>0"` // 用户ID
 	Password string `json:"password" comment:"密码" vd:"len($)>0"`
 	base.ControlBy
 }
@@ -53,7 +53,7 @@ func (s *ResetSysUserPwdReq) Generate(model *models.SysUser) {
 }
 
 type UpdateSysUserAvatarReq struct {
-	Id     int    `json:"id" comment:"用户ID" vd:"len($)>0"` // 用户ID
+	Id     uint   `json:"id" comment:"用户ID" vd:"$>0"` // 用户ID
 	Avatar string `json:"avatar" comment:"头像" vd:"len($)>0"`
 	base.ControlBy
 }
@@ -66,8 +66,8 @@ func (s *UpdateSysUserAvatarReq) Generate(model *models.SysUser) {
 }
 
 type UpdateSysUserStatusReq struct {
-	Id     int `json:"id" comment:"用户ID" vd:"$>0"` // 用户ID
-	Status int `json:"status" comment:"状态" vd:"len($)>0"`
+	Id     uint `json:"id" comment:"用户ID" vd:"$>0"` // 用户ID
+	Status int  `json:"status" comment:"状态" vd:"len($)>0"`
 	base.ControlBy
 }
 
