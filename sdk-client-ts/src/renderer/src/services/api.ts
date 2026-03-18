@@ -125,7 +125,7 @@ export class ApiService {
   }
 
   static async updateBrowserStatus(browser: BrowserDto): Promise<BrowserDto> {
-    const res: BaseResponse<void> = await axios.post('/api/app/browser/update-status', browser)
+    const res: BaseResponse<BrowserDto> = await axios.post('/api/app/browser/update-status', browser)
     const { code, data, msg } = res
 
     if (code === 200) {
