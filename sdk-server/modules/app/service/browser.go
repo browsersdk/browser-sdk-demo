@@ -137,7 +137,7 @@ func (s *BrowserService) Update(uid int, req *dto.BrowserDto) (browser *models.B
 
 func (s *BrowserService) UpdateStatus(uid int, req *dto.BrowserStatusDto) (browser *models.Browser, err error) {
 	browser = &models.Browser{}
-	if err := service.SerBrowser.DB().Where("id = ?", req.Id).Find(browser).Error; err != nil {
+	if err := service.SerBrowser.DB().Where("env_id = ?", req.EnvId).Find(browser).Error; err != nil {
 		return nil, err
 	}
 	browser.Status = req.Status

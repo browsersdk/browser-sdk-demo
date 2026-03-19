@@ -74,34 +74,50 @@ export class WebSocketService {
     }
   }
 
-  private onMessage = (evt: MessageEvent): void => {
-    const { type, data } = JSON.parse(evt.data)
-    console.log('收到消息:', type, data)
-    switch (type) {
-      case OperateEvent.OPEN_SUCCESS:
-        this.browserStore.startingDict.delete(data.envId)
-        this.browserStore.startedDict.add(data.envId)
-        break
-      case OperateEvent.OPEN_FAILED:
-        if (this.browserStore.startingDict.has(data.envId)) {
-          const oItem = this.browserStore.startingDict.get(data.envId)
-          this.browserStore.startingDict.delete(data.envId)
-          alert(`启动：${oItem.envName} 环境失败`)
-        }
-        break
-      case OperateEvent.CLOSE_SUCCESS:
-        this.browserStore.closingDict.delete(data.envId)
-        this.browserStore.startedDict.delete(data.envId)
-        break
-      case OperateEvent.CLOSE_FAILED:
-        if (!this.browserStore.closingDict.has(data.envId)) {
-          const cItem = this.browserStore.startingDict.get(data.envId)
-          this.browserStore.closingDict.delete(data.envId)
-          alert(`停止：${cItem.envName} 环境失败`)
-        }
-        break
-      default:
-        console.log('其他消息', evt.data)
+  private onMessage = async (evt: MessageEvent): Promise<void> => {
+    try {
+      const { type, data } = JSON.parse(evt.data)
+      console.log('收到消息:', type, data)
+
+      switch (type) {
+        case OperateEvent.OPEN_SUCCESS:
+          // 启动成功：使用 store 统一方法处理
+          this.browserStore.handleOpenSuccess(data.envId)
+
+          // 同步更新服务端状态为运行中（status: 3）
+          await this.browserStore.syncBrowserStatus(data, 3)
+          break
+
+        case OperateEvent.OPEN_FAILED:
+          // 启动失败：使用 store 统一方法处理
+          this.browserStore.handleOpenFailed(data.envId)
+
+          // 同步更新服务端状态为停止（status: 1）
+          await this.browserStore.syncBrowserStatus(data, 1)
+          break
+
+        case OperateEvent.CLOSE_SUCCESS:
+          // 停止成功：使用 store 统一方法处理
+          this.browserStore.handleCloseSuccess(data.envId)
+
+          // 同步更新服务端状态为停止（status: 1）
+          await this.browserStore.syncBrowserStatus(data, 1)
+          break
+
+        case OperateEvent.CLOSE_FAILED:
+          // 停止失败：使用 store 统一方法处理
+          this.browserStore.handleCloseFailed(data.envId)
+
+          // 停止失败时，环境仍处于运行状态，无需更新服务端状态
+          // 如需重新添加到已启动状态，取消以下注释：
+          // this.browserStore.startedDict.value.add(data.envId)
+          break
+
+        default:
+          console.log('未处理的消息类型:', type, data)
+      }
+    } catch (error) {
+      console.error('处理 WebSocket 消息失败:', error, evt.data)
     }
   }
 
