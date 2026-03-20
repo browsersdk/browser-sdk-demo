@@ -1,10 +1,12 @@
-import { ipcMain } from 'electron'
+import { app, ipcMain } from 'electron'
+import path from 'path'
 import type { IResponse, IAppBindParams, IOpenParams, ICloseParams } from '@type/sdk'
 import BroSDK from './brosdk'
 
 export default class SDK {
   private bindStatus = false
   private broSDK: BroSDK
+  private workDir: string = ''
   constructor() {
     this.broSDK = new BroSDK()
 
@@ -15,9 +17,27 @@ export default class SDK {
     ipcMain.handle('app-shutdown', this.shutdown)
   }
   init = async (_event, data: IAppBindParams): Promise<IResponse> => {
+    const isWindows = process.platform === 'win32' // Windows 系统
+    const isMac = process.platform === 'darwin' // macOS 系统
+    // console.log(path.join(app.getAppPath(), '..','workDir'), path.join(path.join(app.getPath('exe')), '..', '..', '..','workDir'))
+    if (app.isPackaged) {
+      if (isWindows) {
+        this.workDir = path.join(app.getAppPath(), '..', 'workDir')
+      }
+      if (isMac) {
+        const exePath = app.getPath('exe')
+        const appDir = path.join(path.dirname(exePath), '..', '..')
+        const macArm64Dir = path.join(appDir, '..')
+        this.workDir = path.join(macArm64Dir, 'workDir')
+      }
+    } else {
+      this.workDir = path.join(app.getAppPath(), '..', 'workDir')
+    }
+
     const initParam = {
       port: 65535,
-      userSig: data.usersin
+      userSig: data.usersin,
+      workDir: this.workDir
     }
     this.broSDK.registerCookiesStorageCb((cookies) => {
       console.log('cookies...', cookies)
