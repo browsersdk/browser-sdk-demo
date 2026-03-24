@@ -37,36 +37,18 @@ npm install
 
 ### 开发模式
 
-#### 同时启动Web和Electron（推荐）
-
 ```bash
-npm run dev:separate
-```
-
-#### 仅启动Web开发服务器
-
-```bash
-npm run dev:web
-```
-
-#### 仅启动Electron（需要先运行Web服务器）
-
-```bash
-npm run dev:electron
+npm run dev
 ```
 
 ### 构建生产版本
 
-#### 构建Web版本
+> 项目(demo)工作目录，在父级workDir-win目录；Mac版本workDir目录
+> 设置工作目录：sdk-client-ts\src\main\sdk\index.ts
+> 内核打包：sdk-client-ts\electron-builder.yml。配置根据工作目录，可以win.extraResources参数，或直接删除/workDir-win/cores/拷贝项
 
 ```bash
-npm run build
-```
-
-#### 构建Electron应用
-
-```bash
-npm run build:electron
+npm run build:win
 ```
 
 ## 核心功能

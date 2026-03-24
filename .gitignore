@@ -154,4 +154,6 @@ docker-compose.override.yml
 *.cert
 
 # SDK
+workDir/
+workDir-win/
 **/.brosdk/
