@@ -22,7 +22,7 @@ export default class SDK {
     // console.log(path.join(app.getAppPath(), '..','workDir'), path.join(path.join(app.getPath('exe')), '..', '..', '..','workDir'))
     if (app.isPackaged) {
       if (isWindows) {
-        this.workDir = path.join(app.getAppPath(), '..', 'workDir')
+        this.workDir = path.join(app.getAppPath(), '..', 'workDir-win')
       }
       if (isMac) {
         const exePath = app.getPath('exe')
@@ -31,8 +31,9 @@ export default class SDK {
         this.workDir = path.join(macArm64Dir, 'workDir')
       }
     } else {
-      this.workDir = path.join(app.getAppPath(), '..', 'workDir')
+      this.workDir = path.join(app.getAppPath(), '..', 'workDir-win')
     }
+    console.log('内核路径：', this.workDir)
 
     const initParam = {
       port: 65535,

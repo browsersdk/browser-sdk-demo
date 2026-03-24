@@ -155,4 +155,5 @@ docker-compose.override.yml
 
 # SDK
 workDir/
+workDir-win/
 **/.brosdk/
