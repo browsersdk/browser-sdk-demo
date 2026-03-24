@@ -20,9 +20,11 @@ export default class SDK {
     const isWindows = process.platform === 'win32' // Windows 系统
     const isMac = process.platform === 'darwin' // macOS 系统
     // console.log(path.join(app.getAppPath(), '..','workDir'), path.join(path.join(app.getPath('exe')), '..', '..', '..','workDir'))
+
+    // 设置工作目录
     if (app.isPackaged) {
       if (isWindows) {
-        this.workDir = path.join(app.getAppPath(), '..', 'workDir-win')
+        this.workDir = path.join(process.resourcesPath, 'workDir')
       }
       if (isMac) {
         const exePath = app.getPath('exe')
