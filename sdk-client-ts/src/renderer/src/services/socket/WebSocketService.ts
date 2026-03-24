@@ -125,10 +125,7 @@ export class WebSocketService {
    * 尝试重连
    */
   private attemptReconnect(): void {
-    if (
-      this.options.maxReconnectAttempts !== 0 &&
-      this.reconnectAttempts < this.options.maxReconnectAttempts
-    ) {
+    if (this.options.maxReconnectAttempts !== 0 && this.reconnectAttempts < this.options.maxReconnectAttempts) {
       setTimeout(() => {
         this.reconnectAttempts++
         console.log(`正在尝试第 ${this.reconnectAttempts} 次重连...`)
@@ -167,8 +164,7 @@ export class WebSocketService {
    */
   public send(data: unknown): void {
     if (this.socket?.readyState === WebSocket.OPEN) {
-      const message =
-        typeof data === 'object' && data !== null ? JSON.stringify(data) : String(data)
+      const message = typeof data === 'object' && data !== null ? JSON.stringify(data) : String(data)
       this.socket.send(message)
     } else {
       console.error('WebSocket 未连接，无法发送消息')

@@ -6668,7 +6668,7 @@ const gC = /* @__PURE__ */ new WeakMap(), vC = /* @__PURE__ */ new WeakMap(), af
         const u = l.el, p = u.style;
         sa(u, s), p.transform = p.webkitTransform = p.transitionDuration = "";
         const h = u[af] = (d) => {
-          d && d.target !== u || (!d || /transform$/.test(d.propertyName)) && (u.removeEventListener("transitionend", h), u[af] = null, yl(u, s));
+          d && d.target !== u || (!d || d.propertyName.endsWith('transform')) && (u.removeEventListener("transitionend", h), u[af] = null, yl(u, s));
         };
         u.addEventListener("transitionend", h);
       });
@@ -8562,7 +8562,7 @@ var $L = Object.create, MC = Object.defineProperty, UL = Object.getOwnPropertyDe
           return h(x, b);
         };
       }, m = function(b) {
-        return b.replace(/[-\\^$*+?.()|[\]{}\/]/g, "\\$&");
+        return b.replace(/[-\\^$*+?.()|[\]{}/]/g, "\\$&");
       }, f = function(v, b) {
         for (var E in b)
           if (b[E] === v)
@@ -12723,7 +12723,7 @@ function Wz(t) {
   if (!t)
     if (N1) {
       const e = document.querySelector("base");
-      t = e && e.getAttribute("href") || "/", t = t.replace(/^\w+:\/\/[^\/]+/, "");
+      t = e && e.getAttribute("href") || "/", t = t.replace(/^\w+:\/\/[^/]+/, "");
     } else
       t = "/";
   return t[0] !== "/" && t[0] !== "#" && (t = "/" + t), Bz(t);
@@ -16947,7 +16947,7 @@ function aH(t = {}) {
     auto: "",
     light: "light",
     dark: "dark",
-    ...t.modes || {}
+    ...t.modes
   }, d = nH({ window: a }), m = ft(() => d.value ? "dark" : "light"), f = l || (s == null ? o3(r) : mS(s, r, i, { window: a, listenToStorageChanges: o })), v = ft(() => f.value === "auto" ? m.value : f.value), b = dS(
     "updateHTMLAttrs",
     (w, C, _) => {
@@ -17474,7 +17474,7 @@ function $y(t) {
   return !!(/^#[0-9a-f]{6}$/i.test(t) || /^#[0-9a-f]{8}$/i.test(t) || /^#[0-9a-f]{3}$/i.test(t) || /^#[0-9a-f]{4}$/i.test(t));
 }
 function ES(t) {
-  return t.replace(/[\-\\\{\}\*\+\?\|\^\$\.\,\[\]\(\)\#\s]/g, "\\$&");
+  return t.replace(/[-\\{}*+?|^$.,[\]()#\s]/g, "\\$&");
 }
 var SS = class {
   constructor(t) {
@@ -17864,10 +17864,10 @@ function wf(t, e) {
   }
 }
 function Uy(t) {
-  return !!t && !!t.match(/[\w\.:]+/);
+  return !!t && !!t.match(/[\w.:]+/);
 }
 function zH(t) {
-  let e = /([LR]:|[\w\.:][\w\.:\-]*|[\,\|\-\(\)])/g, n = e.exec(t);
+  let e = /([LR]:|[\w.:][\w.:-]*|[,|\-()])/g, n = e.exec(t);
   return {
     next: () => {
       if (!n)
@@ -24368,7 +24368,7 @@ var cB = {
 }, uB = {
   Backreference({ node: t }, { multiplexCapturesToLeftByRef: e, reffedNodesByReferencer: n }) {
     const { orphan: r, ref: a } = t;
-    r || n.set(t, [...e.get(a).map(({ node: i }) => i)]);
+    r || n.set(t, e.get(a).map(({ node: i }) => i));
   },
   CapturingGroup: {
     enter({
@@ -28544,7 +28544,7 @@ const HF = { class: "h-screen w-screen $ui-fcc" }, DF = {
   setup(t) {
     const e = t;
     function n(l) {
-      return `<script src="${l}"><\/script>`;
+      return `<script src="${l}"></script>`;
     }
     const r = n(e.local), a = n(e.network), i = Tt(r), s = Tt(a), { copy: o } = Mx();
     return (l, u) => (Qe(), ct("div", HF, [
@@ -29318,7 +29318,7 @@ const Nm = [
   m$,
   h$,
   Nx
-], z8 = Nm.length, v$ = / +(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)/, y$ = "|";
+], z8 = Nm.length, v$ = / +(?=(?:[^"]*"[^"]*")*[^"]*$)/, y$ = "|";
 function b$(t, e = {}) {
   return t.split(y$).map((n) => {
     let r = n.trim().split(v$).filter((i) => i && !!i.trim()), a = [];
@@ -33974,7 +33974,7 @@ const OX = /* @__PURE__ */ tc(MX, [["render", LX]]), IX = {
                         onClick: (ue) => O(re)
                       }, [
                         gt($e(np), {
-                          name: `baseline-${K.icon.replace(/\_/g, "-")}`,
+                          name: `baseline-${K.icon.replace(/_/g, "-")}`,
                           "cursor-pointer": "",
                           op70: "",
                           "text-base": "",
@@ -34025,7 +34025,7 @@ const OX = /* @__PURE__ */ tc(MX, [["render", LX]]), IX = {
                         onClick: (ue) => T(re)
                       }, [
                         gt($e(np), {
-                          name: `baseline-${K.icon.replace(/\_/g, "-")}`,
+                          name: `baseline-${K.icon.replace(/_/g, "-")}`,
                           "cursor-pointer": "",
                           op70: "",
                           "text-base": "",
@@ -34432,7 +34432,7 @@ const vY = /* @__PURE__ */ tc(dY, [["render", gY]]), yY = {
                         onClick: (re) => T(K)
                       }, [
                         et("i", {
-                          class: Qr(`i-ic-baseline-${R.icon.replace(/\_/g, "-")}`),
+                          class: Qr(`i-ic-baseline-${R.icon.replace(/_/g, "-")}`),
                           "cursor-pointer": "",
                           op70: "",
                           "text-base": "",
@@ -34478,7 +34478,7 @@ const vY = /* @__PURE__ */ tc(dY, [["render", gY]]), yY = {
                         onClick: (re) => _(K)
                       }, [
                         et("i", {
-                          class: Qr(`i-ic-baseline-${R.icon.replace(/\_/g, "-")}`),
+                          class: Qr(`i-ic-baseline-${R.icon.replace(/_/g, "-")}`),
                           "cursor-pointer": "",
                           op70: "",
                           "text-base": "",
@@ -38526,7 +38526,7 @@ var OJ = [(t, e, n) => {
   const a = r;
   function i(o) {
     let l = null;
-    return typeof o.version == "string" && /^7\./.test(o.version) && (l = Object.getPrototypeOf(o), !l || s(l, "version") && s(l, "transform") && s(l, "template") && s(l, "types") || (l = null)), Object.assign({}, l, o);
+    return typeof o.version == "string" && o.version.startsWith('7.') && (l = Object.getPrototypeOf(o), !l || s(l, "version") && s(l, "transform") && s(l, "template") && s(l, "types") || (l = null)), Object.assign({}, l, o);
   }
   function s(o, l) {
     return Object.prototype.hasOwnProperty.call(o, l);
@@ -50315,8 +50315,8 @@ To be a valid ${b}, its name and options should be wrapped in a pair of brackets
       return this.consumerCache || (this.consumerCache = new a(this.text)), this.consumerCache;
     }
     decodeInline(d) {
-      if (/^data:application\/json;charset=utf-?8,/.test(d) || /^data:application\/json,/.test(d)) return decodeURIComponent(d.substr(RegExp.lastMatch.length));
-      if (/^data:application\/json;charset=utf-?8;base64,/.test(d) || /^data:application\/json;base64,/.test(d)) return m = d.substr(RegExp.lastMatch.length), r ? r.from(m, "base64").toString() : window.atob(m);
+      if (/^data:application\/json;charset=utf-?8,/.test(d) || d.startsWith('data:application/json,')) return decodeURIComponent(d.substr(RegExp.lastMatch.length));
+      if (/^data:application\/json;charset=utf-?8;base64,/.test(d) || d.startsWith('data:application/json;base64,')) return m = d.substr(RegExp.lastMatch.length), r ? r.from(m, "base64").toString() : window.atob(m);
       var m;
       let f = d.match(/data:application\/json;([^,]+),/)[1];
       throw new Error("Unsupported source map encoding " + f);
@@ -52014,7 +52014,7 @@ Expected ${v.length + 1} quasis but got ${m.quasis.length}`);
   var r = n(31).a;
   const a = {}, i = a.hasOwnProperty, s = (v, b) => {
     for (const E in v) i.call(v, E) && b(E, v[E]);
-  }, o = a.toString, l = Array.isArray, u = r.isBuffer, p = { '"': '\\"', "'": "\\'", "\\": "\\\\", "\b": "\\b", "\f": "\\f", "\n": "\\n", "\r": "\\r", "	": "\\t" }, h = /["'\\\b\f\n\r\t]/, d = /[0-9]/, m = /[ !#-&\(-\[\]-_a-~]/, f = (v, b) => {
+  }, o = a.toString, l = Array.isArray, u = r.isBuffer, p = { '"': '\\"', "'": "\\'", "\\": "\\\\", "\b": "\\b", "\f": "\\f", "\n": "\\n", "\r": "\\r", "	": "\\t" }, h = /["'\\\b\f\n\r\t]/, d = /[0-9]/, m = /[ !#-&(-[\]-_a-~]/, f = (v, b) => {
     const E = () => {
       z = I, ++b.indentLevel, I = b.indent.repeat(b.indentLevel);
     }, x = { escapeEverything: !1, minimal: !1, isScriptContext: !1, quotes: "single", wrap: !1, es6: !1, json: !1, compact: !0, lowercaseHex: !1, numbers: "decimal", indent: "	", indentLevel: 0, __inline1__: !1, __inline2__: !1 }, g = b && b.json;
@@ -52755,7 +52755,7 @@ Expected ${v.length + 1} quasis but got ${m.quasis.length}`);
     if (u) return o(m);
     if (s(m)) return !1;
     var f = l.call(m);
-    return !(f !== "[object Function]" && f !== "[object GeneratorFunction]" && !/^\[object HTML/.test(f)) && o(m);
+    return !(f !== "[object Function]" && f !== "[object GeneratorFunction]" && !f.startsWith('[object HTML')) && o(m);
   };
 }, (t, e, n) => {
   var r = ["BigInt64Array", "BigUint64Array", "Float32Array", "Float64Array", "Int16Array", "Int32Array", "Int8Array", "Uint16Array", "Uint32Array", "Uint8Array", "Uint8ClampedArray"], a = typeof globalThis > "u" ? n.g : globalThis;
@@ -55856,7 +55856,7 @@ If you have already enabled that plugin (or '@babel/preset-typescript'), make su
   function N(A) {
     return A.type === "Identifier" ? A.name : A.type === "StringLiteral" ? A.value : null;
   }
-  const U = (A) => A, D = /[^\u0130\u0131\u00DFa-z0-9\\/:\-_\. ]+/g, R = (A) => A.toLowerCase();
+  const U = (A) => A, D = /[^\u0130\u0131\u00DFa-z0-9\\/:\-_. ]+/g, R = (A) => A.toLowerCase();
   function K(A) {
     return D.test(A) ? A.replace(D, R) : A;
   }
@@ -55864,7 +55864,7 @@ If you have already enabled that plugin (or '@babel/preset-typescript'), make su
   function Ie(A) {
     return re(A.replace(ue, "/"));
   }
-  const X = (l.posix || l).join, J = /[ !"#$%&'()*+,./:;<=>?@[\\\]^`{|}~\-]/;
+  const X = (l.posix || l).join, J = /[ !"#$%&'()*+,./:;<=>?@[\\\]^`{|}~-]/;
   function he(A) {
     return J.test(A) ? JSON.stringify(A) : A;
   }
@@ -57941,7 +57941,7 @@ In order to be iterable, non-array objects must have a [Symbol.iterator]() metho
     }(L.default);
     S.default = G, A.exports = S.default;
   })(ns, ns.exports);
-  var ci = ns.exports, Lt = { exports: {} }, Ws = {}.hasOwnProperty, Rn = /[ -,\.\/:-@\[-\^`\{-~]/, An = /[ -,\.\/:-@\[\]\^`\{-~]/, zi = /(^|\\+)?(\\[A-F0-9]{1,6})\x20(?![a-fA-F0-9\x20])/g, fs = function A(S, M) {
+  var ci = ns.exports, Lt = { exports: {} }, Ws = {}.hasOwnProperty, Rn = /[ -,./:-@[-^`{-~]/, An = /[ -,./:-@[\]^`{-~]/, zi = /(^|\\+)?(\\[A-F0-9]{1,6})\x20(?![a-fA-F0-9\x20])/g, fs = function A(S, M) {
     (M = function(me, ze) {
       if (!me) return ze;
       var Be = {};
@@ -59128,7 +59128,7 @@ In order to be iterable, non-array objects must have a [Symbol.iterator]() metho
       if (arguments.length === 3) return me;
       throw new Error('"' + te + '" is a required argument.');
     };
-    var S = /^(?:([\w+\-.]+):)?\/\/(?:(\w+:\w+)@)?([\w.-]*)(?::(\d+))?(.*)$/, M = /^data:.+\,.+$/;
+    var S = /^(?:([\w+\-.]+):)?\/\/(?:(\w+:\w+)@)?([\w.-]*)(?::(\d+))?(.*)$/, M = /^data:.+,.+$/;
     function L(Ce) {
       var te = Ce.match(S);
       return te ? { scheme: te[1], auth: te[2], host: te[3], port: te[4], path: te[5] } : null;
@@ -59161,7 +59161,7 @@ In order to be iterable, non-array objects must have a [Symbol.iterator]() metho
       Ce === "" && (Ce = "."), Ce = Ce.replace(/\/$/, "");
       for (var me = 0; te.indexOf(Ce + "/") !== 0; ) {
         var ze = Ce.lastIndexOf("/");
-        if (ze < 0 || (Ce = Ce.slice(0, ze)).match(/^([^\/]+:\/)?\/*$/)) return te;
+        if (ze < 0 || (Ce = Ce.slice(0, ze)).match(/^([^/]+:\/)?\/*$/)) return te;
         ++me;
       }
       return Array(me + 1).join("../") + te.substr(Ce.length + 1);
@@ -60898,7 +60898,7 @@ const ${M} = {}`);
     var M = [], L = lv("{", "}", A);
     if (!L) return [A];
     var j = L.pre, $ = L.post.length ? Bu(L.post, !1) : [""];
-    if (/\$$/.test(L.pre)) for (var G = 0; G < $.length; G++) {
+    if (L.pre.endsWith('$')) for (var G = 0; G < $.length; G++) {
       var ee = j + "{" + L.body + "}" + $[G];
       M.push(ee);
     }
@@ -60971,7 +60971,7 @@ const ${M} = {}`);
     return [L.length && j.length ? "(" + me + "|" + ze + ")" : L.length ? me : ze, ee, ge - M, !0];
   }, $u = function(A) {
     let { windowsPathsNoEscape: S = !1 } = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : {};
-    return S ? A.replace(/\[([^\/\\])\]/g, "$1") : A.replace(/((?!\\).|^)\[([^\/\\])\]/g, "$1$2").replace(/\\([^\/])/g, "$1");
+    return S ? A.replace(/\[([^/\\])\]/g, "$1") : A.replace(/((?!\\).|^)\[([^/\\])\]/g, "$1$2").replace(/\\([^/])/g, "$1");
   }, eA = /* @__PURE__ */ new Set(["!", "?", "+", "*", "@"]), mv = (A) => eA.has(A), h0 = "(?!\\.)", tA = /* @__PURE__ */ new Set(["[", "."]), rA = /* @__PURE__ */ new Set(["..", "."]), nA = new Set("().*{}+?[]^$\\!"), f0 = "[^/]", gv = f0 + "*?", vv = f0 + "+?", Di = class Di {
     constructor(S, M) {
       Ur(this, bc);
@@ -61161,7 +61161,7 @@ const ${M} = {}`);
   const yi = function(A, S) {
     let M = arguments.length > 2 && arguments[2] !== void 0 ? arguments[2] : {};
     return Wp(S), !(!M.nocomment && S.charAt(0) === "#") && new Kp(S, M).match(A);
-  }, sA = /^\*+([^+@!?\*\[\(]*)$/, iA = (A) => (S) => !S.startsWith(".") && S.endsWith(A), oA = (A) => (S) => S.endsWith(A), aA = (A) => (A = A.toLowerCase(), (S) => !S.startsWith(".") && S.toLowerCase().endsWith(A)), lA = (A) => (A = A.toLowerCase(), (S) => S.toLowerCase().endsWith(A)), cA = /^\*+\.\*+$/, uA = (A) => !A.startsWith(".") && A.includes("."), pA = (A) => A !== "." && A !== ".." && A.includes("."), hA = /^\.\*+$/, fA = (A) => A !== "." && A !== ".." && A.startsWith("."), dA = /^\*+$/, mA = (A) => A.length !== 0 && !A.startsWith("."), gA = (A) => A.length !== 0 && A !== "." && A !== "..", vA = /^\?+([^+@!?\*\[\(]*)?$/, yA = (A) => {
+  }, sA = /^\*+([^+@!?*[(]*)$/, iA = (A) => (S) => !S.startsWith(".") && S.endsWith(A), oA = (A) => (S) => S.endsWith(A), aA = (A) => (A = A.toLowerCase(), (S) => !S.startsWith(".") && S.toLowerCase().endsWith(A)), lA = (A) => (A = A.toLowerCase(), (S) => S.toLowerCase().endsWith(A)), cA = /^\*+\.\*+$/, uA = (A) => !A.startsWith(".") && A.includes("."), pA = (A) => A !== "." && A !== ".." && A.includes("."), hA = /^\.\*+$/, fA = (A) => A !== "." && A !== ".." && A.startsWith("."), dA = /^\*+$/, mA = (A) => A.length !== 0 && !A.startsWith("."), gA = (A) => A.length !== 0 && A !== "." && A !== "..", vA = /^\?+([^+@!?*[(]*)?$/, yA = (A) => {
     let [S, M = ""] = A;
     const L = yv([S]);
     return M ? (M = M.toLowerCase(), (j) => L(j) && j.toLowerCase().endsWith(M)) : L;
@@ -61486,7 +61486,7 @@ globstar while`, S, te, M, me, ze), this.matchOne(S.slice(te), M.slice(me), L)) 
       return this.regexp;
     }
     slashSplit(S) {
-      return this.preserveMultipleSlashes ? S.split("/") : this.isWindows && /^\/\/[^\/]+/.test(S) ? ["", ...S.split(/\/+/)] : S.split(/\/+/);
+      return this.preserveMultipleSlashes ? S.split("/") : this.isWindows && /^\/\/[^/]+/.test(S) ? ["", ...S.split(/\/+/)] : S.split(/\/+/);
     }
     match(S) {
       let M = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : this.partial;
@@ -62478,7 +62478,7 @@ export default ${Sn}`);
 const ${w1} = ${Ot.local.name}
 `)), it.declaration && A0("script", it.declaration, te, bt, le);
       } else it.type !== "VariableDeclaration" && it.type !== "FunctionDeclaration" && it.type !== "ClassDeclaration" && it.type !== "TSEnumDeclaration" || it.declare || A0("script", it, te, bt, le);
-      Ve > Pe && (/\n$/.test(j.content.trim()) || L.s.appendLeft(xe, `
+      Ve > Pe && (j.content.trim().endsWith('\n') || L.s.appendLeft(xe, `
 `), L.s.move(Ve, xe, 0));
     }
     for (const it of ot.body) {
@@ -72074,7 +72074,7 @@ ${u}`, h;
         return yield* U(D, R);
       } catch (re) {
         var K;
-        throw /^\[BABEL\]/.test(re.message) || (re.message = `[BABEL] ${(K = N.filename) != null ? K : "unknown file"}: ${re.message}`), re;
+        throw re.message.startsWith('[BABEL]') || (re.message = `[BABEL] ${(K = N.filename) != null ? K : "unknown file"}: ${re.message}`), re;
       }
     };
   }
@@ -72839,7 +72839,7 @@ Add ${h} to the 'plugins' section of your Babel config to enable parsing.`;
       N.scope.rename("exports"), N.scope.rename("module"), N.scope.rename("require"), N.scope.rename("__filename"), N.scope.rename("__dirname"), T || ((0, i.default)(N, /* @__PURE__ */ new Set(["module", "exports"]), !1), N.traverse(F, { scope: N.scope }));
       let D = (0, a.getModuleName)(this.file.opts, h);
       D && (D = s.types.stringLiteral(D));
-      const R = (0, u.makeInvokers)(this.file), { meta: K, headers: re } = (0, a.rewriteModuleStatementsAndPrepareHeader)(N, { exportName: "exports", constantReexports: I, enumerableModuleMeta: z, strict: x, strictMode: g, allowTopLevelThis: E, noInterop: w, importInterop: C, wrapReference: R.wrapReference, getWrapperPayload: R.getWrapperPayload, esNamespaceOnly: typeof U.filename == "string" && /\.mjs$/.test(U.filename) ? b : v, noIncompleteNsImportDetection: q, filename: this.file.opts.filename });
+      const R = (0, u.makeInvokers)(this.file), { meta: K, headers: re } = (0, a.rewriteModuleStatementsAndPrepareHeader)(N, { exportName: "exports", constantReexports: I, enumerableModuleMeta: z, strict: x, strictMode: g, allowTopLevelThis: E, noInterop: w, importInterop: C, wrapReference: R.wrapReference, getWrapperPayload: R.getWrapperPayload, esNamespaceOnly: typeof U.filename == "string" && U.filename.endsWith('.mjs') ? b : v, noIncompleteNsImportDetection: q, filename: this.file.opts.filename });
       for (const [ue, Ie] of K.source) {
         const X = s.types.callExpression(s.types.identifier("require"), [s.types.stringLiteral(ue)]);
         let J;
@@ -74180,7 +74180,7 @@ Use a v-bind binding combined with a v-on listener that emits update:x event ins
         return d;
     }
   }
-  const zr = /^\d|[^\$\w]/, ar = (V) => !zr.test(V), Or = /[A-Za-z_$\xA0-\uFFFF]/, mn = /[\.\?\w$\xA0-\uFFFF]/, Ir = /\s+[.[]\s*|\s*[.[]\s+/g, Kr = (V, Q) => {
+  const zr = /^\d|[^$\w]/, ar = (V) => !zr.test(V), Or = /[A-Za-z_$\xA0-\uFFFF]/, mn = /[.?\w$\xA0-\uFFFF]/, Ir = /\s+[.[]\s*|\s*[.[]\s+/g, Kr = (V, Q) => {
     try {
       let de = i.parseExpression(V, { plugins: Q.expressionPlugins });
       return de = At(de), de.type === "MemberExpression" || de.type === "OptionalMemberExpression" || de.type === "Identifier" && de.name !== "undefined";
@@ -74738,7 +74738,7 @@ Use a v-bind binding combined with a v-on listener that emits update:x event ins
     Rn[0].ns !== 0 ? Vn(zn(V, Q), V, Q) : Gs(1, V - 9);
   }, onprocessinginstruction(V) {
     (Rn[0] ? Rn[0].ns : on.ns) === 0 && Gs(21, V - 1);
-  } }), zi = /,([^,\}\]]*)(?:,([^,\}\]]*))?$/, fs = /^\(|\)$/g;
+  } }), zi = /,([^,}\]]*)(?:,([^,}\]]*))?$/, fs = /^\(|\)$/g;
   function zn(V, Q) {
     return Nr.slice(V, Q);
   }
@@ -75058,7 +75058,7 @@ Use a v-bind binding combined with a v-on listener that emits update:x event ins
         let Ge = 64;
         r.PatchFlagNames[64], Ae.codegenNode = ye(He, je(l), void 0, Ae.children, Ge + "", void 0, void 0, !0, void 0, !1);
       }
-    }(V, de), V.helpers = /* @__PURE__ */ new Set([...de.helpers.keys()]), V.components = [...de.components], V.directives = [...de.directives], V.imports = de.imports, V.hoists = de.hoists, V.temps = de.temps, V.cached = de.cached, V.transformed = !0, V.filters = [...de.filters];
+    }(V, de), V.helpers = /* @__PURE__ */ new Set(de.helpers.keys()), V.components = [...de.components], V.directives = [...de.directives], V.imports = de.imports, V.hoists = de.hoists, V.temps = de.temps, V.cached = de.cached, V.transformed = !0, V.filters = [...de.filters];
   }
   function tt(V, Q) {
     Q.currentNode = V;
@@ -77585,8 +77585,7 @@ const mQ = { class: "fixed inset-0 h-screen w-screen $ui-bg-base" }, kw = /* @__
       er.functions.on(ks.ACTIVE_APP_UNMOUNTED, m);
     });
     const { copy: f } = Mx(), v = pH({});
-    v7(() => [
-      ...v.isSupported.value ? [{
+    v7(() => v.isSupported.value ? [{
         id: "action:eye-dropper",
         title: "Color Picker",
         icon: "i-carbon-eyedropper",
@@ -77595,8 +77594,7 @@ const mQ = { class: "fixed inset-0 h-screen w-screen $ui-bg-base" }, kw = /* @__
           const { sRGBHex: E } = await v.open() || {};
           E && f(E);
         }
-      }] : []
-    ]), wi(() => {
+      }] : []), wi(() => {
       $a(() => {
         er.value.toggleClientConnected(!0);
       });
