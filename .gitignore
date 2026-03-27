@@ -157,3 +157,5 @@ docker-compose.override.yml
 workDir/
 workDir-win/
 **/.brosdk/
+
+config.local.yaml

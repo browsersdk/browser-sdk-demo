@@ -38,10 +38,12 @@ typedef void(SDK_CALL *sdk_cookies_storage_cb_t)(const char *data, size_t len,
                                                  void *user_data);
 SDK_API int32_t SDK_CALL sdk_register_result_cb(sdk_result_cb_t cb,
                                                 void *user_data);
-SDK_API int32_t SDK_CALL sdk_register_cookies_storage_cb(sdk_cookies_storage_cb_t cb, void *user_data);
+SDK_API int32_t SDK_CALL
+sdk_register_cookies_storage_cb(sdk_cookies_storage_cb_t cb, void *user_data);
 SDK_API int32_t SDK_CALL sdk_init(sdk_handle_t *cpp_handle, const char *data,
                                   size_t len, char **out_data, size_t *out_len);
 SDK_API int32_t SDK_CALL sdk_info(char **out_data, size_t *out_len);
+SDK_API int32_t SDK_CALL sdk_browser_install(const char *data, size_t len);
 SDK_API int32_t SDK_CALL sdk_browser_info(char **out_data, size_t *out_len);
 SDK_API int32_t SDK_CALL sdk_browser_open(const char *data, size_t len);
 SDK_API int32_t SDK_CALL sdk_browser_close(const char *data, size_t len);
@@ -76,12 +78,19 @@ SDK_API bool SDK_CALL sdk_is_event(int32_t code);
 class ISDK {
 public:
   virtual ~ISDK() = default;
-  virtual int32_t Init(const char *data, size_t len, char **out_data,
-                       size_t *out_len) = 0;
-  virtual int32_t BrowserOpen(const char *data, size_t len) = 0;
-  virtual int32_t BrowserClose(const char *data, size_t len) = 0;
+  virtual int32_t Info(char **, size_t *) const = 0;
+  virtual int32_t UpdateToken(const char *data, size_t len) const = 0;
+  virtual int32_t CreateEnv(const char *data, size_t len) const = 0;
+  virtual int32_t DestroyEnv(const char *data, size_t len) const = 0;
+  virtual int32_t PageEnv(const char *data, size_t len) const = 0;
+  virtual int32_t UpdateEnv(const char *data, size_t len) const = 0;
+  virtual int32_t BrowserOpen(const char *data, size_t len) const = 0;
+  virtual int32_t BrowserClose(const char *data, size_t len) const = 0;
+  virtual int32_t BrowserInfo(char **, size_t *) const = 0;
   virtual int32_t RegisterResultCb(sdk_result_cb_t cb, void *user_data) = 0;
-  virtual int32_t Shutdown() = 0;
+  virtual int32_t RegisterCookiesStorageCb(sdk_cookies_storage_cb_t cb,
+                                           void *user_data) = 0;
+  virtual int32_t Shutdown() const = 0;
 };
 #endif
 
