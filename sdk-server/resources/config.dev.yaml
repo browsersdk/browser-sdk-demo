@@ -4,13 +4,7 @@ server:
   name: dilu-plus      # 服务名称
   port: 7888       # 服务端口号
   node: 1
-  #read-timeout    #读超时 单位秒 默认20
-  #write-timeout   #写超时 单位秒 默认20
   fs-type: local    #文件服务
-grpc-server:
-  enable: false
-  host: 0.0.0.0
-  port: 7889
 logger:             # 日志配置
   level: debug # 级别
   prefix:    # 日志前缀
@@ -45,19 +39,9 @@ dbcfg: # 数据库配置
 cors:
   enable: true
   mode: allow-all
-  #whitelist:
-  #- allow-origin: example1.com
-  #  allow-methods: POST, GET
-  #  allow-headers: Content-Type,AccessToken,X-CSRF-Token, Authorization, Token,X-Token,X-User-Id
-  #  expose-headers: Content-Length, Access-Control-Allow-Origin, Access-Control-Allow-Headers,
-  #    Content-Type
-  #  allow-credentials: true
-gen: 
-  enable: true #开启生成
-  front-path: ../sdk-admin/src #前端生成路径 默认：../dilu-admin/src
 extend:             # 扩展项（此处没有提供具体说明）
   bro-sdk:
-    endpoint: http://192.168.0.188:9988
-    api-key: Ls/e7BzPbtHfcmfR3V+kYJpWHsPffdXKWhEYJdABTmYp+CV/FA1G7EHzk6coamX5
+    endpoint: https://api.brosdk.com
+    api-key: 
 
     

@@ -52,6 +52,18 @@ git clone https://github.com/browsersdk/browser-sdk-demo.git
 cd browser-sdk-demo
 ```
 
+### 配置 API Key
+
+`resources/config.dev.yaml`
+
+```yaml
+extend:
+  bro-sdk:
+    endpoint: https://api.brosdk.com
+    api-key: 这里填写你的 API Key
+```
+
+
 ### 启动服务
 
 **1. 启动后端服务:**
@@ -61,18 +73,20 @@ go mod tidy
 go run main.go start -c resources/config.dev.yaml
 ```
 
-**2. 下载浏览器内核**
-
-下载地址 https://github.com/browsersdk/brosdk-core，将下载的内核解压后放置到目录 `sdk-client-ts/sdk/windows-x64/.brosdk` 下。
-
-例如：`YunBrowser119-1.0.1.9-windows-x64.zip` 解压后放置到 `sdk-client-ts/sdk/windows-x64/.brosdk` 下，最终路径为 `sdk-client-ts/sdk/windows-x64/.brosdk/cores/YunBrowser119-1.0.1.9`。
-
-**3. 启动桌面客户端:**
+**2. 启动桌面客户端:**
 ```bash
 cd sdk-client-ts
 npm install
 npm run dev
 ```
+
+**3. 创建环境:**
+登录界面使用默认用户名和密码，点击登录。
+点击创建环境，填写环境名，选择内核版本和操作系统，点击确认。
+
+**3. 启动环境:**
+选择刚刚创建的环境，点击启动，第一次启动会自动下载内核，根据网络需要等待一段时间。
+
 
 ## 📁 目录结构
 
@@ -87,7 +101,7 @@ browser-sdk-demo/
 │   ├── go.mod             # Go模块
 │   └── main.go            # 入口文件
 │
-├── sdk-client/            # 客户端
+├── sdk-client-ts/            # 客户端
 │   ├── src/               # Vue源码
 │   ├── electron/          # Electron主进程
 │   ├── package.json       # 依赖配置
@@ -120,8 +134,8 @@ browser-sdk-demo/
 
 ```yaml
 bro-sdk:
-  endpoint: http://192.168.0.188:9988 # 请替换为实际值 
-  api-key: Ls/e7BzPbtHfcmfR3V+kYJpWHsPffdXKWhEYJdABTmYp+CV/FA1G7EHzk6coamX5 # 请替换为实际值
+  endpoint: https://api.brosdk.com # 请替换为实际值 
+  api-key:  xxxxx                  # 请替换为实际值
 ```
 
 **配置项说明：**
