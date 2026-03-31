@@ -33,14 +33,16 @@ export default class SDK {
         this.workDir = path.join(macArm64Dir, 'workDir')
       }
     } else {
-      this.workDir = path.join(app.getAppPath(), '..', 'workDir-win')
+      this.workDir = path.join(app.getAppPath(), '..', 'workDir')
     }
     console.log('内核路径：', this.workDir)
 
     const initParam = {
       port: 65535,
       userSig: data.usersin,
-      workDir: this.workDir
+      workDir: this.workDir,
+      sdkApiUrl: import.meta.env.VITE_API_SDKURL
+
     }
     this.broSDK.registerCookiesStorageCb((cookies) => {
       console.log('cookies...', cookies)
