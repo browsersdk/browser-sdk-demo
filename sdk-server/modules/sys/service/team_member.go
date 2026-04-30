@@ -44,7 +44,7 @@ func (e *SysMemberService) Create(m *models.SysMember, user *models.SysUser) err
 		if err := SerSysUser.BaseService.Create(&user); err != nil {
 			return err
 		}
-		m.UserId = user.Id
+		m.UserId = int(user.Id)
 	} else {
 		if user == nil {
 			user = &models.SysUser{}
@@ -162,7 +162,7 @@ func (e *SysMemberService) GetUserTeams(uid int, resp *[]dto.TeamMemberResp) err
 		}
 
 		tm := dto.TeamMember{
-			TeamId:    team.Id,
+			TeamId:    uint(team.Id),
 			TeamName:  team.Name,
 			UserId:    member.UserId,
 			Nickname:  member.Nickname,
@@ -187,7 +187,7 @@ func (e *SysMemberService) GetUserTeams(uid int, resp *[]dto.TeamMemberResp) err
 			slog.Error("copier.Copy", "err:", err)
 			return err
 		}
-		ts, err := utils.EncodeTeamId(tm.TeamId)
+		ts, err := utils.EncodeTeamId(int(tm.TeamId))
 		if err != nil {
 			slog.Error("EncodeTeamId", "err:", err)
 			continue

@@ -15,7 +15,6 @@ Browser SDK Demo 是一个完整的浏览器端SDK演示项目，包含后台管
 
 ```
 browser-sdk-demo/
-├── sdk-admin/     # 后台管理系统 (Vue 3 + TypeScript)
 ├── sdk-server/    # 服务端API (Go + Gin)
 ├── sdk-client/    # 桌面客户端 (Electron + Vue 3)
 ```
@@ -34,8 +33,7 @@ browser-sdk-demo/
 - Gin Web 框架
 - GORM ORM
 - JWT 认证
-- Redis 缓存
-- MySQL 数据库
+- SQLite 数据库
 
 ## 🚀 快速开始
 
@@ -44,57 +42,56 @@ browser-sdk-demo/
 - **Node.js**: >= 20.19.0
 - **Go**: >= 1.25
 - **pnpm**: 包管理器
-- **MySQL**: 数据库
-- **Redis**: 缓存服务
+- **SQLite**: 数据库
 
-### 安装依赖
+### 下载项目
 
 ```bash
 # 克隆项目
 git clone https://github.com/browsersdk/browser-sdk-demo.git
 cd browser-sdk-demo
-
-# 安装前端依赖
-cd sdk-admin && pnpm install
-cd ../sdk-client && npm install
-
-# 安装后端依赖
-cd ../sdk-server && go mod tidy
 ```
+
+### 配置 API Key
+
+`resources/config.dev.yaml`
+
+```yaml
+extend:
+  bro-sdk:
+    endpoint: https://api.brosdk.com
+    api-key: 这里填写你的 API Key
+```
+
 
 ### 启动服务
 
 **1. 启动后端服务:**
 ```bash
 cd sdk-server
+go mod tidy
 go run main.go start -c resources/config.dev.yaml
 ```
 
-**2. 启动后台管理:**
+**2. 启动桌面客户端:**
 ```bash
-cd sdk-admin
-pnpm dev
-```
-
-**3. 启动桌面客户端:**
-```bash
-cd sdk-client
+cd sdk-client-ts
+npm install
 npm run dev
 ```
+
+**3. 创建环境:**
+登录界面使用默认用户名和密码，点击登录。
+点击创建环境，填写环境名，选择内核版本和操作系统，点击确认。
+
+**3. 启动环境:**
+选择刚刚创建的环境，点击启动，第一次启动会自动下载内核，根据网络需要等待一段时间。
+
 
 ## 📁 目录结构
 
 ```
 browser-sdk-demo/
-├── sdk-admin/              # 后台管理系统
-│   ├── src/               # 源代码
-│   │   ├── components/    # 组件
-│   │   ├── layout/        # 布局
-│   │   ├── router/        # 路由
-│   │   ├── store/         # 状态管理
-│   │   └── views/         # 页面视图
-│   ├── package.json       # 依赖配置
-│   └── vite.config.ts     # 构建配置
 │
 ├── sdk-server/            # 服务端
 │   ├── cmd/               # 命令行工具
@@ -104,7 +101,7 @@ browser-sdk-demo/
 │   ├── go.mod             # Go模块
 │   └── main.go            # 入口文件
 │
-├── sdk-client/            # 客户端
+├── sdk-client-ts/            # 客户端
 │   ├── src/               # Vue源码
 │   ├── electron/          # Electron主进程
 │   ├── package.json       # 依赖配置
@@ -114,13 +111,6 @@ browser-sdk-demo/
 ```
 
 ## 🔧 核心功能
-
-### 后台管理系统 (sdk-admin)
-- 用户认证与权限管理
-- 浏览器环境监控
-- SDK配置管理
-- 数据统计分析
-- 国际化支持
 
 ### 服务端API (sdk-server)
 - RESTful API 接口
@@ -144,8 +134,8 @@ browser-sdk-demo/
 
 ```yaml
 bro-sdk:
-  endpoint: http://192.168.0.188:9988 # 请替换为实际值 
-  api-key: Ls/e7BzPbtHfcmfR3V+kYJpWHsPffdXKWhEYJdABTmYp+CV/FA1G7EHzk6coamX5 # 请替换为实际值
+  endpoint: https://api.brosdk.com # 请替换为实际值 
+  api-key:  xxxxx                  # 请替换为实际值
 ```
 
 **配置项说明：**
@@ -193,11 +183,12 @@ go vet ./...
 
 **构建前端:**
 ```bash
-# 后台管理构建
-cd sdk-admin && pnpm build
-
 # 客户端构建
-cd sdk-client && npm run build
+cd sdk-client
+npm run build
+
+## win 构建
+npm run build:win
 ```
 
 **构建后端:**
@@ -209,9 +200,6 @@ go build -ldflags "-w -s" -o bin/server main.go
 ### 测试
 
 ```bash
-# 前端测试
-cd sdk-admin && pnpm test
-
 # 后端测试
 cd sdk-server && go test ./...
 ```

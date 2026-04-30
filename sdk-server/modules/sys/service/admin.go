@@ -108,7 +108,7 @@ func (e *AdminService) Update(model *models.Admin) error {
 	if err != nil {
 		return err
 	}
-	core.Cache.Del(ckey.AdminKey(model.Id))
+	core.Cache.Del(ckey.AdminKey(int(model.Id)))
 	return nil
 }
 
@@ -248,7 +248,7 @@ func (e *AdminService) loginOK(u *models.Admin, need int, loginType enums.LoginT
 	now := time.Now()
 	exp := now.Add(time.Duration(core.Cfg.JWT.Expires) * time.Minute)
 
-	token, err := utils.GenerateAdminToken(u.Id, u.RoleId, core.Cfg.JWT.Issuer, core.Cfg.JWT.Subject, core.Cfg.JWT.SignKey, exp)
+	token, err := utils.GenerateAdminToken(int(u.Id), int(u.RoleId), core.Cfg.JWT.Issuer, core.Cfg.JWT.Subject, core.Cfg.JWT.SignKey, exp)
 	lok := dto.LoginOK{}
 	if err != nil {
 		return lok, errs.Err(codes.FAILURE, "", err)
@@ -266,11 +266,11 @@ func (e *AdminService) loginOK(u *models.Admin, need int, loginType enums.LoginT
 		lok.Username = u.Email
 	}
 	refExp := now.Add(time.Duration(core.Cfg.JWT.Refresh) * time.Minute)
-	refT, _ := utils.GenerateAdminRefreshToken(u.Id, u.RoleId, core.Cfg.JWT.Issuer, core.Cfg.JWT.Subject, core.Cfg.JWT.SignKey, refExp)
+	refT, _ := utils.GenerateAdminRefreshToken(int(u.Id), int(u.RoleId), core.Cfg.JWT.Issuer, core.Cfg.JWT.Subject, core.Cfg.JWT.SignKey, refExp)
 	lok.RefreshToken = refT
 	lok.RefreshExpire = refExp
 
-	core.Cache.Set(ckey.AdminKey(u.Id), u, time.Duration(core.Cfg.JWT.Expires*2)*time.Minute)
+	core.Cache.Set(ckey.AdminKey(int(u.Id)), u, time.Duration(core.Cfg.JWT.Expires*2)*time.Minute)
 
 	return lok, nil
 }

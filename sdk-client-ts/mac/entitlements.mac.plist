@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <!-- 允许 JIT 编译（Electron 核心需要） -->
+  <key>com.apple.security.cs.allow-jit</key>
+  <true/>
+  <!-- 允许未签名的可执行内存（原生模块如 koffi 需要） -->
+  <key>com.apple.security.cs.allow-unsigned-executable-memory</key>
+  <true/>
+  <!-- 禁用库验证（允许加载第三方原生模块） -->
+  <key>com.apple.security.cs.disable-library-validation</key>
+  <true/>
+  <!-- 可选：若应用需要访问网络，添加网络权限 -->
+  <key>com.apple.security.network.client</key>
+  <true/>
+</dict>
+</plist>

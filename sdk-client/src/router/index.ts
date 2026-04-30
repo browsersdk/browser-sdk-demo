@@ -1,8 +1,11 @@
-import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createMemoryHistory } from 'vue-router'
 import { useUserStore } from '@/stores/user'
+import LoginForm from '@/components/LoginForm.vue'
+import MainLayout from '@/layouts/MainLayout.vue'
 
 const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
+  // history: createWebHistory(import.meta.env.BASE_URL),
+  history: createMemoryHistory(),
   routes: [
     {
       path: '/',
@@ -12,13 +15,13 @@ const router = createRouter({
     {
       path: '/login',
       name: 'login',
-      component: () => import('../components/LoginForm.vue'),
+      component: LoginForm,
       meta: { requiresGuest: true }
     },
     {
       path: '/dashboard',
       name: 'dashboard',
-      component: () => import('../layouts/MainLayout.vue'),
+      component: MainLayout,
       meta: { requiresAuth: true }
     }
   ]
@@ -27,7 +30,7 @@ const router = createRouter({
 // 路由守卫
 router.beforeEach((to, from, next) => {
   const userStore = useUserStore()
-  
+
   // 初始化认证状态
   if (!userStore.isAuthenticated) {
     userStore.initializeAuth()

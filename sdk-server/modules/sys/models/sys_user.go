@@ -8,18 +8,18 @@ import (
 )
 
 type SysUser struct {
-	Id       int    `json:"id" gorm:"type:int unsigned;primaryKey;autoIncrement;comment:主键"` //主键
-	Username string `json:"username" gorm:"size:32;comment:用户名"`                             //用户名
-	Phone    string `json:"phone" gorm:"size:11;comment:手机号"`                                //手机号
-	Email    string `json:"email" gorm:"size:128;comment:邮箱"`                                //邮箱
-	Password string `json:"password" gorm:"size:128;comment:密码"`                             //密码
-	Nickname string `json:"nickname" gorm:"size:128;comment:昵称"`                             //昵称
-	Name     string `json:"name" gorm:"size:64;comment:姓名"`                                  //姓名
-	Avatar   string `json:"avatar" gorm:"size:255;comment:头像"`                               //头像
-	Bio      string `json:"bio" gorm:"type:varchar(255);default:(-);comment:签名"`             //签名
-	Birthday string `json:"birthday" gorm:"type:date;default:(-);comment:生日 格式 yyyy-MM-dd"`  //生日
-	Gender   int    `json:"gender" gorm:"type:tinyint;default:2;comment:性别 1男 2女 3未知"`       //性别 1男 2女 3未知
-	TeamId   int    `json:"teamId" gorm:"type:int unsigned;comment:团队id"`                    //团队id
+	Id       uint   `json:"id" gorm:"primaryKey;autoIncrement;comment:主键"`                  //主键
+	Username string `json:"username" gorm:"size:32;comment:用户名"`                            //用户名
+	Phone    string `json:"phone" gorm:"size:11;comment:手机号"`                               //手机号
+	Email    string `json:"email" gorm:"size:128;comment:邮箱"`                               //邮箱
+	Password string `json:"password" gorm:"size:128;comment:密码"`                            //密码
+	Nickname string `json:"nickname" gorm:"size:128;comment:昵称"`                            //昵称
+	Name     string `json:"name" gorm:"size:64;comment:姓名"`                                 //姓名
+	Avatar   string `json:"avatar" gorm:"size:255;comment:头像"`                              //头像
+	Bio      string `json:"bio" gorm:"type:varchar(255);default:(-);comment:签名"`            //签名
+	Birthday string `json:"birthday" gorm:"type:date;default:(-);comment:生日 格式 yyyy-MM-dd"` //生日
+	Gender   int    `json:"gender" gorm:"type:tinyint;default:2;comment:性别 1男 2女 3未知"`      //性别 1男 2女 3未知
+	TeamId   int    `json:"teamId" gorm:"type:int unsigned;comment:团队id"`                   //团队id
 	//AppId      int       `json:"appId" gorm:"type:int;size:20;comment:应用id预留"`                    //应用id预留
 	Status     int       `json:"status" gorm:"type:tinyint;comment:状态 1正常 "`               //状态 1正常
 	Remark     string    `json:"remark" gorm:"size:255;comment:备注"`                        //备注

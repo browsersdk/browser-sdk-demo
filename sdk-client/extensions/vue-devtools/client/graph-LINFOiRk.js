@@ -3111,7 +3111,7 @@ function Wx(i, n, e) {
 ` + e + ` AT 
 `;
   return function() {
-    var r = new Error("get-stack-trace"), a = r && r.stack ? r.stack.replace(/^[^\(]+?[\n$]/gm, "").replace(/^\s+at\s+/gm, "").replace(/^Object.<anonymous>\s*\(/gm, "{anonymous}()@") : "Unknown Stack Trace", o = window.console && (window.console.warn || window.console.log);
+    var r = new Error("get-stack-trace"), a = r && r.stack ? r.stack.replace(/^[^(]+?[\n$]/gm, "").replace(/^\s+at\s+/gm, "").replace(/^Object.<anonymous>\s*\(/gm, "{anonymous}()@") : "Unknown Stack Trace", o = window.console && (window.console.warn || window.console.log);
     return o && o.call(window.console, t, a), i.apply(this, arguments);
   };
 }
@@ -26491,7 +26491,7 @@ function AB(i, n, e) {
 ` + e + ` AT 
 `;
   return function() {
-    var r = new Error("get-stack-trace"), a = r && r.stack ? r.stack.replace(/^[^\(]+?[\n$]/gm, "").replace(/^\s+at\s+/gm, "").replace(/^Object.<anonymous>\s*\(/gm, "{anonymous}()@") : "Unknown Stack Trace", o = window.console && (window.console.warn || window.console.log);
+    var r = new Error("get-stack-trace"), a = r && r.stack ? r.stack.replace(/^[^(]+?[\n$]/gm, "").replace(/^\s+at\s+/gm, "").replace(/^Object.<anonymous>\s*\(/gm, "{anonymous}()@") : "Unknown Stack Trace", o = window.console && (window.console.warn || window.console.log);
     return o && o.call(window.console, t, a), i.apply(this, arguments);
   };
 }
@@ -31695,7 +31695,7 @@ function FL(i, n, e) {
 ` + e + ` AT 
 `;
   return function() {
-    var r = new Error("get-stack-trace"), a = r && r.stack ? r.stack.replace(/^[^\(]+?[\n$]/gm, "").replace(/^\s+at\s+/gm, "").replace(/^Object.<anonymous>\s*\(/gm, "{anonymous}()@") : "Unknown Stack Trace", o = window.console && (window.console.warn || window.console.log);
+    var r = new Error("get-stack-trace"), a = r && r.stack ? r.stack.replace(/^[^(]+?[\n$]/gm, "").replace(/^\s+at\s+/gm, "").replace(/^Object.<anonymous>\s*\(/gm, "{anonymous}()@") : "Unknown Stack Trace", o = window.console && (window.console.warn || window.console.log);
     return o && o.call(window.console, t, a), i.apply(this, arguments);
   };
 }

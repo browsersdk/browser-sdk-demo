@@ -1,9 +1,11 @@
 package middleware
 
 import (
+	"fmt"
 	"log/slog"
 	"net/http"
 	"runtime"
+	"runtime/debug"
 	"strconv"
 	"strings"
 
@@ -16,7 +18,7 @@ import (
 func CustomError(c *gin.Context) {
 	defer func() {
 		if err := recover(); err != nil {
-			//fmt.Printf("Custom error %v \n", err)
+			fmt.Println("Custom error", err, string(debug.Stack()))
 			if c.IsAborted() {
 				c.Status(200)
 			}

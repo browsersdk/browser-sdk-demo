@@ -38,16 +38,19 @@ npm install
 ### 开发模式
 
 #### 同时启动Web和Electron（推荐）
+
 ```bash
-npm run dev
+npm run dev:separate
 ```
 
 #### 仅启动Web开发服务器
+
 ```bash
 npm run dev:web
 ```
 
 #### 仅启动Electron（需要先运行Web服务器）
+
 ```bash
 npm run dev:electron
 ```
@@ -55,11 +58,13 @@ npm run dev:electron
 ### 构建生产版本
 
 #### 构建Web版本
+
 ```bash
 npm run build
 ```
 
 #### 构建Electron应用
+
 ```bash
 npm run build:electron
 ```
@@ -67,11 +72,13 @@ npm run build:electron
 ## 核心功能
 
 ### 用户认证
+
 - JWT令牌认证机制
 - 自动令牌刷新
 - 本地存储管理
 
 ### 浏览器环境管理
+
 - **创建环境**: 添加新的浏览器环境配置
 - **查看环境**: 展示所有环境列表，支持分页
 - **编辑环境**: 修改现有环境的配置信息
@@ -79,32 +86,42 @@ npm run build:electron
 - **数据持久化**: 所有操作同步到后端数据库
 
 ### 系统监控
+
 - CPU、内存、存储使用率显示
 - 实时状态更新
 
 ## 项目结构
 
-```
+```txt
 src/
-├── components/          # 组件目录
-│   ├── LoginForm.vue    # 登录表单组件
-├── layouts/            # 布局组件
-│   ├── MainLayout.vue   # 主布局组件
-├── services/           # API服务
-│   ├── api.ts          # API服务类
-├── stores/             # 状态管理
-│   ├── user.ts         # 用户状态store
-│   ├── browser.ts      # 浏览器环境store
-├── utils/              # 工具函数
-│   ├── tokenManager.ts # Token管理器
-├── router/             # 路由配置
-├── App.vue             # 根组件
-└── main.ts             # 应用入口
+├── components/                     # 组件目录
+│   ├── LoginForm.vue               # 登录表单组件
+├── layouts/                        # 布局组件
+│   ├── MainLayout.vue              # 主布局组件
+├── services/                       # API服务
+│   ├── api.ts                      # API服务类
+│   ├── sdk/                        # SDK API服务类
+│       ├── sdk.ts                  # SDK C模式API
+│       ├── sdkHttp.ts              # SDK Http模式API
+│   ├── socket/                     # socket服务类
+│       ├── WebSocketService.ts     # SDK socket服务
+│   ├── api.ts                      # API服务类
+├── stores/                         # 状态管理
+│   ├── user.ts                     # 用户状态store
+│   ├── browser.ts                  # 浏览器环境store
+├── utils/                          # 工具函数
+│   ├── tokenManager.ts             # Token管理器
+├── router/                         # 路由配置
+├── App.vue                         # 根组件
+└── main.ts                         # 应用入口
 
 electron/
-├── main.js             # Electron主进程
-└── preload.js          # 预加载脚本
-```
+├── main.js                         # Electron主进程
+├── preload.js                      # 预加载脚本
+├── sdk/                            # SDK服务
+│   ├── sdk/                        # SDK服务
+│       ├── index.js                # SDK服务类
+│       ├── brosdk.js               # DLL服务类
 
 ## 默认账户信息
 
@@ -181,6 +198,7 @@ electron/
 ## 测试
 
 ### API测试
+
 ```bash
 # 测试用户认证流程
 node test-login-flow.js

@@ -256,7 +256,7 @@ func (e *SysUser) Register(loginType enums.LoginType, c *dto.RegisterReq, ip str
 	if c.InviteCode != "" {
 		iu, err := e.GetByInviteCode(c.InviteCode)
 		if err == nil {
-			model.Inviter = iu.Id
+			model.Inviter = int(iu.Id)
 		}
 	}
 	err := e.create(&model)
@@ -280,7 +280,7 @@ func (e *SysUser) loginOK(u *models.SysUser, need int, loginType enums.LoginType
 	now := time.Now()
 	exp := now.Add(time.Duration(core.Cfg.JWT.Expires) * time.Minute)
 
-	token, err := utils.GenerateAppToken(u.Id, core.Cfg.JWT.Issuer, core.Cfg.JWT.Subject, core.Cfg.JWT.SignKey, exp)
+	token, err := utils.GenerateAppToken(int(u.Id), core.Cfg.JWT.Issuer, core.Cfg.JWT.Subject, core.Cfg.JWT.SignKey, exp)
 	lok := dto.LoginOK{}
 	if err != nil {
 		return lok, errs.Err(codes.FAILURE, "", err)
@@ -302,7 +302,7 @@ func (e *SysUser) loginOK(u *models.SysUser, need int, loginType enums.LoginType
 		lok.Username = u.Email
 	}
 	refExp := now.Add(time.Duration(core.Cfg.JWT.Refresh) * time.Minute)
-	refT, _ := utils.GenerateAppRefreshToken(u.Id, core.Cfg.JWT.Issuer, core.Cfg.JWT.Subject, core.Cfg.JWT.SignKey, refExp)
+	refT, _ := utils.GenerateAppRefreshToken(int(u.Id), core.Cfg.JWT.Issuer, core.Cfg.JWT.Subject, core.Cfg.JWT.SignKey, refExp)
 	lok.RefreshToken = refT
 	lok.RefreshExpire = refExp
 
@@ -334,7 +334,15 @@ func (e *SysUser) LoginPwd(c *dto.LoginReq, ip string, teamId, appId int) (dto.L
 			if !errors.Is(err, gorm.ErrRecordNotFound) {
 				return lok, errs.ErrWithCode(codes.ErrUsernameOrPwd)
 			}
-			return lok, errs.ErrWithCode(codes.FAILURE)
+			// 自动创建用户
+			model = models.SysUser{
+				Phone:    c.Username,
+				Password: c.Password,
+			}
+			err = e.Create(&model)
+			if err != nil {
+				return lok, codes.ErrSys(err)
+			}
 		}
 		loginType = enums.LT_PHONE
 	} else if regexps.CheckEmail(c.Username) { //是否邮箱
@@ -342,7 +350,15 @@ func (e *SysUser) LoginPwd(c *dto.LoginReq, ip string, teamId, appId int) (dto.L
 			if !errors.Is(err, gorm.ErrRecordNotFound) {
 				return lok, errs.ErrWithCode(codes.ErrUsernameOrPwd)
 			}
-			return lok, errs.ErrWithCode(codes.FAILURE)
+			// 自动创建用户
+			model = models.SysUser{
+				Email:    c.Username,
+				Password: c.Password,
+			}
+			err = e.Create(&model)
+			if err != nil {
+				return lok, codes.ErrSys(err)
+			}
 		}
 		loginType = enums.LT_EMAIL
 	} else { //用户名密码登录
@@ -350,7 +366,15 @@ func (e *SysUser) LoginPwd(c *dto.LoginReq, ip string, teamId, appId int) (dto.L
 			if !errors.Is(err, gorm.ErrRecordNotFound) {
 				return lok, errs.ErrWithCode(codes.ErrUsernameOrPwd)
 			}
-			return lok, errs.ErrWithCode(codes.FAILURE)
+			// 自动创建用户
+			model = models.SysUser{
+				Username: c.Username,
+				Password: c.Password,
+			}
+			err = e.Create(&model)
+			if err != nil {
+				return lok, codes.ErrSys(err)
+			}
 		}
 	}
 	if model.Password == "" {
@@ -427,7 +451,7 @@ func (e *SysUser) LoginCode(c *dto.LoginReq, ip string, teamId, appId int) (dto.
 		if c.InviteCode != "" {
 			iu, err := e.GetByInviteCode(c.InviteCode)
 			if err == nil {
-				model.Inviter = iu.Id
+				model.Inviter = int(iu.Id)
 			}
 		}
 		err := e.create(&model)
@@ -730,7 +754,7 @@ func (e *SysUser) ChangePwd(mobile, email, password string) errs.IError {
 // }
 
 // Get 获取User对象
-func (e *SysUser) GetByUsername(username string, model *models.SysUser) errs.IError {
+func (e *SysUser) GetByUsername(username string, model *models.SysUser) error {
 	// str, err := core.Cache.Get("username:" + username)
 	// fmt.Println("get:" + str)
 	// if err == nil && str != "" {

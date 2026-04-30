@@ -91,7 +91,7 @@ func (s *AdminDeptService) Del(id, teamId int, uid int) error {
 	if err := s.DB().Where("parent_id = ?", id).Find(&dept).Error; err == nil {
 		return fmt.Errorf("存在子部门，不允许删除")
 	}
-	cnt, err := SerSysMember.CountMembers(dept.Id)
+	cnt, err := SerSysMember.CountMembers(int(dept.Id))
 	if err != nil {
 		return err
 	}

@@ -58,9 +58,9 @@ tmp/
 
 # Compiled files
 *.exe
-*.dll
+# *.dll
 *.so
-*.dylib
+# *.dylib
 *.out
 
 # Go specific
@@ -152,3 +152,10 @@ docker-compose.override.yml
 *.key
 *.crt
 *.cert
+
+# SDK
+workDir/
+workDir-win/
+**/.brosdk/
+
+config.local.yaml

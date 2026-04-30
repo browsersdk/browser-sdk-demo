@@ -37,7 +37,7 @@ tsconfig.tsbuildinfo
 
 # Electron
 *.exe
-*.dll
+# *.dll
 *.so
 *.dylib
 *.app
@@ -46,6 +46,7 @@ tsconfig.tsbuildinfo
 release/
 out/
 app/
+dist-electron/
 
 # Temporary files
 temp/

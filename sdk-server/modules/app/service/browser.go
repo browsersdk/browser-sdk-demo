@@ -7,6 +7,7 @@ import (
 	"dilu/modules/sys/service"
 	"dilu/modules/sys/service/dto"
 	"fmt"
+	"log/slog"
 
 	"github.com/baowk/dilu-core/common/consts"
 	"github.com/baowk/dilu-core/core/base"
@@ -49,6 +50,7 @@ func (s *BrowserService) GetUserSig(req *brosdk.GetUserSigRequest, data *brosdk.
 
 	resp, err := sdk.GetUserSig(context.Background(), req)
 	if err != nil {
+		slog.Error("GetUserSig failed", "err", err)
 		return err
 	}
 	*data = *resp
@@ -88,7 +90,7 @@ func (s *BrowserService) Create(uid int, req *dto.BrowserDto) (data *models.Brow
 
 	data.EnvId = resp.EnvId
 	data.Data = datatypes.NewJSONType(resp)
-	data.Status = 3
+	//data.Status = 3
 	if err = service.SerBrowser.UpdateById(&data); err != nil {
 		return
 	}
@@ -127,4 +129,32 @@ func (s *BrowserService) Update(uid int, req *dto.BrowserDto) (browser *models.B
 	}
 
 	return browser, nil
+}
+
+func (s *BrowserService) UpdateStatus(uid int, req *dto.BrowserStatusDto) (browser *models.Browser, err error) {
+	browser = &models.Browser{}
+	if err := service.SerBrowser.DB().Where("env_id = ?", req.EnvId).Find(browser).Error; err != nil {
+		return nil, err
+	}
+	browser.Status = req.Status
+
+	if err := service.SerBrowser.UpdateById(&browser); err != nil {
+		return nil, err
+	}
+
+	return browser, nil
+}
+
+func (s *BrowserService) GetUiFingerList() (data *brosdk.GetUiFingerList, err error) {
+	sdk, err := s.getBroSdk()
+	if err != nil {
+		return nil, err
+	}
+	resp, err := sdk.GetUiFingerList(context.Background())
+	if err != nil {
+		return nil, err
+	}
+	data = resp
+
+	return
 }

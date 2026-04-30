@@ -1,8 +1,6 @@
-import { TokenManager, type AuthTokens } from '@/utils/tokenManager';
+import { TokenManager } from '@/utils/tokenManager';
 import axios from '@/utils/axios'
-import type { LoginRequest, LoginResponse, UserInfo, UserInfoResponse, Browser, BrowserDto, BrowserGetPageReq, PageResponse, BaseResponse } from './type'
-
-const BASE_URL = 'http://192.168.0.127:7888';
+import type { IResponse, LoginRequest, LoginResponse, AuthTokens, IUserSigData, UserInfo, UserInfoResponse, Browser, BrowserDto, BrowserGetPageReq, PageResponse, BaseResponse } from './type'
 
 export class ApiService {
 
@@ -33,6 +31,28 @@ export class ApiService {
     }
   }
 
+  /** 
+   * 获取用户sdk usersig
+   * @param duration 过期时长（秒）
+   */
+  static async getSdkUserSig(duration = 3600 * 24): Promise<IUserSigData> {
+    const res: IResponse & {
+      data: IUserSigData
+    } = await axios.get('/api/app/user/getSdkUserSig', {
+      params: {
+        duration
+      }
+    });
+    const { code, data, msg } = res;
+
+    // 根据实际API响应调整判断条件
+    if (code === 200 || code === 0) {
+      return data;
+    } else {
+      throw new Error(msg || 'Login failed');
+    }
+  }
+
   static async getUserInfo(): Promise<UserInfo> {
     const res: UserInfoResponse = await axios.get('/api/app/user/info');
     const { code, data, msg } = res;
@@ -49,8 +69,8 @@ export class ApiService {
   }
 
   // Browser相关API方法
-  static async getBrowserList(params: BrowserGetPageReq): Promise<PageResponse<Browser>> {
-    const res: BaseResponse<PageResponse<Browser>> = await axios.post('/api/app/browser/page', params);
+  static async getBrowserList(params: BrowserGetPageReq): Promise<PageResponse<BrowserDto>> {
+    const res: BaseResponse<PageResponse<BrowserDto>> = await axios.post('/api/app/browser/page', params);
     const { code, data, msg } = res;
 
     if (code === 200) {
@@ -60,8 +80,8 @@ export class ApiService {
     }
   }
 
-  static async getBrowser(id: number): Promise<Browser> {
-    const res: BaseResponse<Browser> = await axios.post('/api/app/browser/get', { id });
+  static async getBrowser(id: number): Promise<BrowserDto> {
+    const res: BaseResponse<BrowserDto> = await axios.post('/api/app/browser/get', { id });
     const { code, data, msg } = res;
 
     if (code === 200) {
@@ -71,8 +91,8 @@ export class ApiService {
     }
   }
 
-  static async createBrowser(browser: BrowserDto): Promise<Browser> {
-    const res: BaseResponse<Browser> = await axios.post('/api/app/browser/create', browser);
+  static async createBrowser(browser: BrowserDto): Promise<BrowserDto> {
+    const res: BaseResponse<BrowserDto> = await axios.post('/api/app/browser/create', browser);
     const { code, data, msg } = res;
 
     if (code === 200) {
@@ -82,8 +102,8 @@ export class ApiService {
     }
   }
 
-  static async updateBrowser(browser: BrowserDto): Promise<Browser> {
-    const res: BaseResponse<Browser> = await axios.post('/api/app/browser/update', browser);
+  static async updateBrowser(browser: BrowserDto): Promise<BrowserDto> {
+    const res: BaseResponse<BrowserDto> = await axios.post('/api/app/browser/update', browser);
     const { code, data, msg } = res;
 
     if (code === 200) {
@@ -93,12 +113,24 @@ export class ApiService {
     }
   }
 
-  static async deleteBrowser(ids: number[]): Promise<void> {
+  static async updateBrowserStatus(browser: BrowserDto): Promise<BrowserDto> {
+    const res: BaseResponse<BrowserDto> = await axios.post('/api/app/browser/update-status', browser);
+    const { code, data, msg } = res;
+
+    if (code === 200) {
+      return data;
+    } else {
+      throw new Error(msg || 'Failed to update browser');
+    }
+  }
+
+  static async deleteBrowser(ids: number[]): Promise<number> {
     const res: BaseResponse<void> = await axios.post('/api/app/browser/del', { ids });
     const { code, data, msg } = res;
 
     if (code !== 200) {
       throw new Error(msg || 'Failed to delete browser');
     }
+    return code
   }
 }

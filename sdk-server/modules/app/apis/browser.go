@@ -124,6 +124,30 @@ func (e *BrowserApi) Update(c *gin.Context) {
 	e.Ok(c, data)
 }
 
+// Update 更新Browser状态
+// @Summary 更新Browser状态
+// @Tags app-browser
+// @Accept application/json
+// @Product application/json
+// @Param data body dto.BrowserDto true "body"
+// @Success 200 {object} base.Resp{data=string} "{"code": 200, "data": [...]}"
+// @Router /api/app/browser/update-status [post]
+// @Security Bearer
+func (e *BrowserApi) UpdateStatus(c *gin.Context) {
+	var req dto.BrowserStatusDto
+	if err := c.ShouldBind(&req); err != nil {
+		e.Error(c, err)
+		return
+	}
+	uid := utils.GetAppUid(c)
+	data, err := appS.SerAppBrowser.UpdateStatus(uid, &req)
+	if err != nil {
+		e.Error(c, err)
+		return
+	}
+	e.Ok(c, data)
+}
+
 // Del 删除Browser
 // @Summary 删除Browser
 // @Tags app-browser
@@ -144,4 +168,22 @@ func (e *BrowserApi) Del(c *gin.Context) {
 		return
 	}
 	e.Ok(c)
+}
+
+// GetUiFingerList 获取筛选条件列表（专家模式获取选择项目的时候）
+// @Summary 获取筛选条件列表（专家模式获取选择项目的时候）
+// @Tags browser-third-server
+// @Accept application/json
+// @Product application/json
+// @Success 200 {object} base.Resp{data=brosdk.GetUiFingerList} "{"code": 200, "data": [...]}"
+// @Router /api/app/browser/getUiFingerList [get]
+// @Security Bearer
+func (e *BrowserApi) GetUiFingerList(c *gin.Context) {
+	data, err := appS.SerAppBrowser.GetUiFingerList()
+	if err != nil {
+		e.Error(c, err)
+		return
+	}
+
+	e.Ok(c, data)
 }

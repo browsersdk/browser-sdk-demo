@@ -5,7 +5,7 @@ import (
 )
 
 type ThirdLogin struct {
-	base.Model
+	Id        uint   `json:"id" gorm:"primaryKey;autoIncrement;comment:主键"`              //主键
 	UserId    int    `json:"userId" gorm:"type:int unsigned;comment:用户id"`               //用户id
 	Platform  int    `json:"platform" gorm:"type:tinyint unsigned;comment:平台 1 微信 2 钉钉"` //平台 1微信 2钉钉
 	OpenId    string `json:"openId" gorm:"type:varchar(128);comment:第三方open_id"`         //第三方openid userid

@@ -1,29 +1,35 @@
-const { app, BrowserWindow, ipcMain, session } = require('electron');
-const path = require('path');
+const { app, BrowserWindow, ipcMain, session } = require('electron')
+const path = require('path')
 
-let mainWindow;
+const logger = require('./logs/logs')
+const SDK = require('./sdk')
+
+let mainWindow
+
+const log = logger.getInstance()
+const sdk = new SDK()
 
 async function installVueDevtools() {
-  if (process.env.NODE_ENV !== 'development') return
+  if (app.isPackaged) return
 
   try {
     // 项目内插件存放路径（示例：项目根目录下的 extensions/vue-devtools）
     const vueDevtoolsPath = path.join(
       process.cwd(), // 项目根目录
       'extensions', // 插件存放目录
-      'vue-devtools' // Vue Devtools 插件目录
+      'vue-devtools', // Vue Devtools 插件目录
     )
 
     // 加载项目内的 Vue Devtools 插件
     const extension = await session.defaultSession.loadExtension(vueDevtoolsPath)
   } catch (err) {
+    log.info('vueDevtoolsPath加载错误')
   }
 }
 
-
 function createWindow() {
-  console.log('Creating main window...');
-  
+  log.info('Creating main window...')
+
   mainWindow = new BrowserWindow({
     width: 1200,
     height: 800,
@@ -32,7 +38,8 @@ function createWindow() {
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
-      preload: path.join(__dirname, 'preload.js')
+      preload: path.join(__dirname, 'preload.js'),
+      webSecurity: false, // 禁用 CSP 限制
     },
     icon: path.join(__dirname, '../public/favicon.ico'),
     backgroundColor: '#0a0a0a', // 改为深色背景匹配应用主题
@@ -41,43 +48,47 @@ function createWindow() {
     scrollBounce: false, // 禁用滚动弹性效果
     frame: true, // 保持窗口框架
     show: false, // 先隐藏窗口，等加载完成后再显示
-  });
-
+  })
   // 等待页面加载完成后再显示窗口
   mainWindow.once('ready-to-show', () => {
-    mainWindow.show();
-    if (process.env.NODE_ENV === 'development') {
-      mainWindow.webContents.openDevTools();
+    mainWindow.show()
+    if (!app.isPackaged) {
+      mainWindow.webContents.openDevTools()
     }
-  });
+  })
 
   // 开发环境下加载Vite开发服务器
-  if (process.env.NODE_ENV === 'development') {
-    console.log('Loading development server from http://localhost:5173');
-    mainWindow.loadURL('http://localhost:5173');
+  if (!app.isPackaged) {
+    console.log('Loading development server from http://localhost:5173')
+    mainWindow.loadURL('http://localhost:5173')
   } else {
     // 生产环境下加载打包后的文件
-    console.log('Loading production build');
-    mainWindow.loadFile(path.join(__dirname, '../dist/index.html'));
+    log.info('PROD MODE')
+
+    const indexPath = path.join(__dirname, '../dist/index.html')
+
+    log.info('indexPath:', indexPath)
+
+    mainWindow.loadFile(indexPath)
   }
 
   // 监听窗口大小变化
   mainWindow.on('resize', () => {
-    const [width, height] = mainWindow.getSize();
+    const [width, height] = mainWindow.getSize()
     // console.log(`Window resized to ${width}x${height}`);
-    
+
     // 通知渲染进程窗口大小变化
-    mainWindow.webContents.send('window-resize', { width, height });
-  });
+    mainWindow.webContents.send('window-resize', { width, height })
+  })
 
   // 监听页面加载事件
   mainWindow.webContents.on('did-finish-load', () => {
-    console.log('Page loaded successfully');
-    
+    console.log('Page loaded successfully')
+    log.debug('初始化成功')
     // 获取当前窗口尺寸并发送给渲染进程
-    const [width, height] = mainWindow.getSize();
-    mainWindow.webContents.send('window-ready', { width, height });
-    
+    const [width, height] = mainWindow.getSize()
+    mainWindow.webContents.send('window-ready', { width, height })
+
     // 注入CSS来隐藏滚动条和优化布局
     mainWindow.webContents.insertCSS(`
       ::-webkit-scrollbar {
@@ -103,78 +114,77 @@ function createWindow() {
         height: 100vh !important;
         overflow: hidden !important;
       }
-    `);
-  });
-  
+    `)
+  })
+
   mainWindow.webContents.on('did-fail-load', (event, errorCode, errorDescription, validatedURL) => {
-    console.error('Page failed to load:', errorCode, errorDescription, validatedURL);
-  });
+    console.error('Page failed to load:', errorCode, errorDescription, validatedURL)
+  })
 
   mainWindow.on('closed', () => {
-    mainWindow = null;
-  });
+    mainWindow = null
+  })
 }
 
 app.whenReady().then(async () => {
-  console.log('App is ready, creating window...');
+  console.log('App is ready, creating window...')
   await installVueDevtools() // 安装 Vue Devtools
-  createWindow();
-
+  createWindow()
   app.on('activate', () => {
-    console.log('App activated');
+    console.log('App activated')
     if (BrowserWindow.getAllWindows().length === 0) {
-      createWindow();
+      createWindow()
     }
-  });
-});
+  })
+})
 
 app.on('window-all-closed', () => {
-  console.log('All windows closed');
+  console.log('All windows closed')
   if (process.platform !== 'darwin') {
-    app.quit();
+    app.quit()
   }
-});
+})
 
 // IPC通信 - 获取窗口信息
 ipcMain.handle('get-window-size', () => {
   if (mainWindow) {
-    return mainWindow.getSize();
+    return mainWindow.getSize()
   }
-  return [1200, 800]; // 默认尺寸
-});
+  return [1200, 800] // 默认尺寸
+})
 
 ipcMain.handle('get-window-bounds', () => {
   if (mainWindow) {
-    return mainWindow.getBounds();
+    return mainWindow.getBounds()
   }
-  return { x: 0, y: 0, width: 1200, height: 800 };
-});
+  return { x: 0, y: 0, width: 1200, height: 800 }
+})
 
 ipcMain.handle('set-window-size', (event, width, height) => {
   if (mainWindow) {
-    mainWindow.setSize(width, height);
+    mainWindow.setSize(width, height)
   }
-});
+})
 
 // 窗口控制IPC
 ipcMain.handle('minimize-window', () => {
   if (mainWindow) {
-    mainWindow.minimize();
+    mainWindow.minimize()
   }
-});
+})
 
 ipcMain.handle('maximize-window', () => {
   if (mainWindow) {
     if (mainWindow.isMaximized()) {
-      mainWindow.unmaximize();
+      mainWindow.unmaximize()
     } else {
-      mainWindow.maximize();
+      mainWindow.maximize()
     }
   }
-});
+})
 
 ipcMain.handle('close-window', () => {
   if (mainWindow) {
-    mainWindow.close();
+    mainWindow.close()
   }
-});
+})

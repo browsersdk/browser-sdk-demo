@@ -384,7 +384,7 @@ func (e *SSO) ChangeUserinfo(c *gin.Context) {
 
 	var user models.SysUser
 	copier.Copy(&user, req)
-	user.Id = uid
+	user.Id = uint(uid)
 	//是否手机
 	if err := service.SerSysUser.ChangeUserinfo(uid, user); err != nil {
 		e.Code(c, codes.ErrBind)

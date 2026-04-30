@@ -4,13 +4,7 @@ server:
   name: dilu-plus      # 服务名称
   port: 7888       # 服务端口号
   node: 1
-  #read-timeout    #读超时 单位秒 默认20
-  #write-timeout   #写超时 单位秒 默认20
   fs-type: local    #文件服务
-grpc-server:
-  enable: false
-  host: 0.0.0.0
-  port: 7889
 logger:             # 日志配置
   level: debug # 级别
   prefix:    # 日志前缀
@@ -45,112 +39,9 @@ dbcfg: # 数据库配置
 cors:
   enable: true
   mode: allow-all
-  #whitelist:
-  #- allow-origin: example1.com
-  #  allow-methods: POST, GET
-  #  allow-headers: Content-Type,AccessToken,X-CSRF-Token, Authorization, Token,X-Token,X-User-Id
-  #  expose-headers: Content-Length, Access-Control-Allow-Origin, Access-Control-Allow-Headers,
-  #    Content-Type
-  #  allow-credentials: true
-gen: 
-  enable: true #开启生成
-  front-path: ../sdk-admin/src #前端生成路径 默认：../dilu-admin/src
 extend:             # 扩展项（此处没有提供具体说明）
   bro-sdk:
-    endpoint: http://192.168.0.188:9988
-    api-key: Ls/e7BzPbtHfcmfR3V+kYJpWHsPffdXKWhEYJdABTmYp+CV/FA1G7EHzk6coamX5
-  aes-key: 12345678asdfghjk
-  rd-config:
-    enable: false
-    driver: consul
-    endpoints:
-      - 172.19.167.104:8500
-    scheme: http
-    timeout: 5s
-    registers:
-      - id:  #172.19.167.104:7888
-        protocol: http
-        #name: dilu-app
-        #addr: 172.19.167.104
-        #port: 7888
-        #health-check: http://172.19.167.104:7888/api/health
-        #tags:
-        #  - "dev"
-        #interval: 5s
-        #timeout: 10s
-      - id:  #172.19.167.104:7889
-        protocol: grpc
-        #name: dilu-app-grpc
-        #addr: 172.19.167.104
-        #port: 7889
-        #health-check: 172.19.167.104:7889/Health
-        #tags:
-        #  - "dev"
-        #interval: 5s
-        #timeout: 10s
-    discoveries:
-      - name: name
-        enable: false
-        fail-limit: 3
-  vector:
-    select: ali
-    ali:
-      endpoint: https://vrs-cn-yzh4bofaw0001s.dashvector.cn-hangzhou.aliyuncs.com
-      api-key: 
-      metric: euclidean
-    milvus:
-      addr:
-      db-name:
-      username:
-      password:
-      metric: IP
-    embedding:
-      endpoint: https://dashscope.aliyuncs.com/compatible-mode/v1/
-      api-key: 
-      model: text-embedding-v3
-      dim: 768
-  chat-service:
-    endpoint: http://localhost:9888
+    endpoint: https://api.brosdk.com
     api-key: 
-  tts:
-    select: minimax
-    minimax:
-      endpoint: api.minimaxi.com
-      api-key: 
-      min-conn : 1
-      max-conn : 5
-      idle-time: 50
-      model: speech-02-hd
-      voice: 
-      format: pcm
-      sample-rate: 44100
-      group-id: 
-      lang: 
-    ali:
-      endpoint: wss://dashscope.aliyuncs.com/api-ws/v1/inference/
-      api-key: 
-      min-conn : 1
-      max-conn : 5
-      idle-time: 50
-      model: cosyvoice-v2
-      voice:
-      format:
-      sample-rate:
-  file-store:
-    select: oss
-    secret-id: 
-    secret-key: 
-    bucket: 
-    region: cn-hangzhou
-    domain:
-    prefix: data
-    internal: false
-  sms:
-    select: ali
-    secret-id: 
-    secret-key: 
-    template-id: 
-    sign: 
-    region: cn-hangzhou
-  one-click: jg
+
     
